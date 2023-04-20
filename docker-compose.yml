@@ -6,7 +6,4 @@ services:
         build: .
         restart: unless-stopped
         ports:
-            - '${PORT}:${PORT}'
-        environment:
-            # The healthcheck needs this to be set
-            - PORT=${PORT}
+            - '8080:80'

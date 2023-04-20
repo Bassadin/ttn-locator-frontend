@@ -1,7 +1,5 @@
 # Base image
-FROM node:lts-alpine AS base
-
-ENV NODE_ENV=production
+FROM node:lts-alpine as builder
 
 # Create app directory
 WORKDIR /app
@@ -18,10 +16,10 @@ RUN pnpm install -r --offline
 
 RUN pnpm build
 
-EXPOSE ${PORT}
+FROM nginx:alpine
 
-# Health check
-HEALTHCHECK CMD node ./additional_scripts/healthcheck.mjs
+# Copy healthcheck script
+COPY --from=builder /app/additional_scripts/healthcheck.mjs ./healthcheck.mjs
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Run
-CMD [ "node", "dist/index.js" ]
+HEALTHCHECK CMD node ./healthcheck.mjs
