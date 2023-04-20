@@ -18,7 +18,7 @@ RUN pnpm install -r --offline
 
 RUN pnpm build
 
-EXPOSE 3000
+EXPOSE ${PORT}
 
 # Health check
 HEALTHCHECK CMD node ./additional_scripts/healthcheck.mjs

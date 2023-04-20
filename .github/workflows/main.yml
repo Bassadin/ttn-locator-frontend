@@ -1,0 +1,85 @@
+---
+name: Test everything
+
+on:
+    push:
+    pull_request:
+
+env:
+    IMAGE_NAME: ttn-locator-frontend
+
+jobs:
+    yamllint:
+        runs-on: ubuntu-latest
+        steps:
+            - name: ⤵️ Check out code from GitHub
+              uses: actions/checkout@v3
+            - name: 🚀 Run yamllint
+              uses: frenck/action-yamllint@v1.4.0
+    eslint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 16
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 7
+
+            - run: pnpm install --frozen-lockfile
+            - run: pnpm run build
+
+            - name: Run eslint scan
+              run: pnpm run eslint:scan
+    build-artifact:
+        runs-on: ubuntu-latest
+        needs: [eslint]
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 16
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 7
+
+            - run: pnpm install --frozen-lockfile
+            - run: pnpm run build
+
+            - name: Upload artifact
+              uses: actions/upload-artifact@v2
+              with:
+                  name: ttn-locator-frontend
+                  path: dist
+    build-docker:
+        runs-on: ubuntu-latest
+        permissions:
+            packages: write
+            contents: read
+        needs: [eslint]
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Build image
+              run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+
+            - name: Log in to registry
+              # This is where you will update the personal access token to GITHUB_TOKEN
+              run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+            - name: Push image
+              run: |
+                  IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+                  # Change all uppercase to lowercase
+                  IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+                  # Strip git ref prefix from version
+                  VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+                  # Strip "v" prefix from tag name
+                  [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+                  # Use Docker `latest` tag convention
+                  [ "$VERSION" == "main" ] && VERSION=latest
+                  echo IMAGE_ID=$IMAGE_ID
+                  echo VERSION=$VERSION
+                  docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+                  docker push $IMAGE_ID:$VERSION
