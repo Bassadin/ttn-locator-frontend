@@ -1,0 +1,12 @@
+---
+version: "3"
+services:
+    ttn-locator-frontend:
+        image: ghcr.io/bassadin/ttn-locator-frontend:latest
+        build: .
+        restart: unless-stopped
+        ports:
+            - "${PORT}:${PORT}"
+        environment:
+            # The healthcheck needs this to be set
+            - PORT=${PORT}
