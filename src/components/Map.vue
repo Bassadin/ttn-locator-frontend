@@ -6,18 +6,32 @@
                 layer-type="base"
                 name="OpenStreetMap"
             />
-            <template v-for="(marker, index) in markers" :key="index">
-                <l-marker :lat-lng="marker"></l-marker>
-            </template>
+            <l-layer-group ref="gatewayLocations">
+                <l-circle-marker
+                    v-for="(eachLocation, index) in gatewayLocations"
+                    :key="index"
+                    :lat-lng="eachLocation"
+                    :radius="6"
+                    color="red"
+                ></l-circle-marker>
+            </l-layer-group>
+            <l-layer-group ref="deviceGpsDatapointsLocations">
+                <l-circle-marker
+                    v-for="(eachLocation, index) in deviceGpsDatapointsLocations"
+                    :key="index"
+                    :lat-lng="eachLocation"
+                    :radius="2"
+                ></l-circle-marker>
+            </l-layer-group>
         </l-map>
     </div>
 </template>
 
 <script setup lang="ts">
-import L, { LatLng } from 'leaflet';
+import { LatLng } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { LMap, LTileLayer, LMarker } from '@vue-leaflet/vue-leaflet';
-import { Ref, inject, onMounted, ref } from 'vue';
+import { LMap, LTileLayer, LCircleMarker, LLayerGroup } from '@vue-leaflet/vue-leaflet';
+import { Ref, onMounted, ref } from 'vue';
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';
@@ -25,12 +39,22 @@ import { AxiosKey } from '@/symbols';
 
 const axios = injectStrict(AxiosKey);
 
-let markers: Ref<LatLng[]> = ref([]);
+let deviceGpsDatapointsLocations: Ref<LatLng[]> = ref([]);
+let gatewayLocations: Ref<LatLng[]> = ref([]);
 
 onMounted(() => {
     axios.get('/device_gps_datapoints').then((response) => {
-        markers.value = response.data.data.map((location: any) => {
-            return new LatLng(location.latitude, location.longitude);
+        deviceGpsDatapointsLocations.value = response.data.data.map((eachDeviceGPSDatapoint: any) => {
+            return new LatLng(eachDeviceGPSDatapoint.latitude, eachDeviceGPSDatapoint.longitude);
+        });
+    });
+    axios.get('/gateways').then((response) => {
+        const filteredGatewayLocations = response.data.data.filter((eachGatewayData: any) => {
+            // Filter out gateways with invalid coordinates (smaller than 1 is invalid)
+            return eachGatewayData.latitude > 1 && eachGatewayData.longitude > 1;
+        });
+        gatewayLocations.value = response.data.data.map((eachGatewayData: any) => {
+            return new LatLng(eachGatewayData.latitude, eachGatewayData.longitude);
         });
     });
 });
