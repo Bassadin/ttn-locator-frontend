@@ -6,22 +6,32 @@
                 layer-type="base"
                 name="OpenStreetMap"
             />
-            <l-layer-group ref="gatewayLocations">
+            <l-layer-group ref="gateway_layer">
                 <l-circle-marker
-                    v-for="(eachLocation, index) in gatewayLocations"
+                    v-for="(eachGateway, index) in gateways"
                     :key="index"
-                    :lat-lng="eachLocation"
+                    :lat-lng="eachGateway.location"
                     :radius="6"
                     color="red"
-                ></l-circle-marker>
+                >
+                    <l-popup>
+                        <b>Gateway ID:</b>{{ eachGateway.id }}<br />
+                        <b>Location:</b> {{ eachGateway.location }}
+                    </l-popup>
+                </l-circle-marker>
             </l-layer-group>
-            <l-layer-group ref="deviceGpsDatapointsLocations">
+            <l-layer-group ref="gps_points_layer">
                 <l-circle-marker
-                    v-for="(eachLocation, index) in deviceGpsDatapointsLocations"
+                    v-for="(eachDeviceGPSPoint, index) in deviceGpsDatapointsLocations"
                     :key="index"
-                    :lat-lng="eachLocation"
+                    :lat-lng="eachDeviceGPSPoint.location"
                     :radius="2"
-                ></l-circle-marker>
+                >
+                    <l-popup>
+                        <b>Device ID:</b>{{ eachDeviceGPSPoint.deviceId }}<br />
+                        <b>Location:</b> {{ eachDeviceGPSPoint.location }}
+                    </l-popup>
+                </l-circle-marker>
             </l-layer-group>
         </l-map>
     </div>
@@ -30,32 +40,76 @@
 <script setup lang="ts">
 import { LatLng } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { LMap, LTileLayer, LCircleMarker, LLayerGroup } from '@vue-leaflet/vue-leaflet';
+import { LMap, LTileLayer, LCircleMarker, LLayerGroup, LPopup } from '@vue-leaflet/vue-leaflet';
 import { Ref, onMounted, ref } from 'vue';
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';
 import { AxiosKey } from '@/symbols';
+import { AxiosResponse } from 'axios';
 
 const axios = injectStrict(AxiosKey);
 
-let deviceGpsDatapointsLocations: Ref<LatLng[]> = ref([]);
-let gatewayLocations: Ref<LatLng[]> = ref([]);
+type GatewayData = {
+    id: string;
+    location: LatLng;
+};
+
+type GatewayAPIResponse = {
+    message: string;
+    data: {
+        gatewayId: string;
+        latitude: number;
+        longitude: number;
+        altitude: number;
+        createdAt: string;
+        updatedAt: string;
+    }[];
+};
+
+type DeviceGPSDatapointAPIResponse = {
+    data: {
+        id: number;
+        timestamp: string;
+        deviceId: string;
+        latitude: number;
+        longitude: number;
+        altitude: number;
+        hdop: number;
+    }[];
+};
+
+type DeviceGPSDatapoint = {
+    deviceId: string;
+    location: LatLng;
+};
+
+let deviceGpsDatapointsLocations: Ref<DeviceGPSDatapoint[]> = ref([]);
+let gateways: Ref<GatewayData[]> = ref([]);
 
 onMounted(() => {
-    axios.get('/device_gps_datapoints').then((response) => {
-        deviceGpsDatapointsLocations.value = response.data.data.map((eachDeviceGPSDatapoint: any) => {
-            return new LatLng(eachDeviceGPSDatapoint.latitude, eachDeviceGPSDatapoint.longitude);
-        });
+    axios.get('/device_gps_datapoints').then((response: AxiosResponse<DeviceGPSDatapointAPIResponse>) => {
+        deviceGpsDatapointsLocations.value = response.data.data.map((eachDeviceGPSDatapoint) => ({
+            deviceId: eachDeviceGPSDatapoint.deviceId,
+            location: new LatLng(eachDeviceGPSDatapoint.latitude, eachDeviceGPSDatapoint.longitude),
+        }));
     });
-    axios.get('/gateways').then((response) => {
-        const filteredGatewayLocations = response.data.data.filter((eachGatewayData: any) => {
+    axios.get('/gateways').then((response: AxiosResponse<GatewayAPIResponse>) => {
+        const filteredGatewayLocations = response.data.data.filter((eachGatewayData) => {
             // Filter out gateways with invalid coordinates (smaller than 1 is invalid)
-            return eachGatewayData.latitude > 1 && eachGatewayData.longitude > 1;
+            return (
+                eachGatewayData.latitude &&
+                eachGatewayData.longitude &&
+                eachGatewayData.latitude > 1 &&
+                eachGatewayData.longitude > 1
+            );
         });
-        gatewayLocations.value = response.data.data.map((eachGatewayData: any) => {
-            return new LatLng(eachGatewayData.latitude, eachGatewayData.longitude);
-        });
+        gateways.value = filteredGatewayLocations.map((eachGatewayData) => ({
+            id: eachGatewayData.gatewayId,
+            location: new LatLng(eachGatewayData.latitude, eachGatewayData.longitude),
+        }));
+
+        console.debug('gateways', gateways.value);
     });
 });
 </script>
