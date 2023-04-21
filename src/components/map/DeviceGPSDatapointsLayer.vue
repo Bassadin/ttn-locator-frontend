@@ -7,7 +7,7 @@
             :radius="2"
         >
             <l-popup>
-                <b>Device ID:</b>{{ eachDeviceGPSPoint.deviceId }}<br />
+                <b>Device ID:</b> {{ eachDeviceGPSPoint.deviceId }}<br />
                 <b>Location:</b> {{ eachDeviceGPSPoint.location }}
             </l-popup>
         </l-circle-marker>
