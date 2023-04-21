@@ -2,33 +2,15 @@ import { createApp } from 'vue';
 import '@/style.scss';
 import App from '@/App.vue';
 
+const vue = createApp(App);
+
 // Vuetify
-import 'vuetify/styles';
-import { createVuetify } from 'vuetify';
-import * as components from 'vuetify/components';
-import * as directives from 'vuetify/directives';
-import { aliases, mdi } from 'vuetify/iconsets/mdi';
+import vuetify from '@/plugins/vuetify';
+vue.use(vuetify);
 
 // Axios
 import axios from '@/plugins/axios';
 import { AxiosKey } from '@/symbols';
-
-const vue = createApp(App);
-
-const vuetify = createVuetify({
-    components,
-    directives,
-    icons: {
-        defaultSet: 'mdi',
-        aliases,
-        sets: {
-            mdi,
-        },
-    },
-});
-
-vue.use(vuetify);
-
 vue.provide(AxiosKey, axios);
 
 vue.mount('#app');
