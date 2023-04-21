@@ -8,13 +8,15 @@
             />
             <GatewayLayer />
             <DeviceGPSDatapointsLayer />
+
+            <l-control-attribution position="topright" prefix="Data courtesy of TTN Mapper"></l-control-attribution>
         </l-map>
     </div>
 </template>
 
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
-import { LMap, LTileLayer } from '@vue-leaflet/vue-leaflet';
+import { LMap, LTileLayer, LControlAttribution } from '@vue-leaflet/vue-leaflet';
 
 // Components
 import GatewayLayer from '@/components/map/GatewayLayer.vue';
