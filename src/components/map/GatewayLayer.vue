@@ -11,14 +11,18 @@
                 <b>Gateway ID:</b>{{ eachGateway.id }}<br />
                 <b>Location:</b> {{ eachGateway.location }}
             </l-popup>
+            <l-tooltip :options="{ offset: L.point({ x: 15, y: 0 }) }">
+                <b>Gateway:</b> {{ eachGateway.id }}
+            </l-tooltip>
         </l-circle-marker>
     </l-layer-group>
 </template>
 
 <script setup lang="ts">
+import * as L from 'leaflet';
 import { LatLng } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { LCircleMarker, LLayerGroup, LPopup } from '@vue-leaflet/vue-leaflet';
+import { LCircleMarker, LLayerGroup, LPopup, LTooltip } from '@vue-leaflet/vue-leaflet';
 import { Ref, onMounted, ref } from 'vue';
 
 // Axios

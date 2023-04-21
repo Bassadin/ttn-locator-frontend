@@ -4,20 +4,24 @@
             v-for="(eachDeviceGPSPoint, index) in deviceGpsDatapointsLocations"
             :key="index"
             :lat-lng="eachDeviceGPSPoint.location"
-            :radius="2"
+            :radius="3"
         >
             <l-popup>
                 <b>Device ID:</b> {{ eachDeviceGPSPoint.deviceId }}<br />
                 <b>Location:</b> {{ eachDeviceGPSPoint.location }}
             </l-popup>
+            <l-tooltip :options="{ offset: L.point({ x: 15, y: 0 }) }">
+                <b>Location:</b> {{ eachDeviceGPSPoint.location }}
+            </l-tooltip>
         </l-circle-marker>
     </l-layer-group>
 </template>
 
 <script setup lang="ts">
-import { LatLng } from 'leaflet';
+import * as L from 'leaflet';
+import { LatLng, Point } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { LCircleMarker, LLayerGroup, LPopup } from '@vue-leaflet/vue-leaflet';
+import { LCircleMarker, LLayerGroup, LPopup, LTooltip } from '@vue-leaflet/vue-leaflet';
 import { Ref, onMounted, ref } from 'vue';
 
 // Axios
