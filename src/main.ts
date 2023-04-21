@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import './style.scss';
+import '@/style.scss';
 import App from '@/App.vue';
 
 // Vuetify
@@ -11,6 +11,7 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi';
 
 // Axios
 import axios from '@/plugins/axios';
+import { AxiosKey } from '@/symbols';
 
 const vue = createApp(App);
 
@@ -27,6 +28,7 @@ const vuetify = createVuetify({
 });
 
 vue.use(vuetify);
-vue.use(axios);
+
+vue.provide(AxiosKey, axios);
 
 vue.mount('#app');
