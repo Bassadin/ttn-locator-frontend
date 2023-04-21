@@ -5,7 +5,12 @@ module.exports = {
         sourceType: 'module',
     },
     plugins: ['@typescript-eslint'],
-    extends: ['prettier', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
+    extends: [
+        'prettier',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:vue/vue3-recommended',
+        'plugin:prettier/recommended',
+    ],
     env: {
         node: true,
         jest: true,
