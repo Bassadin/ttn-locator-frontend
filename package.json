@@ -37,6 +37,7 @@
         "prettier-eslint": "^15.0.1",
         "sass": "^1.62.0",
         "typescript": "^5.0.4",
+        "unocss": "^0.51.5",
         "vite": "^4.3.1",
         "vite-plugin-vuetify": "^1.0.2",
         "vite-tsconfig-paths": "^4.2.0",
