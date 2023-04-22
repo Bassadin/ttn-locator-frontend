@@ -15,4 +15,8 @@ import axios from '@/plugins/axios';
 import { AxiosKey } from '@/symbols';
 vue.provide(AxiosKey, axios);
 
+// Router
+import router from '@/plugins/router';
+vue.use(router);
+
 vue.mount('#app');

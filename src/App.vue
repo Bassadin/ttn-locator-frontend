@@ -1,9 +1,5 @@
-<script setup lang="ts">
-import Map from '@/components/Map.vue';
-</script>
-
 <template>
-    <Map />
+    <router-view></router-view>
 </template>
 
 <style scoped>
