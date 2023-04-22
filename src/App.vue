@@ -1,8 +1,8 @@
 <template>
     <v-layout full-height>
-        <v-navigation-drawer rail expand-on-hover>
+        <v-navigation-drawer rail expand-on-hover permanent>
             <v-list>
-                <v-list-item prepend-icon="mdi-map-marker" title="TTN Locator"></v-list-item>
+                <v-list-item prepend-icon="mdi-map-marker-multiple" title="TTN Locator"></v-list-item>
             </v-list>
 
             <v-divider></v-divider>
