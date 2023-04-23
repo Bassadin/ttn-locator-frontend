@@ -1,6 +1,6 @@
 <template>
     <v-layout full-height>
-        <v-navigation-drawer rail expand-on-hover>
+        <v-navigation-drawer rail :expand-on-hover="!mobile" v-model="showNavDrawer">
             <v-list>
                 <v-list-item prepend-icon="mdi-map-marker-multiple" title="TTN Locator"></v-list-item>
             </v-list>
@@ -13,6 +13,13 @@
         </v-navigation-drawer>
 
         <v-main class="h-full">
+            <v-btn
+                v-if="mobile"
+                class="absolute top-4 left-4 z-900"
+                icon="mdi-menu"
+                size="large"
+                @click="showNavDrawer = !showNavDrawer"
+            ></v-btn>
             <router-view></router-view>
         </v-main>
     </v-layout>
@@ -35,7 +42,14 @@
 
 <script lang="ts" setup>
 import { useTitle } from '@vueuse/core';
+import { ref } from 'vue';
+
+// Vuetify
+import { useDisplay } from 'vuetify';
+const { mdAndUp, mobile } = useDisplay();
 
 const title = useTitle();
 title.value = 'TTN Locator';
+
+const showNavDrawer = ref(false);
 </script>
