@@ -28,7 +28,6 @@ import { Ref, onMounted, ref } from 'vue';
 import { injectStrict } from '@/utils/injectTyped';
 import { AxiosKey } from '@/symbols';
 import { AxiosResponse } from 'axios';
-
 const axios = injectStrict(AxiosKey);
 
 type DeviceGPSDatapointAPIResponse = {
