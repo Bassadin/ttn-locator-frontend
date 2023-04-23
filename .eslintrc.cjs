@@ -1,12 +1,12 @@
 module.exports = {
-    root: true,
-    parser: '@typescript-eslint/parser',
-    parserOptions: {
-        sourceType: 'module',
-    },
+    parser: 'vue-eslint-parser',
     plugins: ['@typescript-eslint'],
+    parserOptions: {
+        parser: '@typescript-eslint/parser',
+    },
     extends: [
         'prettier',
+        'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:vue/vue3-recommended',
         'plugin:prettier/recommended',

@@ -1,6 +1,6 @@
 <template>
     <v-layout full-height>
-        <v-navigation-drawer :rail="!mobile" :expand-on-hover="!mobile" v-model="showNavDrawer">
+        <v-navigation-drawer v-model="showNavDrawer" :rail="!mobile" :expand-on-hover="!mobile">
             <v-list>
                 <v-list-item prepend-icon="mdi-map-marker-multiple" title="TTN Locator"></v-list-item>
             </v-list>
@@ -30,6 +30,20 @@
     </v-layout>
 </template>
 
+<script lang="ts" setup>
+import { useTitle } from '@vueuse/core';
+import { ref } from 'vue';
+
+// Vuetify
+import { useDisplay } from 'vuetify';
+const { mobile } = useDisplay();
+
+const title = useTitle();
+title.value = 'TTN Locator';
+
+const showNavDrawer = ref(true);
+</script>
+
 <style scoped>
 .logo {
     height: 6em;
@@ -44,17 +58,3 @@
     filter: drop-shadow(0 0 2em #42b883aa);
 }
 </style>
-
-<script lang="ts" setup>
-import { useTitle } from '@vueuse/core';
-import { ref, computed } from 'vue';
-
-// Vuetify
-import { useDisplay } from 'vuetify';
-const { mdAndUp, mobile } = useDisplay();
-
-const title = useTitle();
-title.value = 'TTN Locator';
-
-const showNavDrawer = ref(true);
-</script>

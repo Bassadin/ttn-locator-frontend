@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 // Routes
-import Home from '@/views/Home.vue';
+import Home from '@/views/HomePage.vue';
 import GatewayRSSI from '@/views/GatewayRSSI.vue';
 
 const routes = [
