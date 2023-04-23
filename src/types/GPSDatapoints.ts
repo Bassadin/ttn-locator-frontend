@@ -16,3 +16,10 @@ export interface DeviceGPSDatapoint {
     deviceId: string;
     location: LatLng;
 }
+
+export interface TTNMapperDeviceGPSDatapoint {
+    dev_id: string;
+    latitude: number;
+    longitude: number;
+    rssi: number;
+}
