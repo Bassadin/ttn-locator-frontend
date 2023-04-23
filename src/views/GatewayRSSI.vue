@@ -4,7 +4,7 @@
             <SingleGatewayMarker v-if="gatewayData" :gateway-data="gatewayData" />
         </template>
     </BaseMap>
-    <v-card class="absolute bottom-5 right-5 z-900" width="600">
+    <v-card class="absolute bottom-5 right-5 z-900" width="500">
         <v-card-text>
             <v-form @submit.prevent>
                 <v-text-field v-model="gatewayID" label="Gateway ID"></v-text-field>
