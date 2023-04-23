@@ -23,7 +23,7 @@ import { AxiosResponse } from 'axios';
 import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDeviceGPSDatapointMarker.vue';
 
 // Types
-import { DeviceGPSDatapoint, DeviceGPSDatapointAPIResponse } from '@/types/GPSDatapoints';
+import { DeviceGPSDatapoint, DeviceGPSDatapointTTNLocatorAPIResponse } from '@/types/GPSDatapoints';
 
 // Axios instance
 const axios = injectStrict(AxiosKey);
@@ -31,7 +31,7 @@ const axios = injectStrict(AxiosKey);
 let deviceGpsDatapointsLocations: Ref<DeviceGPSDatapoint[]> = ref([]);
 
 onMounted(() => {
-    axios.get('/device_gps_datapoints').then((response: AxiosResponse<DeviceGPSDatapointAPIResponse>) => {
+    axios.get('/device_gps_datapoints').then((response: AxiosResponse<DeviceGPSDatapointTTNLocatorAPIResponse>) => {
         deviceGpsDatapointsLocations.value = response.data.data.map((eachDeviceGPSDatapoint) => ({
             deviceId: eachDeviceGPSDatapoint.deviceId,
             location: new LatLng(eachDeviceGPSDatapoint.latitude, eachDeviceGPSDatapoint.longitude),
