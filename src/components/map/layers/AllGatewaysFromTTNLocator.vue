@@ -1,53 +1,25 @@
 <template>
     <l-layer-group ref="gateway_layer">
-        <l-circle-marker
-            v-for="(eachGateway, index) in gateways"
-            :key="index"
-            :lat-lng="eachGateway.location"
-            :radius="6"
-            color="red"
-        >
-            <l-popup>
-                <b>Gateway ID:</b>{{ eachGateway.id }}<br />
-                <b>Location:</b> {{ eachGateway.location }}
-            </l-popup>
-            <l-tooltip :options="{ offset: L.point({ x: 15, y: 0 }) }">
-                <b>Gateway:</b> {{ eachGateway.id }}
-            </l-tooltip>
-        </l-circle-marker>
+        <SingleGatewayMarker v-for="(eachGateway, index) in gateways" :key="index" :gateway-data="eachGateway">
+        </SingleGatewayMarker>
     </l-layer-group>
 </template>
 
 <script setup lang="ts">
-import * as L from 'leaflet';
 import { LatLng } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { LCircleMarker, LLayerGroup, LPopup, LTooltip } from '@vue-leaflet/vue-leaflet';
+import { LLayerGroup } from '@vue-leaflet/vue-leaflet';
 import { Ref, onMounted, ref } from 'vue';
+
+import SingleGatewayMarker from '@/components/map/markers/SingleGatewayMarker.vue';
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';
 import { AxiosKey } from '@/symbols';
 import { AxiosResponse } from 'axios';
+import { GatewayAPIResponse, GatewayData } from '@/types/Gateways';
 
 const axios = injectStrict(AxiosKey);
-
-type GatewayData = {
-    id: string;
-    location: LatLng;
-};
-
-type GatewayAPIResponse = {
-    message: string;
-    data: {
-        gatewayId: string;
-        latitude: number;
-        longitude: number;
-        altitude: number;
-        createdAt: string;
-        updatedAt: string;
-    }[];
-};
 
 let gateways: Ref<GatewayData[]> = ref([]);
 

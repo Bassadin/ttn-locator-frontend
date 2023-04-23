@@ -6,13 +6,13 @@
                 layer-type="base"
                 name="OpenStreetMap"
             />
-            <v-slot name="map-layers"></v-slot>
+            <slot name="map-layers"></slot>
 
             <l-control-attribution position="topright" prefix="Data courtesy of TTN Mapper"></l-control-attribution>
 
-            <v-slot name="map-controls">
+            <slot name="map-controls">
                 <l-control-zoom position="topright"></l-control-zoom>
-            </v-slot>
+            </slot>
         </l-map>
     </div>
 </template>
