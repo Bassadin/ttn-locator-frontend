@@ -8,7 +8,10 @@
             />
             <slot name="map-layers"></slot>
 
-            <l-control-attribution position="topright" prefix="Data courtesy of TTN Mapper"></l-control-attribution>
+            <l-control-attribution
+                position="topright"
+                prefix="Data courtesy of <a target='_blank' href='https://ttnmapper.org/'>TTN Mapper</a>"
+            ></l-control-attribution>
 
             <slot name="map-controls">
                 <l-control-zoom position="topright"></l-control-zoom>
