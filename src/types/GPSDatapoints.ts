@@ -17,7 +17,7 @@ export interface DeviceGPSDatapoint {
     location: LatLng;
 }
 
-export interface TTNMapperDeviceGPSDatapoint {
+export interface TTNMapperGatewayAPIDeviceGPSDatapoint {
     dev_id: string;
     latitude: number;
     longitude: number;

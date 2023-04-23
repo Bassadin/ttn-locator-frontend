@@ -19,18 +19,18 @@
                     strict
                     label="RSSI Range"
                     :min="-130"
-                    :max="0"
-                    step="5"
+                    :max="-30"
+                    step="1"
                     thumb-label="always"
                 ></v-range-slider>
-                <v-btn @click="getGatewayData">Button</v-btn>
+                <v-btn color="primary" @click="getGatewayData">Submit</v-btn>
             </v-form>
         </v-card-text>
     </v-card>
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount, Ref } from 'vue';
+import { ref, Ref } from 'vue';
 
 // Components
 import BaseMap from '@/components/BaseMap.vue';
@@ -47,7 +47,7 @@ import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDevic
 
 // Types
 import { GatewayData } from '@/types/Gateways';
-import { DeviceGPSDatapoint, TTNMapperDeviceGPSDatapoint } from '@/types/GPSDatapoints';
+import { DeviceGPSDatapoint, TTNMapperGatewayAPIDeviceGPSDatapoint } from '@/types/GPSDatapoints';
 
 // Axios instance
 const axios = injectStrict(AxiosKey);
@@ -58,10 +58,6 @@ const selectedRSSIRange = ref([-110, -90]);
 
 const gpsDatapointsWithRSSIValues: Ref<DeviceGPSDatapoint[]> = ref([]);
 
-onBeforeMount(() => {
-    getGatewayData();
-});
-
 function getGatewayData() {
     axios
         .get(`https://mapper.packetbroker.net/api/v2/gateways/netID=000013,tenantID=ttn,id=${gatewayID.value}`)
@@ -69,8 +65,6 @@ function getGatewayData() {
             const responseData = response.data;
 
             const location = new LatLng(responseData.location.latitude, responseData.location.longitude);
-
-            console.debug(location);
 
             gatewayData.value = {
                 id: responseData.id,
@@ -83,10 +77,10 @@ function getGatewayData() {
             `https://api.ttnmapper.org/gateway/data?gateway_id=${gatewayID.value}&start_time=2023-04-01T22%3A00%3A00.000Z`,
         )
         .then((response: AxiosResponse) => {
-            const responseData: TTNMapperDeviceGPSDatapoint[] = response.data;
+            const responseData: TTNMapperGatewayAPIDeviceGPSDatapoint[] = response.data;
 
-            const filteredData: TTNMapperDeviceGPSDatapoint[] = responseData.filter(
-                (eachResponseDataObject: TTNMapperDeviceGPSDatapoint) => {
+            const filteredData: TTNMapperGatewayAPIDeviceGPSDatapoint[] = responseData.filter(
+                (eachResponseDataObject: TTNMapperGatewayAPIDeviceGPSDatapoint) => {
                     return (
                         eachResponseDataObject.rssi >= selectedRSSIRange.value[0] &&
                         eachResponseDataObject.rssi <= selectedRSSIRange.value[1]
