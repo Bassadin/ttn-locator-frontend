@@ -32,3 +32,10 @@
     filter: drop-shadow(0 0 2em #42b883aa);
 }
 </style>
+
+<script lang="ts" setup>
+import { useTitle } from '@vueuse/core';
+
+const title = useTitle();
+title.value = 'TTN Locator';
+</script>
