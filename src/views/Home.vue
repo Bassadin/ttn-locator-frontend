@@ -1,7 +1,15 @@
 <script setup lang="ts">
-import Map from '@/components/Map.vue';
+// Components
+import BaseMap from '@/components/BaseMap.vue';
+import GatewayLayer from '@/components/map/GatewayLayer.vue';
+import DeviceGPSDatapointsLayer from '@/components/map/DeviceGPSDatapointsLayer.vue';
 </script>
 
 <template>
-    <Map />
+    <BaseMap>
+        <template #map-layers>
+            <GatewayLayer />
+            <DeviceGPSDatapointsLayer />
+        </template>
+    </BaseMap>
 </template>

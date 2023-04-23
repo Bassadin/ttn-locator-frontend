@@ -8,7 +8,12 @@
             <v-divider></v-divider>
 
             <v-list density="compact" nav>
-                <v-list-item prepend-icon="mdi-home" title="Overview" value="myfiles"></v-list-item>
+                <v-list-item prepend-icon="mdi-home" title="Home" to="/"></v-list-item>
+                <v-list-item
+                    prepend-icon="mdi-router-wireless"
+                    title="Gateway Range (RSSI)"
+                    to="/gateway_rssi"
+                ></v-list-item>
             </v-list>
         </v-navigation-drawer>
 
@@ -51,5 +56,5 @@ const { mdAndUp, mobile } = useDisplay();
 const title = useTitle();
 title.value = 'TTN Locator';
 
-const showNavDrawer = ref(false);
+const showNavDrawer = ref(true);
 </script>

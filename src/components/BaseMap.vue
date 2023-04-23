@@ -6,11 +6,13 @@
                 layer-type="base"
                 name="OpenStreetMap"
             />
-            <GatewayLayer />
-            <DeviceGPSDatapointsLayer />
+            <v-slot name="map-layers"></v-slot>
 
             <l-control-attribution position="topright" prefix="Data courtesy of TTN Mapper"></l-control-attribution>
-            <l-control-zoom position="topright"></l-control-zoom>
+
+            <v-slot name="map-controls">
+                <l-control-zoom position="topright"></l-control-zoom>
+            </v-slot>
         </l-map>
     </div>
 </template>
@@ -18,10 +20,6 @@
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
 import { LMap, LTileLayer, LControlAttribution, LControlZoom } from '@vue-leaflet/vue-leaflet';
-
-// Components
-import GatewayLayer from '@/components/map/GatewayLayer.vue';
-import DeviceGPSDatapointsLayer from '@/components/map/DeviceGPSDatapointsLayer.vue';
 </script>
 
 <style>
