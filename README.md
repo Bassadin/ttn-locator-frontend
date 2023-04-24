@@ -6,6 +6,12 @@ This is the frontend for the [ttnmapper-reader](https://github.com/Bassadin/ttnm
 
 It is part of my [master's thesis](https://github.com/Bassadin/Master-Thesis-INM) at [HFU Furtwangen University](https://www.hs-furtwangen.de/) and is still in development.
 
+## Used Technologies
+
+- Vue.js
+- Vite
+- Typescript
+
 ## Development
 
 To start the frontend:
