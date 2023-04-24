@@ -23,7 +23,7 @@
                     step="1"
                     thumb-label="always"
                 ></v-range-slider>
-                <v-btn color="primary" @click="getGatewayData">Submit</v-btn>
+                <v-btn :loading="isCurrentlyLoading" color="primary" @click="getGatewayData">Submit</v-btn>
             </v-form>
         </v-card-text>
     </v-card>
@@ -58,8 +58,12 @@ const selectedRSSIRange = ref([-110, -90]);
 
 const gpsDatapointsWithRSSIValues: Ref<DeviceGPSDatapoint[]> = ref([]);
 
+const isCurrentlyLoading = ref(false);
+
 function getGatewayData() {
-    axios
+    isCurrentlyLoading.value = true;
+
+    const packetbrokerPromise = axios
         .get(`https://mapper.packetbroker.net/api/v2/gateways/netID=000013,tenantID=ttn,id=${gatewayID.value}`)
         .then((response: AxiosResponse) => {
             const responseData = response.data;
@@ -72,7 +76,7 @@ function getGatewayData() {
             };
         });
 
-    axios
+    const ttnMapperPromise = axios
         .get(
             `https://api.ttnmapper.org/gateway/data?gateway_id=${gatewayID.value}&start_time=2023-04-01T22%3A00%3A00.000Z`,
         )
@@ -95,5 +99,9 @@ function getGatewayData() {
 
             gpsDatapointsWithRSSIValues.value = parsedData;
         });
+
+    Promise.all([packetbrokerPromise, ttnMapperPromise]).then(() => {
+        isCurrentlyLoading.value = false;
+    });
 }
 </script>
