@@ -1,7 +1,7 @@
 <template>
     <BaseMap>
         <template #map-layers>
-            <SingleGatewayMarker v-if="gatewayData" :gateway-data="gatewayData" />
+            <SingleGatewayMarker v-if="gatewayData.location" :gateway-data="gatewayData" />
             <SingleDeviceGPSDatapointMarker
                 v-for="(eachDeviceGPSDatapoint, index) in gpsDatapointsWithRSSIValues"
                 :key="index"
