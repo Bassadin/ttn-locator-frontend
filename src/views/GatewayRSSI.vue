@@ -9,24 +9,40 @@
             ></SingleDeviceGPSDatapointMarker>
         </template>
     </BaseMap>
-    <v-card class="absolute bottom-5 right-5 z-900" width="500">
-        <v-card-text>
-            <v-form @submit.prevent="getGatewayData">
-                <v-text-field v-model="gatewayID" label="Gateway ID"></v-text-field>
-                <v-range-slider
-                    v-model="selectedRSSIRange"
-                    class="mt-8"
-                    strict
-                    label="RSSI Range"
-                    :min="-130"
-                    :max="-30"
-                    step="1"
-                    thumb-label="always"
-                ></v-range-slider>
-                <v-btn type="submit" :loading="isCurrentlyLoading" color="primary">Submit</v-btn>
-            </v-form>
-        </v-card-text>
-    </v-card>
+
+    <v-dialog v-model="showFilteringDialog" min-width="40vw" activator="parent" width="auto">
+        <template #activator="{ props }">
+            <v-btn
+                v-bind="props"
+                icon="mdi-filter-cog"
+                size="x-large"
+                class="absolute bottom-5 right-5 z-900"
+                @click.prevent="showFilteringDialog = true"
+            >
+            </v-btn>
+        </template>
+        <v-card>
+            <v-card-title>RSSI Range Selector Settings</v-card-title>
+            <v-card-text>
+                <v-form @submit.prevent="getGatewayData">
+                    <v-text-field v-model="gatewayID" label="Gateway ID"></v-text-field>
+                    <v-range-slider
+                        v-model="selectedRSSIRange"
+                        class="mt-8"
+                        strict
+                        label="RSSI Range"
+                        :min="-130"
+                        :max="-30"
+                        step="1"
+                        thumb-label="always"
+                    ></v-range-slider>
+                    <v-row justify="center" class="mb-2">
+                        <v-btn block type="submit" :loading="isCurrentlyLoading" color="primary">Submit</v-btn>
+                    </v-row>
+                </v-form>
+            </v-card-text>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -34,6 +50,8 @@ import { ref, Ref } from 'vue';
 
 // Components
 import BaseMap from '@/components/BaseMap.vue';
+
+const showFilteringDialog = ref(false);
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';
@@ -105,6 +123,7 @@ function getGatewayData() {
 
     Promise.all([packetbrokerPromise, ttnMapperPromise]).finally(() => {
         isCurrentlyLoading.value = false;
+        showFilteringDialog.value = false;
     });
 }
 </script>
