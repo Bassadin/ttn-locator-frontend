@@ -8,9 +8,9 @@ It is part of my [master's thesis](https://github.com/Bassadin/Master-Thesis-INM
 
 ## Used Technologies
 
-- Vue.js
-- Vite
-- Typescript
+-   Vue.js
+-   Vite
+-   Typescript
 
 ## Development
 
