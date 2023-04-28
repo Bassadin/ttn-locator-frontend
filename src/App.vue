@@ -6,7 +6,7 @@
                     <v-list-item prepend-icon="mdi-map-marker-multiple" title="TTN Locator"></v-list-item>
                 </v-list>
 
-                <v-divider></v-divider>
+                <v-divider />
 
                 <v-list density="compact" nav>
                     <v-list-item prepend-icon="mdi-home" title="Home" to="/"></v-list-item>
