@@ -11,7 +11,7 @@
     </BaseMap>
     <v-card class="absolute bottom-5 right-5 z-900" width="500">
         <v-card-text>
-            <v-form @submit.prevent>
+            <v-form @submit.prevent="getGatewayData">
                 <v-text-field v-model="gatewayID" label="Gateway ID"></v-text-field>
                 <v-range-slider
                     v-model="selectedRSSIRange"
@@ -23,7 +23,7 @@
                     step="1"
                     thumb-label="always"
                 ></v-range-slider>
-                <v-btn :loading="isCurrentlyLoading" color="primary" @click="getGatewayData">Submit</v-btn>
+                <v-btn type="submit" :loading="isCurrentlyLoading" color="primary">Submit</v-btn>
             </v-form>
         </v-card-text>
     </v-card>
@@ -74,6 +74,9 @@ function getGatewayData() {
                 id: responseData.id,
                 location: location,
             };
+        })
+        .catch(() => {
+            alert('Gateway not found');
         });
 
     const ttnMapperPromise = axios
@@ -100,7 +103,7 @@ function getGatewayData() {
             gpsDatapointsWithRSSIValues.value = parsedData;
         });
 
-    Promise.all([packetbrokerPromise, ttnMapperPromise]).then(() => {
+    Promise.all([packetbrokerPromise, ttnMapperPromise]).finally(() => {
         isCurrentlyLoading.value = false;
     });
 }
