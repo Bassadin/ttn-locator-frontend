@@ -9,7 +9,6 @@
             ></SingleDeviceGPSDatapointMarker>
         </template>
     </BaseMap>
-
     <v-dialog v-model="showFilteringDialog" min-width="40vw" width="auto">
         <template #activator="{ props }">
             <v-btn

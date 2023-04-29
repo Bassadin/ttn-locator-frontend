@@ -1,13 +1,11 @@
 <template>
     <v-app>
         <v-layout full-height>
+            <v-app-bar :elevation="2" rounded>
+                <v-app-bar-nav-icon variant="text" @click="showNavDrawer = !showNavDrawer" />
+                <v-app-bar-title>TTN Locator</v-app-bar-title>
+            </v-app-bar>
             <v-navigation-drawer v-model="showNavDrawer" :rail="!mobile" :expand-on-hover="!mobile">
-                <v-list>
-                    <v-list-item prepend-icon="mdi-map-marker-multiple" title="TTN Locator"></v-list-item>
-                </v-list>
-
-                <v-divider />
-
                 <v-list density="compact" nav>
                     <v-list-item prepend-icon="mdi-home" title="Home" to="/"></v-list-item>
                     <v-list-item
@@ -19,13 +17,6 @@
             </v-navigation-drawer>
 
             <v-main class="h-full">
-                <v-btn
-                    v-if="mobile"
-                    class="absolute bottom-4 left-4 z-900"
-                    icon="mdi-menu"
-                    size="large"
-                    @click="showNavDrawer = !showNavDrawer"
-                ></v-btn>
                 <router-view></router-view>
             </v-main>
         </v-layout>
