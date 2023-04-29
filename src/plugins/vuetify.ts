@@ -10,6 +10,9 @@ import '@mdi/font/css/materialdesignicons.css';
 import { aliases, mdi } from 'vuetify/iconsets/mdi';
 
 // Colors
+// https://github.com/vuetifyjs/vuetify/issues/17256
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import colors from 'vuetify/lib/util/colors';
 
 export default createVuetify({
