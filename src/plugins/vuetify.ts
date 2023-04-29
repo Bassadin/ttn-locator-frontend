@@ -9,6 +9,9 @@ import * as directives from 'vuetify/directives';
 import '@mdi/font/css/materialdesignicons.css';
 import { aliases, mdi } from 'vuetify/iconsets/mdi';
 
+// Colors
+import colors from 'vuetify/lib/util/colors';
+
 export default createVuetify({
     components,
     directives,
@@ -17,6 +20,25 @@ export default createVuetify({
         aliases,
         sets: {
             mdi,
+        },
+    },
+    theme: {
+        defaultTheme: 'light',
+        themes: {
+            light: {
+                dark: false,
+                colors: {
+                    primary: colors.green.darken3,
+                    secondary: colors.lime.darken1,
+                },
+            },
+            dark: {
+                dark: true,
+                colors: {
+                    primary: colors.green.darken3,
+                    secondary: colors.lime.darken1,
+                },
+            },
         },
     },
 });

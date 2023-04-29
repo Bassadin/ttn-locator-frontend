@@ -1,9 +1,11 @@
 <template>
     <v-app>
         <v-layout full-height>
-            <v-app-bar :elevation="2" rounded>
+            <v-app-bar :elevation="2" color="primary">
                 <v-app-bar-nav-icon variant="text" @click="showNavDrawer = !showNavDrawer" />
                 <v-app-bar-title>TTN Locator</v-app-bar-title>
+                <v-spacer></v-spacer>
+                <color-switcher-button />
             </v-app-bar>
             <v-navigation-drawer v-model="showNavDrawer" :rail="!mobile" :expand-on-hover="!mobile">
                 <v-list density="compact" nav>
@@ -26,6 +28,9 @@
 <script lang="ts" setup>
 import { useTitle } from '@vueuse/core';
 import { ref } from 'vue';
+
+// Components
+import ColorSwitcherButton from './components/ColorSwitcherButton.vue';
 
 // Vuetify
 import { useDisplay } from 'vuetify';
