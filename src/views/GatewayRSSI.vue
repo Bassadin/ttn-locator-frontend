@@ -10,7 +10,7 @@
         </template>
     </BaseMap>
 
-    <v-dialog v-model="showFilteringDialog" min-width="40vw" activator="parent" width="auto">
+    <v-dialog v-model="showFilteringDialog" min-width="40vw" width="auto">
         <template #activator="{ props }">
             <v-btn
                 v-bind="props"
