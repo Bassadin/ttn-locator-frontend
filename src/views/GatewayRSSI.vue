@@ -14,10 +14,10 @@
         <template #activator="{ props }">
             <v-btn
                 v-bind="props"
+                color="primary"
                 icon="mdi-filter-cog"
                 size="x-large"
                 class="absolute bottom-5 right-5 z-900"
-                @click.prevent="showFilteringDialog = true"
             >
             </v-btn>
         </template>
@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref } from 'vue';
+import { onMounted, ref, Ref } from 'vue';
 
 // Components
 import BaseMap from '@/components/BaseMap.vue';
@@ -77,6 +77,10 @@ const selectedRSSIRange = ref([-110, -90]);
 const gpsDatapointsWithRSSIValues: Ref<DeviceGPSDatapoint[]> = ref([]);
 
 const isCurrentlyLoading = ref(false);
+
+onMounted(() => {
+    getGatewayData();
+});
 
 function getGatewayData() {
     isCurrentlyLoading.value = true;
