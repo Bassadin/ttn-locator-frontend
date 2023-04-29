@@ -17,7 +17,7 @@
                 color="primary"
                 icon="mdi-filter-cog"
                 size="x-large"
-                class="absolute bottom-5 right-5 z-900"
+                class="absolute bottom-6 right-6 z-900"
             >
             </v-btn>
         </template>
