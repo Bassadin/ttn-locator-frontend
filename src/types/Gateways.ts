@@ -5,7 +5,7 @@ export interface GatewayData {
     location: LatLng;
 }
 
-export interface GatewayAPIResponse {
+export interface TTNMapperGatewayAPIResponse {
     message: string;
     data: {
         gatewayId: string;
