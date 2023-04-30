@@ -15,6 +15,11 @@
                         title="Gateway Range (RSSI)"
                         to="/gateway_rssi"
                     ></v-list-item>
+                    <v-list-item
+                        prepend-icon="mdi-chart-scatter-plot"
+                        title="RSSI Range Graph"
+                        to="/rssi_range_graph"
+                    ></v-list-item>
                 </v-list>
             </v-navigation-drawer>
 

@@ -16,3 +16,13 @@ export interface TTNMapperGatewayAPIResponse {
         updatedAt: string;
     }[];
 }
+
+export interface PacketbrokerGatewayAPIResponse {
+    id: string;
+    location: {
+        latitude: number;
+        longitude: number;
+        altitude: number;
+    };
+    online: boolean;
+}
