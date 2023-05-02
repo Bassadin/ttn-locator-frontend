@@ -95,6 +95,8 @@ onMounted(() => {
     getGatewayData();
 });
 
+const hdopCutoffPoint = 1.6;
+
 async function getGatewayData() {
     isCurrentlyLoading.value = true;
     chartDataReady.value = false;
@@ -124,7 +126,11 @@ async function getGatewayData() {
 
             const gatewayTurfPoint = turf.point([gatewayLocation.lng, gatewayLocation.lat]);
 
-            const rssiDistanceData = responseData.map((eachDeviceGPSDatapoint) => {
+            const filteredData = responseData.filter(
+                (eachDeviceGPSDatapoint) => eachDeviceGPSDatapoint.hdop <= hdopCutoffPoint,
+            );
+
+            const rssiDistanceData = filteredData.map((eachDeviceGPSDatapoint) => {
                 const rssiValue = eachDeviceGPSDatapoint.rssi;
 
                 const distanceToGateway = turf.distance(

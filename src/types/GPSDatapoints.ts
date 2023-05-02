@@ -22,4 +22,5 @@ export interface TTNMapperGatewayAPIDeviceGPSDatapoint {
     latitude: number;
     longitude: number;
     rssi: number;
+    hdop: number;
 }
