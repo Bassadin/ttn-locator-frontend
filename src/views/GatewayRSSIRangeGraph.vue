@@ -33,7 +33,7 @@ import { onMounted, ref, Ref } from 'vue';
 import { Scatter } from 'vue-chartjs';
 
 // Charts stuff
-import { Chart as ChartJS, Title, Tooltip, Legend, LinearScale, PointElement } from 'chart.js';
+import { Chart as ChartJS, Title, Tooltip, Legend, LinearScale, PointElement, ChartData } from 'chart.js';
 
 ChartJS.register(Title, Tooltip, Legend, LinearScale, PointElement);
 
@@ -59,7 +59,7 @@ const gatewayData: Ref<GatewayData> = ref({} as GatewayData);
 const isCurrentlyLoading = ref(false);
 
 // Chart stuff
-const chartOptions = {
+const chartOptions = ref({
     responsive: true,
     scales: {
         x: {
@@ -79,10 +79,10 @@ const chartOptions = {
             },
         },
     },
-};
+});
 const chartDataReady = ref(false);
 
-const chartData = ref({
+const chartData: Ref<ChartData<'scatter', { x: number; y: number }[]>> = ref({
     datasets: [
         {
             label: 'GPS Datapoints',
