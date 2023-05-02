@@ -33,9 +33,12 @@ import { onMounted, ref, Ref } from 'vue';
 import { Scatter } from 'vue-chartjs';
 
 // Charts stuff
-import { Chart as ChartJS, Title, Tooltip, Legend, LinearScale, PointElement, ChartData } from 'chart.js';
+import { Chart as ChartJS, Title, Tooltip, Legend, LinearScale, PointElement, ChartData, LineElement } from 'chart.js';
 
-ChartJS.register(Title, Tooltip, Legend, LinearScale, PointElement);
+ChartJS.register(Title, Tooltip, Legend, LinearScale, PointElement, LineElement);
+
+// Regressions
+import * as simpleStatistics from 'simple-statistics';
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';
@@ -82,7 +85,8 @@ const chartOptions = ref({
 });
 const chartDataReady = ref(false);
 
-const chartData: Ref<ChartData<'scatter', { x: number; y: number }[]>> = ref({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const chartData: Ref<ChartData<any | 'line', { x: number; y: number }[]>> = ref({
     datasets: [
         {
             label: 'GPS Datapoints',
@@ -142,11 +146,40 @@ async function getGatewayData() {
                 return { x: distanceToGateway, y: rssiValue };
             });
 
+            const maxDistance = Math.max(...rssiDistanceData.map((eachDataPoint) => eachDataPoint.x));
+
+            // Regression
+            const regressionData = simpleStatistics.linearRegression(
+                rssiDistanceData.map((eachDataPoint) => [eachDataPoint.x, eachDataPoint.y]),
+            );
+
+            const regressionPrediction = simpleStatistics.linearRegressionLine(regressionData);
+            console.debug('Regression data', regressionData);
+
+            // Calculate some regression datapoints between 0 and maxDistance
+            const regressionDatapoints = [];
+            for (let i = 0; i <= maxDistance; i += 100) {
+                regressionDatapoints.push({ x: i, y: regressionPrediction(i) });
+            }
+
             chartData.value = {
                 datasets: [
                     {
+                        type: 'scatter',
                         label: 'GPS Datapoints',
                         data: rssiDistanceData,
+                    },
+                    {
+                        type: 'line',
+                        label: 'Trend line',
+                        data: regressionDatapoints,
+                        fill: false,
+                        borderColor: 'red',
+                        backgroundColor: 'red',
+                        pointRadius: 0,
+                        borderWidth: 3,
+                        showLine: true,
+                        tension: 0.5,
                     },
                 ],
             };
