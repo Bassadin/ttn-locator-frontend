@@ -51,6 +51,9 @@ devDependencies:
   '@vue-leaflet/vue-leaflet':
     specifier: ^0.9.0
     version: 0.9.0(@types/leaflet@1.9.3)(leaflet@1.9.3)
+  '@vue/eslint-config-typescript':
+    specifier: ^11.0.3
+    version: 11.0.3(eslint-plugin-vue@9.11.0)(eslint@8.39.0)(typescript@5.0.4)
   eslint:
     specifier: ^8.39.0
     version: 8.39.0
@@ -96,6 +99,9 @@ devDependencies:
   vite-tsconfig-paths:
     specifier: ^4.2.0
     version: 4.2.0(typescript@5.0.4)(vite@4.3.3)
+  vue-eslint-parser:
+    specifier: ^9.2.0
+    version: 9.2.0(eslint@8.39.0)
   vue-tsc:
     specifier: ^1.6.1
     version: 1.6.1(typescript@5.0.4)
@@ -2021,6 +2027,27 @@ packages:
     resolution: {integrity: sha512-o9KfBeaBmCKl10usN4crU53fYtC1r7jJwdGKjPT24t348rHxgfpZ0xL3Xm/gLUYnc0oTp8LAmrxOeLyu6tbk2Q==}
     dev: false
 
+  /@vue/eslint-config-typescript@11.0.3(eslint-plugin-vue@9.11.0)(eslint@8.39.0)(typescript@5.0.4):
+    resolution: {integrity: sha512-dkt6W0PX6H/4Xuxg/BlFj5xHvksjpSlVjtkQCpaYJBIEuKj2hOVU7r+TIe+ysCwRYFz/lGqvklntRkCAibsbPw==}
+    engines: {node: ^14.17.0 || >=16.0.0}
+    peerDependencies:
+      eslint: ^6.2.0 || ^7.0.0 || ^8.0.0
+      eslint-plugin-vue: ^9.0.0
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@typescript-eslint/eslint-plugin': 5.59.1(@typescript-eslint/parser@5.59.1)(eslint@8.39.0)(typescript@5.0.4)
+      '@typescript-eslint/parser': 5.59.1(eslint@8.39.0)(typescript@5.0.4)
+      eslint: 8.39.0
+      eslint-plugin-vue: 9.11.0(eslint@8.39.0)
+      typescript: 5.0.4
+      vue-eslint-parser: 9.2.0(eslint@8.39.0)
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@vue/reactivity-transform@3.2.47:
     resolution: {integrity: sha512-m8lGXw8rdnPVVIdIFhf0LeQ/ixyHkH5plYuS83yop5n7ggVJU+z5v0zecwEnX7fa7HNLBhh2qngJJkxpwEEmYA==}
     dependencies:
@@ -2530,7 +2557,7 @@ packages:
       nth-check: 2.1.1
       postcss-selector-parser: 6.0.12
       semver: 7.5.0
-      vue-eslint-parser: 9.1.1(eslint@8.39.0)
+      vue-eslint-parser: 9.2.0(eslint@8.39.0)
       xml-name-validator: 4.0.0
     transitivePeerDependencies:
       - supports-color
@@ -3905,8 +3932,8 @@ packages:
       - supports-color
     dev: true
 
-  /vue-eslint-parser@9.1.1(eslint@8.39.0):
-    resolution: {integrity: sha512-C2aI/r85Q6tYcz4dpgvrs4wH/MqVrRAVIdpYedrxnATDHHkb+TroeRcDpKWGZCx/OcECMWfz7tVwQ8e+Opy6rA==}
+  /vue-eslint-parser@9.2.0(eslint@8.39.0):
+    resolution: {integrity: sha512-aFXipsUbKU4TzgP9OU6cXIm2Nnp9ryKJc2mzY0s2xzwfjHg6WDT33LUAQRGR9K0NFncBgUEZ2njdrS3Lj/sOLw==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: '>=6.0.0'
