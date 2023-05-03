@@ -1,9 +1,12 @@
 <template>
-    <v-app-bar :elevation="2" color="primary">
-        <v-app-bar-nav-icon variant="text" @click="showNavDrawer = !showNavDrawer" />
+    <v-app-bar color="primary">
+        <template #prepend>
+            <v-app-bar-nav-icon variant="text" @click="showNavDrawer = !showNavDrawer" />
+        </template>
         <v-app-bar-title>{{ title }}</v-app-bar-title>
-        <v-spacer></v-spacer>
-        <color-switcher-button />
+        <template #append>
+            <color-switcher-button />
+        </template>
     </v-app-bar>
     <v-navigation-drawer v-model="showNavDrawer" :rail="!mobile" :expand-on-hover="!mobile">
         <v-list density="compact" nav>
