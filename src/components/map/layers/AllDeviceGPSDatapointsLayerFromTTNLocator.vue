@@ -28,7 +28,7 @@ import { DeviceGPSDatapoint, DeviceGPSDatapointTTNLocatorAPIResponse } from '@/t
 // Axios instance
 const axios = injectStrict(AxiosKey);
 
-let deviceGpsDatapointsLocations: Ref<DeviceGPSDatapoint[]> = ref([]);
+const deviceGpsDatapointsLocations: Ref<DeviceGPSDatapoint[]> = ref([]);
 
 onMounted(() => {
     axios.get('/device_gps_datapoints').then((response: AxiosResponse<DeviceGPSDatapointTTNLocatorAPIResponse>) => {

@@ -1,49 +1,51 @@
 <template>
-    <BaseMap>
-        <template #map-layers>
-            <SingleGatewayMarker v-if="gatewayData.location" :gateway-data="gatewayData" />
-            <SingleDeviceGPSDatapointMarker
-                v-for="(eachDeviceGPSDatapoint, index) in gpsDatapointsWithRSSIValues"
-                :key="index"
-                :device-gps-datapoint-data="eachDeviceGPSDatapoint"
-            ></SingleDeviceGPSDatapointMarker>
-        </template>
-    </BaseMap>
-    <v-dialog v-model="showFilteringDialog" min-width="40vw" width="auto">
-        <template #activator="{ props }">
-            <v-btn
-                v-bind="props"
-                color="primary"
-                icon="mdi-filter-cog"
-                size="x-large"
-                class="absolute bottom-6 right-6 z-900"
-            >
-            </v-btn>
-        </template>
-        <v-card>
-            <v-card-title>RSSI Range Selector Settings</v-card-title>
-            <v-card-text>
-                <v-form @submit.prevent="getGatewayData">
-                    <v-text-field v-model="gatewayID" label="Gateway ID"></v-text-field>
-                    <v-range-slider
-                        v-model="selectedRSSIRange"
-                        class="mt-8"
-                        strict
-                        label="RSSI Range"
-                        :min="-130"
-                        :max="-30"
-                        step="1"
-                        thumb-label="always"
-                    ></v-range-slider>
-                    <v-row justify="center" class="mb-2">
-                        <v-btn block type="submit" :loading="isCurrentlyLoading" color="primary">
-                            Query TTN Mapper
-                        </v-btn>
-                    </v-row>
-                </v-form>
-            </v-card-text>
-        </v-card>
-    </v-dialog>
+    <v-layout class="w-full h-full">
+        <BaseMap>
+            <template #map-layers>
+                <SingleGatewayMarker v-if="gatewayData.location" :gateway-data="gatewayData" />
+                <SingleDeviceGPSDatapointMarker
+                    v-for="(eachDeviceGPSDatapoint, index) in gpsDatapointsWithRSSIValues"
+                    :key="index"
+                    :device-gps-datapoint-data="eachDeviceGPSDatapoint"
+                ></SingleDeviceGPSDatapointMarker>
+            </template>
+        </BaseMap>
+        <v-dialog v-model="showFilteringDialog" min-width="40vw" width="auto">
+            <template #activator="{ props }">
+                <v-btn
+                    v-bind="props"
+                    color="primary"
+                    icon="mdi-filter-cog"
+                    size="x-large"
+                    class="absolute bottom-6 right-6 z-900"
+                >
+                </v-btn>
+            </template>
+            <v-card>
+                <v-card-title>RSSI Range Selector Settings</v-card-title>
+                <v-card-text>
+                    <v-form @submit.prevent="getGatewayData">
+                        <v-text-field v-model="gatewayID" label="Gateway ID"></v-text-field>
+                        <v-range-slider
+                            v-model="selectedRSSIRange"
+                            class="mt-8"
+                            strict
+                            label="RSSI Range"
+                            :min="-130"
+                            :max="-30"
+                            step="1"
+                            thumb-label="always"
+                        ></v-range-slider>
+                        <v-row justify="center" class="mb-2">
+                            <v-btn block type="submit" :loading="isCurrentlyLoading" color="primary">
+                                Query TTN Mapper
+                            </v-btn>
+                        </v-row>
+                    </v-form>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
+    </v-layout>
 </template>
 
 <script setup lang="ts">

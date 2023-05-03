@@ -21,7 +21,7 @@ import { TTNMapperGatewayAPIResponse, GatewayData } from '@/types/Gateways';
 
 const axios = injectStrict(AxiosKey);
 
-let gateways: Ref<GatewayData[]> = ref([]);
+const gateways: Ref<GatewayData[]> = ref([]);
 
 onMounted(() => {
     axios.get('/gateways').then((response: AxiosResponse<TTNMapperGatewayAPIResponse>) => {
