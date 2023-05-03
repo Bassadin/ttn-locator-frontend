@@ -1,14 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-// Routes
-import Home from '@/views/HomePage.vue';
-import GatewayRSSI from '@/views/GatewayRSSI.vue';
-import GatewayRSSIRangeGraph from '@/views/GatewayRSSIRangeGraph.vue';
-
 const routes = [
-    { path: '/', component: Home },
-    { path: '/gateway_rssi', component: GatewayRSSI },
-    { path: '/rssi_range_graph', component: GatewayRSSIRangeGraph },
+    { path: '/', component: () => import('@/views/HomePage.vue') },
+    { path: '/gateway_rssi', component: () => import('@/views/GatewayRSSI.vue') },
+    { path: '/rssi_range_graph', component: () => import('@/views/GatewayRSSIRangeGraph.vue') },
+    { path: '/manage/devices', component: () => import('@/views/manage/DevicesManage.vue') },
 ];
 
 export default createRouter({

@@ -10,6 +10,7 @@
     </v-app-bar>
     <v-navigation-drawer v-model="showNavDrawer" :rail="!mobile" :expand-on-hover="!mobile">
         <v-list density="compact" nav>
+            <v-list-subheader>Localization</v-list-subheader>
             <v-list-item prepend-icon="mdi-home" title="Home" to="/"></v-list-item>
             <v-list-item
                 prepend-icon="mdi-router-wireless"
@@ -21,6 +22,10 @@
                 title="RSSI Range Graph"
                 to="/rssi_range_graph"
             ></v-list-item>
+
+            <v-divider></v-divider>
+            <v-list-subheader>Management</v-list-subheader>
+            <v-list-item prepend-icon="mdi-tooltip-account" title="Devices" to="/manage/devices"></v-list-item>
         </v-list>
     </v-navigation-drawer>
 </template>
