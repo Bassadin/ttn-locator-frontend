@@ -30,6 +30,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, Ref } from 'vue';
+import { LatLng } from 'leaflet';
 
 // Components
 import { Scatter } from 'vue-chartjs';
@@ -46,7 +47,6 @@ import * as simpleStatistics from 'simple-statistics';
 import { injectStrict } from '@/utils/injectTyped';
 import { AxiosKey } from '@/symbols';
 import { AxiosResponse } from 'axios';
-import { LatLng } from 'leaflet';
 
 // Types
 import { GatewayData, PacketbrokerGatewayAPIResponse } from '@/types/Gateways';
