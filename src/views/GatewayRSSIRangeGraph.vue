@@ -7,7 +7,9 @@
                     <v-card-text>
                         <v-form @submit.prevent="getGatewayData">
                             <v-text-field v-model="gatewayID" label="Gateway ID"></v-text-field>
-                            <v-btn block type="submit" :loading="isCurrentlyLoading" color="primary">Submit</v-btn>
+                            <v-btn block type="submit" :loading="isCurrentlyLoading" color="primary">
+                                Query TTN Mapper
+                            </v-btn>
                         </v-form>
                     </v-card-text>
                 </v-card>
