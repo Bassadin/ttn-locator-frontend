@@ -3,13 +3,16 @@
         <thead>
             <tr>
                 <th class="text-left">ID</th>
-                <th class="text-left">ID</th>
+                <th class="text-left">Subscribed?</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="eachDevice in devices" :key="eachDevice.deviceId">
                 <td>{{ eachDevice.deviceId }}</td>
-                <td>{{ eachDevice.deviceId }}</td>
+                <td>
+                    <v-icon v-if="eachDevice.subscription" icon="mdi-check"></v-icon>
+                    <v-icon v-else icon="mdi-close"></v-icon>
+                </td>
             </tr>
         </tbody>
     </v-table>
@@ -20,7 +23,7 @@
 import { ref, onMounted, Ref } from 'vue';
 
 // Types
-import { TtnLocatorDeviceData } from '@/types/Devices';
+import { TtnLocatorDeviceApiResponse, TtnLocatorDeviceData } from '@/types/Devices';
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';
@@ -33,7 +36,7 @@ const axios = injectStrict(AxiosKey);
 const devices: Ref<TtnLocatorDeviceData[]> = ref([]);
 
 onMounted(async () => {
-    const response: AxiosResponse<TtnLocatorDeviceData[]> = await axios.get('/devices');
-    devices.value = response.data;
+    const response: AxiosResponse<TtnLocatorDeviceApiResponse> = await axios.get('/devices');
+    devices.value = response.data.data;
 });
 </script>
