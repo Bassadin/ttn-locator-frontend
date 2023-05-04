@@ -20,10 +20,11 @@
                     title="Gateway Range (RSSI)"
                     to="/gateway_rssi"
                 ></v-list-item>
+                <!-- TODO: The hard gateway ID here is a hack, fix later -->
                 <v-list-item
                     prepend-icon="mdi-chart-scatter-plot"
                     title="RSSI Range Graph"
-                    to="/rssi_range_graph"
+                    to="/rssi_range_graph/hfu-lr8-001"
                 ></v-list-item>
 
                 <v-divider></v-divider>

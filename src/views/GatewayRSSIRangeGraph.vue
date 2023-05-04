@@ -6,8 +6,7 @@
                     <v-card-title>Gateway selection</v-card-title>
                     <v-card-text>
                         <v-form @submit.prevent="getGatewayData">
-                            <GatewaysInDBSelection v-model="gatewayID" />
-                            <v-btn block type="submit" :loading="isCurrentlyLoading" color="primary"> Submit </v-btn>
+                            <GatewaysInDBSelection v-model="selectedGatewayID" />
                         </v-form>
                     </v-card-text>
                 </v-card>
@@ -28,8 +27,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, Ref } from 'vue';
+import { onMounted, ref, Ref, watch } from 'vue';
 import { LatLng } from 'leaflet';
+
+// Router
+import { useRoute } from 'vue-router';
+const route = useRoute();
 
 // Components
 import { Scatter } from 'vue-chartjs';
@@ -61,7 +64,7 @@ import * as turf from '@turf/turf';
 // Axios instance
 const axios = injectStrict(AxiosKey);
 
-const gatewayID = ref('hfu-lr8-001');
+const selectedGatewayID = ref(<string>route.params.gatewayID);
 const gatewayData: Ref<GatewayData> = ref({} as GatewayData);
 
 const isCurrentlyLoading = ref(false);
@@ -111,7 +114,7 @@ async function getGatewayData() {
     chartDataReady.value = false;
 
     const packetbrokerApiResponse: AxiosResponse<PacketbrokerGatewayAPIResponse> = (await axios
-        .get(`https://mapper.packetbroker.net/api/v2/gateways/netID=000013,tenantID=ttn,id=${gatewayID.value}`)
+        .get(`https://mapper.packetbroker.net/api/v2/gateways/netID=000013,tenantID=ttn,id=${selectedGatewayID.value}`)
         .catch(() => {
             alert('Gateway not found');
             isCurrentlyLoading.value = false;
@@ -128,7 +131,7 @@ async function getGatewayData() {
     };
 
     axios
-        .get(`/gateways/${gatewayID.value}/gps_datapoints_with_rssi?hdop_filter=${hdopCutoffPoint}`)
+        .get(`/gateways/${selectedGatewayID.value}/gps_datapoints_with_rssi?hdop_filter=${hdopCutoffPoint}`)
         .then((response: AxiosResponse<TtnLocatorDeviceGPSDatapointWithRSSIApiResponse>) => {
             const responseData: TtnLocatorDeviceGPSDatapointWithRSSI[] = response.data.data;
 
@@ -196,4 +199,14 @@ async function getGatewayData() {
 
     isCurrentlyLoading.value = false;
 }
+
+// Update URL when selected gateway changes
+watch(selectedGatewayID, async (newSelectedGatewayID, oldSelectedGatewayID) => {
+    if (newSelectedGatewayID === oldSelectedGatewayID) {
+        return;
+    }
+
+    history.pushState({}, '', `/rssi_range_graph/${newSelectedGatewayID}`);
+    await getGatewayData();
+});
 </script>
