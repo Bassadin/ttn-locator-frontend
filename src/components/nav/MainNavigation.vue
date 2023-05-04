@@ -11,8 +11,10 @@
         </v-app-bar>
         <v-navigation-drawer v-model="showNavDrawer" :rail="!mobile" :expand-on-hover="!mobile">
             <v-list density="compact" nav>
-                <v-list-subheader>Localization</v-list-subheader>
                 <v-list-item prepend-icon="mdi-home" title="Home" to="/"></v-list-item>
+
+                <v-divider></v-divider>
+                <v-list-subheader>Gateway-based</v-list-subheader>
                 <v-list-item
                     prepend-icon="mdi-router-wireless"
                     title="Gateway Range (RSSI)"
