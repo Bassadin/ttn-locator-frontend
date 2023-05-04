@@ -17,6 +17,18 @@ export interface TTNMapperGatewayAPIResponse {
     }[];
 }
 
+export interface TtnLocatorGatewayApiResponse {
+    message: string;
+    data: TtnLocatorGatewayData[];
+}
+
+export interface TtnLocatorGatewayData {
+    gatewayId: string;
+    latitude: number;
+    longitude: number;
+    altitude: number;
+}
+
 export interface PacketbrokerGatewayAPIResponse {
     id: string;
     location: {
