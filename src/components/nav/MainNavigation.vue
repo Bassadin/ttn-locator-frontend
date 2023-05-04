@@ -28,7 +28,7 @@
 
                 <v-divider></v-divider>
                 <v-list-subheader>Management</v-list-subheader>
-                <v-list-item prepend-icon="mdi-tooltip-account" title="Devices" to="/manage/devices"></v-list-item>
+                <v-list-item prepend-icon="mdi-cellphone-marker" title="Devices" to="/manage/devices"></v-list-item>
             </v-list>
         </v-navigation-drawer>
     </div>
