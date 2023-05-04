@@ -24,3 +24,18 @@ export interface TTNMapperGatewayAPIDeviceGPSDatapoint {
     rssi: number;
     hdop: number;
 }
+
+export interface TtnLocatorDeviceGPSDatapointWithRSSI {
+    deviceId: string;
+    latitude: number;
+    longitude: number;
+    hdop: number;
+    altitude: number;
+    rssi: number;
+}
+
+// gps_datapoints_with_rssi
+export interface TtnLocatorDeviceGPSDatapointWithRSSIApiResponse {
+    message: string;
+    data: TtnLocatorDeviceGPSDatapointWithRSSI[];
+}
