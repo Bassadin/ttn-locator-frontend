@@ -6,10 +6,8 @@
                     <v-card-title>Gateway selection</v-card-title>
                     <v-card-text>
                         <v-form @submit.prevent="getGatewayData">
-                            <v-text-field v-model="gatewayID" label="Gateway ID"></v-text-field>
-                            <v-btn block type="submit" :loading="isCurrentlyLoading" color="primary">
-                                Query TTN Mapper
-                            </v-btn>
+                            <GatewaysInDBSelection v-model="gatewayID" />
+                            <v-btn block type="submit" :loading="isCurrentlyLoading" color="primary"> Submit </v-btn>
                         </v-form>
                     </v-card-text>
                 </v-card>
@@ -21,6 +19,7 @@
                     <v-card-title>Graph</v-card-title>
                     <v-card-text>
                         <Scatter v-if="chartDataReady" :data="chartData" :options="chartOptions"></Scatter>
+                        <p v-else>No data available</p>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -34,6 +33,7 @@ import { LatLng } from 'leaflet';
 
 // Components
 import { Scatter } from 'vue-chartjs';
+import GatewaysInDBSelection from '@/components/selection/GatewaysInDBSelection.vue';
 
 // Charts stuff
 import { Chart as ChartJS, Title, Tooltip, Legend, LinearScale, PointElement, ChartData, LineElement } from 'chart.js';
@@ -50,7 +50,10 @@ import { AxiosResponse } from 'axios';
 
 // Types
 import { GatewayData, PacketbrokerGatewayAPIResponse } from '@/types/Gateways';
-import { TTNMapperGatewayAPIDeviceGPSDatapoint } from '@/types/GPSDatapoints';
+import {
+    TtnLocatorDeviceGPSDatapointWithRSSI,
+    TtnLocatorDeviceGPSDatapointWithRSSIApiResponse,
+} from '@/types/GPSDatapoints';
 
 // Turf options
 import * as turf from '@turf/turf';
@@ -101,7 +104,7 @@ onMounted(() => {
     getGatewayData();
 });
 
-const hdopCutoffPoint = 1.6;
+const hdopCutoffPoint = 2;
 
 async function getGatewayData() {
     isCurrentlyLoading.value = true;
@@ -111,6 +114,7 @@ async function getGatewayData() {
         .get(`https://mapper.packetbroker.net/api/v2/gateways/netID=000013,tenantID=ttn,id=${gatewayID.value}`)
         .catch(() => {
             alert('Gateway not found');
+            isCurrentlyLoading.value = false;
         })) as AxiosResponse<PacketbrokerGatewayAPIResponse>;
 
     const gatewayLocation = new LatLng(
@@ -124,19 +128,15 @@ async function getGatewayData() {
     };
 
     axios
-        .get(
-            `https://api.ttnmapper.org/gateway/data?gateway_id=${gatewayID.value}&start_time=2023-04-01T22%3A00%3A00.000Z`,
-        )
-        .then((response: AxiosResponse) => {
-            const responseData: TTNMapperGatewayAPIDeviceGPSDatapoint[] = response.data;
+        .get(`/gateways/${gatewayID.value}/gps_datapoints_with_rssi?hdop_filter=${hdopCutoffPoint}`)
+        .then((response: AxiosResponse<TtnLocatorDeviceGPSDatapointWithRSSIApiResponse>) => {
+            const responseData: TtnLocatorDeviceGPSDatapointWithRSSI[] = response.data.data;
 
             const gatewayTurfPoint = turf.point([gatewayLocation.lng, gatewayLocation.lat]);
 
-            const filteredData = responseData.filter(
-                (eachDeviceGPSDatapoint) => eachDeviceGPSDatapoint.hdop <= hdopCutoffPoint,
-            );
+            console.info(`Found ${responseData.length} GPS datapoints`);
 
-            const rssiDistanceData = filteredData.map((eachDeviceGPSDatapoint) => {
+            const rssiDistanceData = responseData.map((eachDeviceGPSDatapoint) => {
                 const rssiValue = eachDeviceGPSDatapoint.rssi;
 
                 const distanceToGateway = turf.distance(
@@ -154,6 +154,11 @@ async function getGatewayData() {
             const regressionData = simpleStatistics.linearRegression(
                 rssiDistanceData.map((eachDataPoint) => [eachDataPoint.x, eachDataPoint.y]),
             );
+
+            if (rssiDistanceData.length === 0) {
+                alert('No data available');
+                return;
+            }
 
             const regressionPrediction = simpleStatistics.linearRegressionLine(regressionData);
             console.debug('Regression data', regressionData);
@@ -185,9 +190,10 @@ async function getGatewayData() {
                     },
                 ],
             };
+
+            chartDataReady.value = true;
         });
 
     isCurrentlyLoading.value = false;
-    chartDataReady.value = true;
 }
 </script>
