@@ -64,7 +64,7 @@ import * as turf from '@turf/turf';
 // Axios instance
 const axios = injectStrict(AxiosKey);
 
-const selectedGatewayID = ref(<string>route.params.gatewayID);
+const selectedGatewayID = ref(route.params.gatewayId.toString());
 const gatewayData: Ref<GatewayData> = ref({} as GatewayData);
 
 const isCurrentlyLoading = ref(false);

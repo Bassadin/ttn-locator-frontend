@@ -27,7 +27,7 @@
             <v-card>
                 <v-card-title>RSSI Range Selector Settings</v-card-title>
                 <v-card-text>
-                    <v-form @submit.prevent="getGatewayData">
+                    <v-form @submit.prevent="saveSelectedGatewayIDToUrlAndGetGatewayData">
                         <v-text-field v-model="gatewayID" label="Gateway ID"></v-text-field>
                         <v-range-slider
                             v-model="selectedRSSIRange"
@@ -54,6 +54,10 @@
 <script setup lang="ts">
 import { onMounted, ref, Ref } from 'vue';
 
+// Router
+import { useRoute } from 'vue-router';
+const route = useRoute();
+
 // Components
 import BaseMap from '@/components/BaseMap.vue';
 
@@ -76,7 +80,7 @@ import { DeviceGPSDatapoint, TTNMapperGatewayAPIDeviceGPSDatapoint } from '@/typ
 // Axios instance
 const axios = injectStrict(AxiosKey);
 
-const gatewayID = ref('68068734-f17f-4ec2-ac0d-5ec7332d5e4e');
+const gatewayID = ref(route.params.gatewayId.toString());
 const gatewayData: Ref<GatewayData> = ref({} as GatewayData);
 const selectedRSSIRange = ref([-110, -90]);
 
@@ -87,6 +91,11 @@ const isCurrentlyLoading = ref(false);
 onMounted(() => {
     getGatewayData();
 });
+
+function saveSelectedGatewayIDToUrlAndGetGatewayData() {
+    history.pushState({}, '', `/gateway_rssi/${gatewayID.value}`);
+    getGatewayData();
+}
 
 function getGatewayData() {
     isCurrentlyLoading.value = true;
