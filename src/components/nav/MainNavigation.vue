@@ -3,6 +3,7 @@
         <v-app-bar color="primary">
             <template #prepend>
                 <v-app-bar-nav-icon variant="text" @click="showNavDrawer = !showNavDrawer" />
+                <v-icon class="ml-4" icon="mdi-wifi-marker"></v-icon>
             </template>
             <v-app-bar-title>{{ title }}</v-app-bar-title>
             <template #append>
