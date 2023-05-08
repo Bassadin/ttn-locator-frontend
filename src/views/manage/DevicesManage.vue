@@ -5,12 +5,14 @@
                 <thead>
                     <tr>
                         <th class="text-left">ID</th>
+                        <th class="text-left"># of GPS Datapoints</th>
                         <th class="text-left">Subscribed?</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="eachDevice in devices" :key="eachDevice.deviceId">
                         <td>{{ eachDevice.deviceId }}</td>
+                        <td>{{ eachDevice._count.deviceGPSDatapoints }}</td>
                         <td>
                             <v-icon v-if="eachDevice.subscription" icon="mdi-check"></v-icon>
                             <v-icon v-else icon="mdi-close"></v-icon>
