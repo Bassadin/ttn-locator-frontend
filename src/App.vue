@@ -1,16 +1,16 @@
 <template>
     <v-app>
         <v-layout full-height>
-            <main-navigation-drawer />
+            <main-navigation />
             <v-main class="h-full">
-                <router-view></router-view>
+                <router-view />
             </v-main>
         </v-layout>
     </v-app>
 </template>
 
 <script lang="ts" setup>
-import MainNavigationDrawer from '@/components/nav/MainNavigation.vue';
+import MainNavigation from '@/components/nav/MainNavigation.vue';
 </script>
 
 <style scoped>
