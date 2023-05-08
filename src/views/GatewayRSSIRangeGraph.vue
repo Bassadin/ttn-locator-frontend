@@ -39,9 +39,19 @@ import { Scatter } from 'vue-chartjs';
 import GatewaysInDBSelection from '@/components/selection/GatewaysInDBSelection.vue';
 
 // Charts stuff
-import { Chart as ChartJS, Title, Tooltip, Legend, LinearScale, PointElement, ChartData, LineElement } from 'chart.js';
+import {
+    Chart as ChartJS,
+    Title,
+    Tooltip,
+    Legend,
+    LinearScale,
+    PointElement,
+    ChartData,
+    LineElement,
+    LineController,
+} from 'chart.js';
 
-ChartJS.register(Title, Tooltip, Legend, LinearScale, PointElement, LineElement);
+ChartJS.register(Title, Tooltip, Legend, LinearScale, PointElement, LineElement, LineController);
 
 // Regressions
 import * as simpleStatistics from 'simple-statistics';
