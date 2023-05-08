@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useTitle } from '@vueuse/core';
 
 // Components
@@ -49,10 +49,21 @@ import ColorSwitcherButton from '@/components/ColorSwitcherButton.vue';
 
 // Vuetify
 import { useDisplay } from 'vuetify';
+import { useRoute } from 'vue-router';
 const { mobile } = useDisplay();
 
 const showNavDrawer = ref(true);
 
-const title = useTitle();
-title.value = 'TTN Locator';
+const title = useTitle('', { titleTemplate: '%s | TTN Locator' });
+const route = useRoute();
+
+// fetch the user information when params change
+const DEFAULT_TITLE = 'Default Title';
+watch(
+    () => route.meta.title,
+    async (newRouteTitle) => {
+        console.debug(`Route changed, updating title to ${newRouteTitle ?? DEFAULT_TITLE}`);
+        title.value = (newRouteTitle ?? DEFAULT_TITLE).toString();
+    },
+);
 </script>
