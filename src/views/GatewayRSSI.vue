@@ -1,8 +1,6 @@
 <template>
     <v-layout class="w-full h-full">
-        <v-overlay v-model="isCurrentlyLoading" class="align-center justify-center" persistent>
-            <v-progress-circular color="primary" indeterminate size="64"></v-progress-circular
-        ></v-overlay>
+        <LoadingOverlay v-model="isCurrentlyLoading" />
         <BaseMap>
             <template #map-layers>
                 <SingleGatewayMarker v-if="gatewayData.location" :gateway-data="gatewayData" />
@@ -76,6 +74,7 @@ import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDevic
 // Types
 import { GatewayData } from '@/types/Gateways';
 import { DeviceGPSDatapoint, TTNMapperGatewayAPIDeviceGPSDatapoint } from '@/types/GPSDatapoints';
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
 
 // Axios instance
 const axios = injectStrict(AxiosKey);
