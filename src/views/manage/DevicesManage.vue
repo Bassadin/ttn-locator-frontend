@@ -1,21 +1,25 @@
 <template>
-    <v-table>
-        <thead>
-            <tr>
-                <th class="text-left">ID</th>
-                <th class="text-left">Subscribed?</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="eachDevice in devices" :key="eachDevice.deviceId">
-                <td>{{ eachDevice.deviceId }}</td>
-                <td>
-                    <v-icon v-if="eachDevice.subscription" icon="mdi-check"></v-icon>
-                    <v-icon v-else icon="mdi-close"></v-icon>
-                </td>
-            </tr>
-        </tbody>
-    </v-table>
+    <v-container>
+        <v-card>
+            <v-table>
+                <thead>
+                    <tr>
+                        <th class="text-left">ID</th>
+                        <th class="text-left">Subscribed?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="eachDevice in devices" :key="eachDevice.deviceId">
+                        <td>{{ eachDevice.deviceId }}</td>
+                        <td>
+                            <v-icon v-if="eachDevice.subscription" icon="mdi-check"></v-icon>
+                            <v-icon v-else icon="mdi-close"></v-icon>
+                        </td>
+                    </tr>
+                </tbody>
+            </v-table>
+        </v-card>
+    </v-container>
 </template>
 
 <script setup lang="ts">
