@@ -29,6 +29,7 @@ export interface TtnLocatorGatewayData {
     altitude: number;
 }
 
+// Packetbroker GW API (https://mapper.packetbroker.net/api/v2/gateways/netID=000013,tenantID=ttn,id=hfu-lr8-001)
 export interface PacketbrokerGatewayAPIResponse {
     id: string;
     location: {
