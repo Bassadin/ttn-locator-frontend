@@ -1,5 +1,12 @@
 <template>
-    <v-autocomplete label="Gateway ID" :items="gatewaysInDatabase"></v-autocomplete>
+    <v-autocomplete
+        clearable
+        label="Gateway ID"
+        :items="gatewaysInDatabase"
+        :rules="gatewayRules"
+        required
+        @update:model-value="isGatewayIdValid"
+    ></v-autocomplete>
 </template>
 
 <script setup lang="ts">
@@ -30,4 +37,11 @@ axios.get('/gateways').then((response: AxiosResponse<TtnLocatorGatewayApiRespons
         return eachGateway.gatewayId;
     });
 });
+
+// Rules
+const gatewayRules = [(v: string) => isGatewayIdValid(v) || 'Gateway must be in database'];
+
+function isGatewayIdValid(gatewayID: string): boolean {
+    return gatewaysInDatabase.value.includes(gatewayID);
+}
 </script>

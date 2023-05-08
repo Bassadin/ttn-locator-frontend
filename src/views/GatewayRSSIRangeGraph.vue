@@ -129,7 +129,6 @@ async function getGatewayData() {
     const packetbrokerApiResponse: AxiosResponse<PacketbrokerGatewayAPIResponse> = (await axios
         .get(`https://mapper.packetbroker.net/api/v2/gateways/netID=000013,tenantID=ttn,id=${selectedGatewayID.value}`)
         .catch(() => {
-            alert('Gateway not found');
             isCurrentlyLoading.value = false;
         })) as AxiosResponse<PacketbrokerGatewayAPIResponse>;
 
@@ -172,7 +171,7 @@ async function getGatewayData() {
             );
 
             if (rssiDistanceData.length === 0) {
-                alert('No data available');
+                console.info('No data available');
                 return;
             }
 
