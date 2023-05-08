@@ -5,8 +5,11 @@
                 <v-card justify="center">
                     <v-card-title>Gateway selection</v-card-title>
                     <v-card-text>
-                        <v-form @submit.prevent="getGatewayData">
-                            <GatewaysInDBSelection v-model="selectedGatewayID" />
+                        <v-form>
+                            <GatewaysInDBSelection
+                                v-model="selectedGatewayID"
+                                @update:model-value="updateGatewaySelection"
+                            />
                         </v-form>
                     </v-card-text>
                 </v-card>
@@ -27,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, Ref, watch } from 'vue';
+import { onMounted, ref, Ref } from 'vue';
 import { LatLng } from 'leaflet';
 
 // Router
@@ -211,12 +214,9 @@ async function getGatewayData() {
 }
 
 // Update URL when selected gateway changes
-watch(selectedGatewayID, async (newSelectedGatewayID, oldSelectedGatewayID) => {
-    if (newSelectedGatewayID === oldSelectedGatewayID) {
-        return;
-    }
-
+function updateGatewaySelection(newSelectedGatewayID: string) {
+    console.debug('New gateway selected', newSelectedGatewayID);
     history.pushState({}, '', `/rssi_range_graph/${newSelectedGatewayID}`);
-    await getGatewayData();
-});
+    getGatewayData();
+}
 </script>
