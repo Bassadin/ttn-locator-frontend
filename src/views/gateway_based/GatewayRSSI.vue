@@ -117,13 +117,8 @@ function getGatewayData() {
             alert('Gateway not found');
         });
 
-    const ttnMapperPromise = axios
-        .get(
-            `https://api.ttnmapper.org/gateway/data?gateway_id=${gatewayID.value}&start_time=2023-04-01T22%3A00%3A00.000Z`,
-        )
-        .then((response: AxiosResponse) => {
-            const responseData: TTNMapperGatewayAPIDeviceGPSDatapoint[] = response.data;
-
+    const ttnMapperPromise = GatewayUtils.getLastXDaysGpsDatapointsForGatewayId(gatewayID.value).then(
+        (responseData) => {
             const filteredData: TTNMapperGatewayAPIDeviceGPSDatapoint[] = responseData.filter(
                 (eachResponseDataObject: TTNMapperGatewayAPIDeviceGPSDatapoint) => {
                     return (
@@ -139,7 +134,8 @@ function getGatewayData() {
             }));
 
             gpsDatapointsWithRSSIValues.value = parsedData;
-        });
+        },
+    );
 
     Promise.all([gatewayLocationPromise, ttnMapperPromise]).finally(() => {
         isCurrentlyLoading.value = false;
