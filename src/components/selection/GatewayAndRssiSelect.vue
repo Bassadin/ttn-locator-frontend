@@ -1,7 +1,10 @@
 <template>
     <v-row>
         <v-col cols="12" md="6">
-            <GatewaysInDBSelection :value="gatewayId" @input="$emit('update:gatewayId', $event.target.value)" />
+            <GatewaysInDBSelection
+                :model-value="gatewayId"
+                @update:model-value="$emit('update:gatewayId', $event.target.value)"
+            />
         </v-col>
         <v-col cols="12" md="4">
             <v-text-field
