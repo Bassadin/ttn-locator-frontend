@@ -31,8 +31,9 @@ import { ref } from 'vue';
 
 import 'leaflet/dist/leaflet.css';
 import { LMap, LTileLayer, LControlAttribution, LControlZoom, LControlLayers } from '@vue-leaflet/vue-leaflet';
+import { PointTuple } from 'leaflet';
 
-const mapCenter = ref([48.050857, 8.207022]);
+const mapCenter: PointTuple = [48.050857, 8.207022];
 const tileProviders = ref([
     {
         name: 'OpenStreetMap',

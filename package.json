@@ -9,8 +9,8 @@
         "preview": "vite preview",
         "prettier:scan": "prettier --check .",
         "prettier:fix": "prettier --write .",
-        "eslint:scan": "eslint src --ext .ts,.vue",
-        "eslint:fix": "eslint --fix src --ext .ts,.vue",
+        "eslint:scan": "eslint --ext .ts,.vue .",
+        "eslint:fix": "eslint --fix --ext .ts,.vue .",
         "compose:up:dev": "docker compose up -d",
         "prepare": "husky install"
     },
