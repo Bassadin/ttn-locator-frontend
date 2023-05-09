@@ -1,20 +1,16 @@
 <template>
     <v-row>
         <v-col cols="12" md="6">
-            <GatewaysInDBSelection
-                :model-value="gatewayId"
-                @update:model-value="$emit('update:gatewayId', $event.target.value)"
-            />
+            <GatewaysInDBSelection v-model="gatewayId" />
         </v-col>
         <v-col cols="12" md="4">
             <v-text-field
-                :value="rssi"
+                v-model.number="rssi"
                 hide-details
                 single-line
                 type="number"
                 :min="Constants.MIN_SELECTABLE_RSSI"
                 :max="Constants.MAX_SELECTABLE_RSSI"
-                @input="$emit('update:rssi', $event.target.value)"
             ></v-text-field>
         </v-col>
         <v-col cols="12" md="2">
@@ -25,6 +21,7 @@
 
 <script setup lang="ts">
 import Constants from '@/other/Constants';
+import { computed } from 'vue';
 
 // Components
 import GatewaysInDBSelection from '@/components/selection/GatewaysInDBSelection.vue';
@@ -34,5 +31,23 @@ const props = defineProps({
     rssi: { type: Number, required: true },
 });
 
-defineEmits(['update:gatewayId', 'update:rssi', 'deleteParameter']);
+const emit = defineEmits(['update:gatewayId', 'update:rssi', 'deleteParameter']);
+
+const gatewayId = computed({
+    get() {
+        return props.gatewayId;
+    },
+    set(value) {
+        emit('update:gatewayId', value);
+    },
+});
+
+const rssi = computed({
+    get() {
+        return props.rssi;
+    },
+    set(value) {
+        emit('update:rssi', value);
+    },
+});
 </script>

@@ -9,6 +9,15 @@ const routes = [
             title: 'Home',
         },
     },
+    // Device-based
+    {
+        path: '/rssi_similarity',
+        name: 'rssi_similarity',
+        component: () => import('@/views/device_based/RssiSimilarity.vue'),
+        meta: {
+            title: 'RSSI similarity',
+        },
+    },
 
     // Gateway-based
     {
