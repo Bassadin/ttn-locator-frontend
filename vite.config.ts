@@ -20,7 +20,6 @@ export default defineConfig({
     resolve: {
         alias: {
             // Hard override since vite-tsconfig-paths doesn't seem to work for this right now
-            // @ts-ignore
             '@': path.resolve(__dirname, './src'),
         },
     },
