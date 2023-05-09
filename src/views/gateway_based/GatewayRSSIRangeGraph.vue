@@ -73,6 +73,7 @@ import {
 
 // Turf options
 import * as turf from '@turf/turf';
+import Constants from '@/other/Constants';
 
 // Axios instance
 const axios = injectStrict(AxiosKey);
@@ -120,8 +121,6 @@ onMounted(() => {
     getGatewayData();
 });
 
-const hdopCutoffPoint = 2;
-
 async function getGatewayData() {
     isCurrentlyLoading.value = true;
     chartDataReady.value = false;
@@ -143,7 +142,7 @@ async function getGatewayData() {
     };
 
     axios
-        .get(`/gateways/${selectedGatewayID.value}/gps_datapoints_with_rssi?hdop_filter=${hdopCutoffPoint}`)
+        .get(`/gateways/${selectedGatewayID.value}/gps_datapoints_with_rssi?hdop_filter=${Constants.HDOP_CUTOFF_POINT}`)
         .then((response: AxiosResponse<TtnLocatorDeviceGPSDatapointWithRSSIApiResponse>) => {
             const responseData: TtnLocatorDeviceGPSDatapointWithRSSI[] = response.data.data;
 
