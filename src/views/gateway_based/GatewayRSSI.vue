@@ -62,24 +62,16 @@ import BaseMap from '@/components/BaseMap.vue';
 
 const showFilteringDialog = ref(false);
 
-// Axios
-import { injectStrict } from '@/utils/injectTyped';
-import { AxiosKey } from '@/symbols';
-import { AxiosResponse } from 'axios';
-import { LatLng } from 'leaflet';
-
 // Components
 import SingleGatewayMarker from '@/components/map/markers/SingleGatewayMarker.vue';
 import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDeviceGPSDatapointMarker.vue';
 
 // Types
+import { LatLng } from 'leaflet';
 import { GatewayData } from '@/types/Gateways';
 import { DeviceGPSDatapoint, TTNMapperGatewayAPIDeviceGPSDatapoint } from '@/types/GPSDatapoints';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import GatewayUtils from '@/utils/GatewayUtils';
-
-// Axios instance
-const axios = injectStrict(AxiosKey);
 
 const gatewayID = ref(route.params.gatewayId.toString());
 const gatewayData: Ref<GatewayData> = ref({} as GatewayData);
