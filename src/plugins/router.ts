@@ -9,22 +9,26 @@ const routes = [
             title: 'Home',
         },
     },
+
+    // Gateway-based
     {
         path: '/gateway_rssi/:gatewayId',
         name: 'gateway_rssi',
-        component: () => import('@/views/GatewayRSSI.vue'),
+        component: () => import('@/views/gateway_based/GatewayRSSI.vue'),
         meta: {
-            title: 'Gateway RSSI',
+            title: 'Gateway Range (RSSI)',
         },
     },
     {
         path: '/rssi_range_graph/:gatewayId',
         name: 'rssi_range_graph',
-        component: () => import('@/views/GatewayRSSIRangeGraph.vue'),
+        component: () => import('@/views/gateway_based/GatewayRSSIRangeGraph.vue'),
         meta: {
             title: 'RSSI Range Graph',
         },
     },
+
+    // Manage pages
     {
         path: '/manage/devices',
         name: 'manage_devices',

@@ -75,6 +75,7 @@ import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDevic
 import { GatewayData } from '@/types/Gateways';
 import { DeviceGPSDatapoint, TTNMapperGatewayAPIDeviceGPSDatapoint } from '@/types/GPSDatapoints';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
+import GatewayUtils from '@/utils/GatewayUtils';
 
 // Axios instance
 const axios = injectStrict(AxiosKey);
@@ -99,15 +100,15 @@ function saveSelectedGatewayIDToUrlAndGetGatewayData() {
 function getGatewayData() {
     isCurrentlyLoading.value = true;
 
-    const packetbrokerPromise = axios
-        .get(`https://mapper.packetbroker.net/api/v2/gateways/netID=000013,tenantID=ttn,id=${gatewayID.value}`)
-        .then((response: AxiosResponse) => {
-            const responseData = response.data;
-
-            const location = new LatLng(responseData.location.latitude, responseData.location.longitude);
+    const gatewayLocationPromise = GatewayUtils.getGatewayLocationForGatewayId(gatewayID.value)
+        .then((location: LatLng | null) => {
+            if (!location) {
+                alert('Gateway not found');
+                return;
+            }
 
             gatewayData.value = {
-                id: responseData.id,
+                id: gatewayID.value,
                 location: location,
             };
         })
@@ -139,7 +140,7 @@ function getGatewayData() {
             gpsDatapointsWithRSSIValues.value = parsedData;
         });
 
-    Promise.all([packetbrokerPromise, ttnMapperPromise]).finally(() => {
+    Promise.all([gatewayLocationPromise, ttnMapperPromise]).finally(() => {
         isCurrentlyLoading.value = false;
         showFilteringDialog.value = false;
     });
