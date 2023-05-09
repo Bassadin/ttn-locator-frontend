@@ -1,25 +1,28 @@
 <template>
     <v-container>
         <v-card>
-            <v-table>
-                <thead>
-                    <tr>
-                        <th class="text-left">ID</th>
-                        <th class="text-left"># of GPS Datapoints</th>
-                        <th class="text-left">Subscribed?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="eachDevice in devices" :key="eachDevice.deviceId">
-                        <td>{{ eachDevice.deviceId }}</td>
-                        <td>{{ eachDevice._count.deviceGPSDatapoints }}</td>
-                        <td>
-                            <v-icon v-if="eachDevice.subscription" icon="mdi-check"></v-icon>
-                            <v-icon v-else icon="mdi-close"></v-icon>
-                        </td>
-                    </tr>
-                </tbody>
-            </v-table>
+            <v-card-title>Manage Devices</v-card-title>
+            <v-card-text>
+                <v-table fixed-header height="80vh">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th># of GPS Datapoints</th>
+                            <th>Subscribed?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="eachDevice in devices" :key="eachDevice.deviceId">
+                            <td>{{ eachDevice.deviceId }}</td>
+                            <td>{{ eachDevice._count.deviceGPSDatapoints }}</td>
+                            <td>
+                                <v-icon v-if="eachDevice.subscription" icon="mdi-check"></v-icon>
+                                <v-icon v-else icon="mdi-close"></v-icon>
+                            </td>
+                        </tr>
+                    </tbody>
+                </v-table>
+            </v-card-text>
         </v-card>
     </v-container>
 </template>

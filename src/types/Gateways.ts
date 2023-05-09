@@ -24,9 +24,14 @@ export interface TtnLocatorGatewayApiResponse {
 
 export interface TtnLocatorGatewayData {
     gatewayId: string;
+    name?: string;
+    description?: string;
     latitude: number;
     longitude: number;
     altitude: number;
+    _count: {
+        ttnmapperDatapoints: number;
+    };
 }
 
 // Packetbroker GW API (https://mapper.packetbroker.net/api/v2/gateways/netID=000013,tenantID=ttn,id=hfu-lr8-001)

@@ -33,6 +33,14 @@ const routes = [
             title: 'Manage Devices',
         },
     },
+    {
+        path: '/manage/gateways',
+        name: 'manage_gateways',
+        component: () => import('@/views/manage/GatewaysManage.vue'),
+        meta: {
+            title: 'Manage Gateways',
+        },
+    },
     // Catch all 404
     {
         path: '/:pathMatch(.*)*',

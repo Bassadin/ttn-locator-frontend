@@ -12,29 +12,35 @@
         </v-app-bar>
         <v-navigation-drawer v-model="showNavDrawer" :rail="!mobile" :expand-on-hover="!mobile">
             <v-list density="compact" nav>
-                <v-list-item prepend-icon="mdi-home" title="Home" :to="{ name: 'home' }"></v-list-item>
+                <v-list-item prepend-icon="mdi-home" title="Home" :to="{ name: 'home' }" />
 
                 <v-divider></v-divider>
                 <v-list-subheader>Gateway-based</v-list-subheader>
                 <v-list-item
                     prepend-icon="mdi-router-wireless"
                     title="Gateway Range (RSSI)"
-                    :to="{ name: 'gateway_rssi', params: { gatewayId: 'hfu-lr8-001' } }"
-                ></v-list-item>
+                    :to="{
+                        name: 'gateway_rssi',
+                        params: {
+                            gatewayId: 'hfu-lr8-001',
+                        },
+                    }"
+                />
                 <!-- TODO: The hard gateway ID here is a hack, fix later -->
                 <v-list-item
                     prepend-icon="mdi-chart-scatter-plot"
                     title="RSSI Range Graph"
                     :to="{ name: 'rssi_range_graph', params: { gatewayId: 'hfu-lr8-001' } }"
-                ></v-list-item>
+                />
 
                 <v-divider></v-divider>
                 <v-list-subheader>Management</v-list-subheader>
+                <v-list-item prepend-icon="mdi-cellphone-marker" title="Devices" :to="{ name: 'manage_devices' }" />
                 <v-list-item
-                    prepend-icon="mdi-cellphone-marker"
-                    title="Devices"
-                    :to="{ name: 'manage_devices' }"
-                ></v-list-item>
+                    prepend-icon="mdi-router-wireless-settings"
+                    title="Gateways"
+                    :to="{ name: 'manage_gateways' }"
+                />
             </v-list>
         </v-navigation-drawer>
     </div>
