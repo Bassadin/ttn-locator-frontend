@@ -25,7 +25,7 @@ import GatewaysInDBSelection from '@/components/selection/GatewaysInDBSelection.
 
 defineProps({
     gatewayId: { type: String, required: true },
-    rssi: { type: String, required: true },
+    rssi: { type: Number, required: true },
 });
 
 defineEmits(['update:gatewayId', 'update:rssi']);
