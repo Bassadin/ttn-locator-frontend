@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 // Vue
-import { ref, Ref } from 'vue';
+import { onMounted, ref, Ref } from 'vue';
 
 // Types
 import { TtnLocatorGatewayApiResponse, TtnLocatorGatewayData } from '@/types/Gateways';
@@ -27,16 +27,22 @@ const axios = injectStrict(AxiosKey);
 // Possible gateways in database to select from
 const gatewaysInDatabase: Ref<string[]> = ref([]);
 
-// Get gateways in database
-axios.get('/gateways').then((response: AxiosResponse<TtnLocatorGatewayApiResponse>) => {
-    const responseData = response.data;
-
-    const gateways: TtnLocatorGatewayData[] = responseData.data;
-
-    gatewaysInDatabase.value = gateways.map((eachGateway: TtnLocatorGatewayData) => {
-        return eachGateway.gatewayId;
-    });
+onMounted(() => {
+    getGatewaysInDatabase();
 });
+
+// Get gateways in database
+function getGatewaysInDatabase() {
+    axios.get('/gateways').then((response: AxiosResponse<TtnLocatorGatewayApiResponse>) => {
+        const responseData = response.data;
+
+        const gateways: TtnLocatorGatewayData[] = responseData.data;
+
+        gatewaysInDatabase.value = gateways.map((eachGateway: TtnLocatorGatewayData) => {
+            return eachGateway.gatewayId;
+        });
+    });
+}
 
 // Rules
 const gatewayRules = [(v: string) => isGatewayIdValid(v) || 'Gateway must be in database'];
