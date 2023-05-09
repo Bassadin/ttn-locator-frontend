@@ -32,8 +32,8 @@
                             class="mt-8"
                             strict
                             label="RSSI Range"
-                            :min="-130"
-                            :max="-30"
+                            :min="Constants.MIN_SELECTABLE_RSSI"
+                            :max="Constants.MAX_SELECTABLE_RSSI"
                             step="1"
                             thumb-label="always"
                         ></v-range-slider>
@@ -50,6 +50,7 @@
 </template>
 
 <script setup lang="ts">
+import Constants from '@/other/Constants';
 import { onMounted, ref, Ref } from 'vue';
 
 // Router
