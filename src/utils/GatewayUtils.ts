@@ -1,6 +1,10 @@
-import { TTNMapperGatewayAPIDeviceGPSDatapoint } from '@/types/GPSDatapoints';
-import axios, { AxiosResponse } from 'axios';
+import Constants from '@/other/Constants';
+import { TtnLocatorDeviceGPSDatapointWithRSSI } from '@/types/GPSDatapoints';
 import { LatLng } from 'leaflet';
+
+// Axios
+import axios from '@/plugins/axios';
+import { AxiosResponse } from 'axios';
 
 export default class GatewayUtils {
     public static doesGatewayIdExist(gatewayId: string): Promise<boolean> {
@@ -45,14 +49,11 @@ export default class GatewayUtils {
 
     public static getLastXDaysGpsDatapointsForGatewayId(
         gatewayId: string,
-        amountOfDays = 30,
-    ): Promise<TTNMapperGatewayAPIDeviceGPSDatapoint[]> {
-        const last30DaysDateString = new Date(Date.now() - amountOfDays * 24 * 60 * 60 * 1000).toISOString();
-
+    ): Promise<TtnLocatorDeviceGPSDatapointWithRSSI[]> {
         return axios
-            .get(`https://api.ttnmapper.org/gateway/data?gateway_id=${gatewayId}&start_time=${last30DaysDateString}`)
+            .get(`/gateways/${gatewayId}/gps_datapoints_with_rssi?hdop_filter=${Constants.HDOP_CUTOFF_POINT}`)
             .then((response: AxiosResponse) => {
-                return response.data;
+                return response.data.data;
             });
     }
 }
