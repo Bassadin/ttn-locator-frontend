@@ -169,41 +169,38 @@ async function loadGatewayData() {
 
         eachRssiSimilarityParameter.gatewayData.location = gatewayLocation;
 
-        const getGpsDatapointsPromise = GatewayUtils.getLastXDaysGpsDatapointsForGatewayId(gatewayID).then(
-            (responseData) => {
-                console.debug(`Filtering data for ${gatewayID} with RSSI range ${rssiRange.min} - ${rssiRange.max}`);
+        const getGpsDatapointsPromise = GatewayUtils.getLastXDaysGpsDatapointsForGatewayId(gatewayID);
+        getGpsDatapointsPromise.then((responseData) => {
+            const filteredData: TTNMapperGatewayAPIDeviceGPSDatapoint[] = responseData.filter(
+                (eachResponseDataObject: TTNMapperGatewayAPIDeviceGPSDatapoint) => {
+                    return (
+                        eachResponseDataObject.rssi >= rssiRange.min &&
+                        eachResponseDataObject.rssi <= rssiRange.max &&
+                        eachResponseDataObject.rssi <= Constants.HDOP_CUTOFF_POINT
+                    );
+                },
+            );
 
-                const filteredData: TTNMapperGatewayAPIDeviceGPSDatapoint[] = responseData.filter(
-                    (eachResponseDataObject: TTNMapperGatewayAPIDeviceGPSDatapoint) => {
-                        return (
-                            eachResponseDataObject.rssi >= rssiRange.min &&
-                            eachResponseDataObject.rssi <= rssiRange.max &&
-                            eachResponseDataObject.rssi <= Constants.HDOP_CUTOFF_POINT
-                        );
-                    },
-                );
+            const parsedData: DeviceGPSDatapoint[] = filteredData.map((eachDeviceGPSDatapoint) => ({
+                deviceId: eachDeviceGPSDatapoint.dev_id,
+                location: new LatLng(eachDeviceGPSDatapoint.latitude, eachDeviceGPSDatapoint.longitude),
+            }));
 
-                console.debug(`Filtered data for ${gatewayID}`, filteredData);
+            eachRssiSimilarityParameter.deviceGpsDatapoints = parsedData;
 
-                const parsedData: DeviceGPSDatapoint[] = filteredData.map((eachDeviceGPSDatapoint) => ({
-                    deviceId: eachDeviceGPSDatapoint.dev_id,
-                    location: new LatLng(eachDeviceGPSDatapoint.latitude, eachDeviceGPSDatapoint.longitude),
-                }));
-
-                console.debug(`Parsed data for ${gatewayID}`, parsedData);
-
-                eachRssiSimilarityParameter.deviceGpsDatapoints = parsedData;
-            },
-        );
+            console.debug(
+                `Loaded ${parsedData.length} GPS datapoints for gateway ${gatewayID} with RSSI range`,
+                rssiRange,
+            );
+        });
 
         allPromises.push(getGpsDatapointsPromise);
     });
 
-    await Promise.all(allPromises);
-
-    isCurrentlyLoading.value = false;
-    showFilteringDialog.value = false;
-
-    console.info('Finished loading gateway similarity data');
+    Promise.allSettled(allPromises).then(() => {
+        isCurrentlyLoading.value = false;
+        showFilteringDialog.value = false;
+        console.info('Finished loading gateway similarity data');
+    });
 }
 </script>
