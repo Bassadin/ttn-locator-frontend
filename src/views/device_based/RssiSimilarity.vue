@@ -147,17 +147,13 @@ function deleteParameter(gatewayId: string) {
 }
 
 async function loadGatewayData() {
-    console.info('Loading gateway data');
+    console.info(`Loading gateway similarity data for ${rssiSimilaritySelectionParameters.value.length} gateways`);
     isCurrentlyLoading.value = true;
 
     const allPromises: Promise<void>[] = [];
 
-    console.info(`Loading gateway data for ${rssiSimilaritySelectionParameters.value.length} gateways`);
-
     rssiSimilaritySelectionParameters.value.forEach(async (eachRssiSimilarityParameter: GatewayRssiSelection) => {
         const gatewayID = eachRssiSimilarityParameter.gatewayData.id;
-        console.debug(`Checking range: ${rssiCheckingRange.value}`);
-        console.debug('parameters', eachRssiSimilarityParameter);
         const rssiRange = {
             min: eachRssiSimilarityParameter.rssi - rssiCheckingRange.value,
             max: eachRssiSimilarityParameter.rssi + rssiCheckingRange.value,
@@ -208,6 +204,6 @@ async function loadGatewayData() {
     isCurrentlyLoading.value = false;
     showFilteringDialog.value = false;
 
-    console.info('Finished loading gateway data');
+    console.info('Finished loading gateway similarity data');
 }
 </script>
