@@ -16,8 +16,12 @@
                             <td>{{ eachDevice.deviceId }}</td>
                             <td>{{ eachDevice._count.deviceGPSDatapoints }}</td>
                             <td>
-                                <v-icon v-if="eachDevice.subscription" icon="mdi-check"></v-icon>
-                                <v-icon v-else icon="mdi-close"></v-icon>
+                                <!-- <v-icon v-if="eachDevice.subscription" icon="mdi-check"></v-icon>
+                                <v-icon v-else icon="mdi-close"></v-icon> -->
+                                <v-checkbox-btn
+                                    :model-value="eachDevice.subscription"
+                                    @change="handleSubscriptionChange(eachDevice.deviceId, $event.target.checked)"
+                                ></v-checkbox-btn>
                             </td>
                         </tr>
                     </tbody>
@@ -48,4 +52,11 @@ onMounted(async () => {
     const response: AxiosResponse<TtnLocatorDeviceApiResponse> = await axios.get('/devices');
     devices.value = response.data.data;
 });
+
+function handleSubscriptionChange(deviceId: number, newSubscriptionBoolean: boolean) {
+    axios.post(`/devices`, {
+        subscription: newSubscriptionBoolean,
+        deviceId: deviceId,
+    });
+}
 </script>
