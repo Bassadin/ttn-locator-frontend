@@ -53,7 +53,7 @@ onMounted(async () => {
     devices.value = response.data.data;
 });
 
-function handleSubscriptionChange(deviceId: number, newSubscriptionBoolean: boolean) {
+function handleSubscriptionChange(deviceId: string, newSubscriptionBoolean: boolean) {
     axios.post(`/devices`, {
         subscription: newSubscriptionBoolean,
         deviceId: deviceId,
