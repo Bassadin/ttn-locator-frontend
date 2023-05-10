@@ -69,7 +69,7 @@ import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDevic
 // Types
 import { LatLng } from 'leaflet';
 import { GatewayData } from '@/types/Gateways';
-import { DeviceGPSDatapoint, TTNMapperGatewayAPIDeviceGPSDatapoint } from '@/types/GPSDatapoints';
+import { DeviceGPSDatapoint, TtnLocatorDeviceGPSDatapointWithRSSI } from '@/types/GPSDatapoints';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import GatewayUtils from '@/utils/GatewayUtils';
 
@@ -111,8 +111,8 @@ function getGatewayData() {
 
     const ttnMapperPromise = GatewayUtils.getLastXDaysGpsDatapointsForGatewayId(gatewayID.value).then(
         (responseData) => {
-            const filteredData: TTNMapperGatewayAPIDeviceGPSDatapoint[] = responseData.filter(
-                (eachResponseDataObject: TTNMapperGatewayAPIDeviceGPSDatapoint) => {
+            const filteredData: TtnLocatorDeviceGPSDatapointWithRSSI[] = responseData.filter(
+                (eachResponseDataObject: TtnLocatorDeviceGPSDatapointWithRSSI) => {
                     return (
                         eachResponseDataObject.rssi >= selectedRSSIRange.value[0] &&
                         eachResponseDataObject.rssi <= selectedRSSIRange.value[1]
@@ -121,7 +121,7 @@ function getGatewayData() {
             );
 
             const parsedData: DeviceGPSDatapoint[] = filteredData.map((eachDeviceGPSDatapoint) => ({
-                deviceId: eachDeviceGPSDatapoint.dev_id,
+                deviceId: eachDeviceGPSDatapoint.deviceId,
                 location: new LatLng(eachDeviceGPSDatapoint.latitude, eachDeviceGPSDatapoint.longitude),
             }));
 

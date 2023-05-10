@@ -82,7 +82,7 @@ import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDevic
 // Types
 import { LatLng } from 'leaflet';
 import { GatewayRssiSelection } from '@/types/Gateways';
-import { DeviceGPSDatapoint, TTNMapperGatewayAPIDeviceGPSDatapoint } from '@/types/GPSDatapoints';
+import { DeviceGPSDatapoint, TtnLocatorDeviceGPSDatapointWithRSSI } from '@/types/GPSDatapoints';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import GatewayAndRssiSelect from '@/components/selection/GatewayAndRssiSelect.vue';
 import GatewayUtils from '@/utils/GatewayUtils';
@@ -150,7 +150,7 @@ async function loadGatewayData() {
     console.info(`Loading gateway similarity data for ${rssiSimilaritySelectionParameters.value.length} gateways`);
     isCurrentlyLoading.value = true;
 
-    const allPromises: Promise<void>[] = [];
+    const allPromises: Promise<TtnLocatorDeviceGPSDatapointWithRSSI[]>[] = [];
 
     rssiSimilaritySelectionParameters.value.forEach(async (eachRssiSimilarityParameter: GatewayRssiSelection) => {
         const gatewayID = eachRssiSimilarityParameter.gatewayData.id;
@@ -171,18 +171,16 @@ async function loadGatewayData() {
 
         const getGpsDatapointsPromise = GatewayUtils.getLastXDaysGpsDatapointsForGatewayId(gatewayID);
         getGpsDatapointsPromise.then((responseData) => {
-            const filteredData: TTNMapperGatewayAPIDeviceGPSDatapoint[] = responseData.filter(
-                (eachResponseDataObject: TTNMapperGatewayAPIDeviceGPSDatapoint) => {
-                    return (
-                        eachResponseDataObject.rssi >= rssiRange.min &&
-                        eachResponseDataObject.rssi <= rssiRange.max &&
-                        eachResponseDataObject.rssi <= Constants.HDOP_CUTOFF_POINT
-                    );
-                },
-            );
+            const filteredData = responseData.filter((eachResponseDataObject: TtnLocatorDeviceGPSDatapointWithRSSI) => {
+                return (
+                    eachResponseDataObject.rssi >= rssiRange.min &&
+                    eachResponseDataObject.rssi <= rssiRange.max &&
+                    eachResponseDataObject.rssi <= Constants.HDOP_CUTOFF_POINT
+                );
+            });
 
             const parsedData: DeviceGPSDatapoint[] = filteredData.map((eachDeviceGPSDatapoint) => ({
-                deviceId: eachDeviceGPSDatapoint.dev_id,
+                deviceId: eachDeviceGPSDatapoint.deviceId,
                 location: new LatLng(eachDeviceGPSDatapoint.latitude, eachDeviceGPSDatapoint.longitude),
             }));
 
