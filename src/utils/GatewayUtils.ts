@@ -5,7 +5,7 @@ import { LatLng } from 'leaflet';
 export default class GatewayUtils {
     public static doesGatewayIdExist(gatewayId: string): Promise<boolean> {
         const doesGatewayIdExist: Promise<boolean> = axios
-            .get(`https://mapper.packetbroker.net/api/v2/gateways/netID=000013,tenantID=ttn,id=${gatewayId}`)
+            .get(`https://www.thethingsnetwork.org/gateway-data/gateway/${gatewayId}`)
             .then((response: AxiosResponse) => {
                 if (response.status === 200) {
                     return true;
@@ -22,9 +22,9 @@ export default class GatewayUtils {
 
     public static getGatewayLocationForGatewayId(gatewayId: string): Promise<LatLng | null> {
         return axios
-            .get(`https://mapper.packetbroker.net/api/v2/gateways/netID=000013,tenantID=ttn,id=${gatewayId}`)
+            .get(`https://www.thethingsnetwork.org/gateway-data/gateway/${gatewayId}`)
             .then((response: AxiosResponse) => {
-                const responseData = response.data;
+                const responseData = response.data[gatewayId];
 
                 if (responseData.location === undefined) {
                     return null;
