@@ -81,7 +81,11 @@ import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDevic
 // Types
 import { LatLng } from 'leaflet';
 import { GatewayRssiSelection } from '@/types/Gateways';
-import { DeviceGPSDatapoint, TtnLocatorDeviceGPSDatapointWithRSSI } from '@/types/GPSDatapoints';
+import {
+    DeviceGPSDatapoint,
+    stripRssiFromDeviceGPSDatapointWithRSSI,
+    TtnLocatorDeviceGPSDatapointWithRSSI,
+} from '@/types/GPSDatapoints';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import GatewayAndRssiSelect from '@/components/selection/GatewayAndRssiSelect.vue';
 import GatewayUtils from '@/utils/GatewayUtils';
@@ -124,7 +128,7 @@ const rssiSimilaritySelectionParameters: Ref<GatewayRssiSelection[]> = ref([
     },
 ]);
 
-const rssiCheckingRange: Ref<number> = ref(2);
+const rssiCheckingRange: Ref<number> = ref(1);
 
 function addNewParameter() {
     rssiSimilaritySelectionParameters.value.push({
@@ -174,10 +178,7 @@ async function loadSimilarityData() {
             rssiRange.max,
         );
         getGpsDatapointsPromise.then((responseData) => {
-            const parsedData: DeviceGPSDatapoint[] = responseData.map((eachDeviceGPSDatapoint) => ({
-                deviceId: eachDeviceGPSDatapoint.deviceId,
-                location: new LatLng(eachDeviceGPSDatapoint.latitude, eachDeviceGPSDatapoint.longitude),
-            }));
+            const parsedData: DeviceGPSDatapoint[] = responseData.map(stripRssiFromDeviceGPSDatapointWithRSSI);
 
             eachRssiSimilarityParameter.deviceGpsDatapoints = parsedData;
 
