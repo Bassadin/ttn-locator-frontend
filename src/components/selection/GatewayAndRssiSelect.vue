@@ -1,22 +1,24 @@
 <template>
-    <v-row>
-        <v-col cols="12" md="6">
-            <GatewaysInDBSelection v-model="gatewayId" />
-        </v-col>
-        <v-col cols="12" md="4">
-            <v-text-field
-                v-model.number="rssi"
-                hide-details
-                single-line
-                type="number"
-                :min="Constants.MIN_SELECTABLE_RSSI"
-                :max="Constants.MAX_SELECTABLE_RSSI"
-            ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="2">
-            <v-btn icon="mdi-minus" size="small" @click.prevent="$emit('deleteParameter', props.gatewayId)"></v-btn>
-        </v-col>
-    </v-row>
+    <v-sheet border rounded elevation="4" class="p-4 mb-4">
+        <v-row>
+            <v-col cols="12" md="6">
+                <GatewaysInDBSelection v-model="gatewayId" />
+            </v-col>
+            <v-col cols="10" md="4">
+                <v-text-field
+                    v-model.number="rssi"
+                    hide-details
+                    single-line
+                    type="number"
+                    :min="Constants.MIN_SELECTABLE_RSSI"
+                    :max="Constants.MAX_SELECTABLE_RSSI"
+                ></v-text-field>
+            </v-col>
+            <v-col cols="2" md="2">
+                <v-btn icon="mdi-minus" size="small" @click.prevent="$emit('deleteParameter', props.gatewayId)"></v-btn>
+            </v-col>
+        </v-row>
+    </v-sheet>
 </template>
 
 <script setup lang="ts">
