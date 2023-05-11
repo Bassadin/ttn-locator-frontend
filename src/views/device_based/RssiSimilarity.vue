@@ -31,7 +31,7 @@
             <v-card>
                 <v-card-title>RSSI similarity parameters</v-card-title>
                 <v-card-text>
-                    <v-form @submit.prevent="loadGatewayData">
+                    <v-form @submit.prevent="loadSimilarityData">
                         <v-row no-gutters>
                             <v-col align-self="end">
                                 <v-btn icon="mdi-plus" size="small" @click.prevent="addNewParameter"></v-btn>
@@ -146,7 +146,7 @@ function deleteParameter(gatewayId: string) {
     );
 }
 
-async function loadGatewayData() {
+async function loadSimilarityData() {
     console.info(`Loading gateway similarity data for ${rssiSimilaritySelectionParameters.value.length} gateways`);
     isCurrentlyLoading.value = true;
 
