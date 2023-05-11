@@ -49,9 +49,17 @@ export default class GatewayUtils {
 
     public static getLastXDaysGpsDatapointsForGatewayId(
         gatewayId: string,
+        minRssi = -500,
+        maxRssi = 0,
     ): Promise<TtnLocatorDeviceGPSDatapointWithRSSI[]> {
         return axios
-            .get(`/gateways/${gatewayId}/gps_datapoints_with_rssi?hdop_filter=${Constants.HDOP_CUTOFF_POINT}`)
+            .get(`/gateways/${gatewayId}/gps_datapoints_with_rssi`, {
+                params: {
+                    hdop_filter: Constants.HDOP_CUTOFF_POINT,
+                    min_rssi: minRssi,
+                    max_rssi: maxRssi,
+                },
+            })
             .then((response: AxiosResponse) => {
                 return response.data.data;
             });

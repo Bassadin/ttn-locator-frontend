@@ -70,7 +70,6 @@
 
 <script setup lang="ts">
 import { ref, Ref } from 'vue';
-import Constants from '@/other/Constants';
 
 // Components
 import BaseMap from '@/components/BaseMap.vue';
@@ -169,17 +168,13 @@ async function loadSimilarityData() {
 
         eachRssiSimilarityParameter.gatewayData.location = gatewayLocation;
 
-        const getGpsDatapointsPromise = GatewayUtils.getLastXDaysGpsDatapointsForGatewayId(gatewayID);
+        const getGpsDatapointsPromise = GatewayUtils.getLastXDaysGpsDatapointsForGatewayId(
+            gatewayID,
+            rssiRange.min,
+            rssiRange.max,
+        );
         getGpsDatapointsPromise.then((responseData) => {
-            const filteredData = responseData.filter((eachResponseDataObject: TtnLocatorDeviceGPSDatapointWithRSSI) => {
-                return (
-                    eachResponseDataObject.rssi >= rssiRange.min &&
-                    eachResponseDataObject.rssi <= rssiRange.max &&
-                    eachResponseDataObject.rssi <= Constants.HDOP_CUTOFF_POINT
-                );
-            });
-
-            const parsedData: DeviceGPSDatapoint[] = filteredData.map((eachDeviceGPSDatapoint) => ({
+            const parsedData: DeviceGPSDatapoint[] = responseData.map((eachDeviceGPSDatapoint) => ({
                 deviceId: eachDeviceGPSDatapoint.deviceId,
                 location: new LatLng(eachDeviceGPSDatapoint.latitude, eachDeviceGPSDatapoint.longitude),
             }));
