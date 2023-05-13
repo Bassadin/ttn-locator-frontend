@@ -34,6 +34,7 @@ const axios = injectStrict(AxiosKey);
 const deviceGpsDatapointsLocations: Ref<DeviceGPSDatapoint[]> = ref([]);
 
 onMounted(() => {
+    console.info("Fetching device GPS datapoints from TTN Locator's API...");
     axios
         .get('/device_gps_datapoints', {
             params: {
@@ -46,8 +47,12 @@ onMounted(() => {
                     data: TtnLocatorDeviceGPSDatapoint[];
                 }>,
             ) => {
+                console.info(`Fetched ${response.data.data.length} device GPS datapoints from TTN Locator's API.`);
                 deviceGpsDatapointsLocations.value = response.data.data.map(
                     mapTtnLocatorApiResponseToDeviceGPSDatapoint,
+                );
+                console.info(
+                    `Mapped ${response.data.data.length} device GPS datapoints from TTN Locator's API to internal format.`,
                 );
             },
         );
