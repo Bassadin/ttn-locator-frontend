@@ -24,7 +24,7 @@ import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDevic
 // Types
 import {
     DeviceGPSDatapoint,
-    DeviceGPSDatapointTTNLocatorAPIResponse,
+    TtnLocatorDeviceGPSDatapoint,
     mapTtnLocatorApiResponseToDeviceGPSDatapoint,
 } from '@/types/GPSDatapoints';
 
@@ -34,8 +34,14 @@ const axios = injectStrict(AxiosKey);
 const deviceGpsDatapointsLocations: Ref<DeviceGPSDatapoint[]> = ref([]);
 
 onMounted(() => {
-    axios.get('/device_gps_datapoints').then((response: AxiosResponse<DeviceGPSDatapointTTNLocatorAPIResponse>) => {
-        deviceGpsDatapointsLocations.value = response.data.data.map(mapTtnLocatorApiResponseToDeviceGPSDatapoint);
-    });
+    axios.get('/device_gps_datapoints').then(
+        (
+            response: AxiosResponse<{
+                data: TtnLocatorDeviceGPSDatapoint[];
+            }>,
+        ) => {
+            deviceGpsDatapointsLocations.value = response.data.data.map(mapTtnLocatorApiResponseToDeviceGPSDatapoint);
+        },
+    );
 });
 </script>

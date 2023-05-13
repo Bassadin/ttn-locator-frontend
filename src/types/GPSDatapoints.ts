@@ -1,9 +1,5 @@
 import { LatLng } from 'leaflet';
 
-export interface DeviceGPSDatapointTTNLocatorAPIResponse {
-    data: TtnLocatorDeviceGPSDatapoint[];
-}
-
 export interface TtnLocatorDeviceGPSDatapoint {
     id: number;
     timestamp: string;
