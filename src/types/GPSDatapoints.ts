@@ -11,6 +11,10 @@ export interface TtnLocatorDeviceGPSDatapoint {
     hdop: number;
 }
 
+export interface TtnLocatorDeviceGPSDatapointWithRSSI extends TtnLocatorDeviceGPSDatapoint {
+    rssi: number;
+}
+
 export interface DeviceGPSDatapointWithTtnMapperDatapoints extends TtnLocatorDeviceGPSDatapoint {
     ttnMapperDatapoints: TtnMapperDatapoint[];
 }
@@ -19,6 +23,7 @@ export interface DeviceGPSDatapoint {
     deviceId: string;
     location: LatLng;
     hdop: number;
+    id: number;
 }
 
 export function mapTtnLocatorApiResponseToDeviceGPSDatapoint(
@@ -28,6 +33,7 @@ export function mapTtnLocatorApiResponseToDeviceGPSDatapoint(
         deviceId: ttnLocatorDeviceGPSDatapoint.deviceId,
         location: new LatLng(ttnLocatorDeviceGPSDatapoint.latitude, ttnLocatorDeviceGPSDatapoint.longitude),
         hdop: ttnLocatorDeviceGPSDatapoint.hdop,
+        id: ttnLocatorDeviceGPSDatapoint.id,
     };
 }
 
@@ -38,6 +44,7 @@ export function stripRssiFromDeviceGPSDatapointWithRSSI(
         deviceId: deviceGPSDatapointWithRssi.deviceId,
         location: new LatLng(deviceGPSDatapointWithRssi.latitude, deviceGPSDatapointWithRssi.longitude),
         hdop: deviceGPSDatapointWithRssi.hdop,
+        id: deviceGPSDatapointWithRssi.id,
     };
 }
 
@@ -47,15 +54,6 @@ export interface TTNMapperGatewayAPIDeviceGPSDatapoint {
     longitude: number;
     rssi: number;
     hdop: number;
-}
-
-export interface TtnLocatorDeviceGPSDatapointWithRSSI {
-    deviceId: string;
-    latitude: number;
-    longitude: number;
-    hdop: number;
-    altitude: number;
-    rssi: number;
 }
 
 export interface RssiSimilarityFilter {
