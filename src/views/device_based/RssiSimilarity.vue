@@ -30,7 +30,7 @@
             <v-card>
                 <v-card-title>RSSI similarity parameters</v-card-title>
                 <v-card-text>
-                    <v-form @submit.prevent="loadSimilarityData">
+                    <v-form>
                         <v-row>
                             <v-col>
                                 <v-text-field
@@ -44,13 +44,6 @@
                                 ></v-text-field>
                             </v-col>
                         </v-row>
-                        <v-row class="mb-4">
-                            <v-col align-self="end">
-                                <v-btn prepend-icon="mdi-plus" @click.prevent="addNewParameter">
-                                    Add new parameter set
-                                </v-btn>
-                            </v-col>
-                        </v-row>
                         <GatewayAndRssiSelect
                             v-for="eachRssiSimilarityParameter in rssiSimilaritySelectionParameters"
                             :key="eachRssiSimilarityParameter.gatewayData.id"
@@ -58,11 +51,20 @@
                             v-model:rssi="eachRssiSimilarityParameter.rssi"
                             @delete-parameter="deleteParameter"
                         />
-                        <v-row justify="center" class="mb-2 mt-8">
-                            <v-btn block type="submit" :loading="isCurrentlyLoading" color="primary">Submit</v-btn>
+                        <v-row class="mb-4">
+                            <v-col align-self="end">
+                                <v-btn prepend-icon="mdi-plus" @click.prevent="addNewParameter">
+                                    Add new parameter set
+                                </v-btn>
+                            </v-col>
                         </v-row>
                     </v-form>
                 </v-card-text>
+                <v-card-actions>
+                    <v-btn block :loading="isCurrentlyLoading" color="primary" @click.prevent="loadSimilarityData">
+                        Submit
+                    </v-btn>
+                </v-card-actions>
             </v-card>
         </v-dialog>
     </v-layout>
