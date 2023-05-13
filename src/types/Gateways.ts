@@ -1,5 +1,4 @@
 import { LatLng } from 'leaflet';
-import { DeviceGPSDatapoint } from '@/types/GPSDatapoints';
 
 export interface GatewayData {
     id: string;
@@ -9,7 +8,6 @@ export interface GatewayData {
 export interface GatewayRssiSelection {
     gatewayData: GatewayData;
     rssi: number;
-    deviceGpsDatapoints: DeviceGPSDatapoint[];
 }
 
 export interface TTNMapperGatewayAPIResponse {

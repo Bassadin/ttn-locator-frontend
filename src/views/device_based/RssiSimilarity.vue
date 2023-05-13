@@ -8,13 +8,12 @@
                     :key="eachRssiSimilarityParameter.gatewayData.id"
                 >
                     <SingleGatewayMarker :gateway-data="eachRssiSimilarityParameter.gatewayData" />
-
-                    <SingleDeviceGPSDatapointMarker
-                        v-for="(eachDeviceGPSDatapoint, index) in eachRssiSimilarityParameter.deviceGpsDatapoints"
-                        :key="index"
-                        :device-gps-datapoint-data="eachDeviceGPSDatapoint"
-                    ></SingleDeviceGPSDatapointMarker>
                 </div>
+                <SingleDeviceGPSDatapointMarker
+                    v-for="(eachDeviceGPSDatapoint, index) in deviceGPSDatapoints"
+                    :key="index"
+                    :device-gps-datapoint-data="eachDeviceGPSDatapoint"
+                ></SingleDeviceGPSDatapointMarker>
             </template>
         </BaseMap>
         <v-dialog v-model="showFilteringDialog" min-width="50vw" width="auto">
@@ -84,12 +83,19 @@ import { LatLng } from 'leaflet';
 import { GatewayRssiSelection } from '@/types/Gateways';
 import {
     DeviceGPSDatapoint,
-    stripRssiFromDeviceGPSDatapointWithRSSI,
-    TtnLocatorDeviceGPSDatapointWithRSSI,
+    mapTtnLocatorApiResponseToDeviceGPSDatapoint,
+    TtnLocatorDeviceGPSDatapoint,
 } from '@/types/GPSDatapoints';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import GatewayAndRssiSelect from '@/components/selection/GatewayAndRssiSelect.vue';
 import GatewayUtils from '@/utils/GatewayUtils';
+
+// Axios
+import { injectStrict } from '@/utils/injectTyped';
+import { AxiosKey } from '@/symbols';
+import { AxiosResponse } from 'axios';
+
+const axios = injectStrict(AxiosKey);
 
 const showFilteringDialog = ref(false);
 const isCurrentlyLoading = ref(false);
@@ -101,7 +107,6 @@ const rssiSimilaritySelectionParameters: Ref<GatewayRssiSelection[]> = ref([
             location: new LatLng(0, 0),
         },
         rssi: -105,
-        deviceGpsDatapoints: [],
     },
     {
         gatewayData: {
@@ -117,7 +122,6 @@ const rssiSimilaritySelectionParameters: Ref<GatewayRssiSelection[]> = ref([
             location: new LatLng(0, 0),
         },
         rssi: -111,
-        deviceGpsDatapoints: [],
     },
     {
         gatewayData: {
@@ -125,9 +129,10 @@ const rssiSimilaritySelectionParameters: Ref<GatewayRssiSelection[]> = ref([
             location: new LatLng(0, 0),
         },
         rssi: -81,
-        deviceGpsDatapoints: [],
     },
 ]);
+
+const deviceGPSDatapoints: Ref<DeviceGPSDatapoint[]> = ref([]);
 
 const rssiCheckingRange: Ref<number> = ref(1);
 
@@ -138,7 +143,6 @@ function addNewParameter() {
             location: new LatLng(0, 0),
         },
         rssi: -50,
-        deviceGpsDatapoints: [],
     });
 }
 
@@ -154,8 +158,6 @@ async function loadSimilarityData() {
     console.info(`Loading gateway similarity data for ${rssiSimilaritySelectionParameters.value.length} gateways`);
     isCurrentlyLoading.value = true;
 
-    const allPromises: Promise<TtnLocatorDeviceGPSDatapointWithRSSI[]>[] = [];
-
     rssiSimilaritySelectionParameters.value.forEach(async (eachRssiSimilarityParameter: GatewayRssiSelection) => {
         const gatewayID = eachRssiSimilarityParameter.gatewayData.id;
         const rssiRange = {
@@ -166,36 +168,36 @@ async function loadSimilarityData() {
         console.debug(`Loading gateway data for ${gatewayID} with RSSI range`, rssiRange);
 
         const gatewayLocation = await GatewayUtils.getGatewayLocationForGatewayId(gatewayID);
-
         if (gatewayLocation === null) {
             return;
         }
-
         eachRssiSimilarityParameter.gatewayData.location = gatewayLocation;
+    });
 
-        const getGpsDatapointsPromise = GatewayUtils.getLastXDaysGpsDatapointsForGatewayId(
-            gatewayID,
-            rssiRange.min,
-            rssiRange.max,
-        );
-        getGpsDatapointsPromise.then((responseData) => {
-            const parsedData: DeviceGPSDatapoint[] = responseData.map(stripRssiFromDeviceGPSDatapointWithRSSI);
+    const similarityFilter = rssiSimilaritySelectionParameters.value.map((eachRssiSimilarityParameter) => {
+        return {
+            gatewayId: eachRssiSimilarityParameter.gatewayData.id,
+            minRssi: eachRssiSimilarityParameter.rssi - rssiCheckingRange.value,
+            maxRssi: eachRssiSimilarityParameter.rssi + rssiCheckingRange.value,
+        };
+    });
 
-            eachRssiSimilarityParameter.deviceGpsDatapoints = parsedData;
+    console.debug('Sending request with similarity filter', similarityFilter);
 
-            console.debug(
-                `Loaded ${parsedData.length} GPS datapoints for gateway ${gatewayID} with RSSI range`,
-                rssiRange,
-            );
+    await axios
+        .post('/device_gps_datapoints/rssi_similarity', {
+            similarityFilter: similarityFilter,
+        })
+        .then((response: AxiosResponse<{ message: string; data: TtnLocatorDeviceGPSDatapoint[] }>) => {
+            const parsedData: TtnLocatorDeviceGPSDatapoint[] = response.data.data;
+
+            deviceGPSDatapoints.value = parsedData.map(mapTtnLocatorApiResponseToDeviceGPSDatapoint);
+
+            console.debug(`Got ${parsedData.length} GPS datapoints for similarity filter`, similarityFilter);
         });
 
-        allPromises.push(getGpsDatapointsPromise);
-    });
-
-    Promise.allSettled(allPromises).then(() => {
-        isCurrentlyLoading.value = false;
-        showFilteringDialog.value = false;
-        console.info('Finished loading gateway similarity data');
-    });
+    isCurrentlyLoading.value = false;
+    showFilteringDialog.value = false;
+    console.info('Finished loading gateway similarity data');
 }
 </script>
