@@ -66,10 +66,7 @@ import { AxiosResponse } from 'axios';
 
 // Types
 import { GatewayData, PacketbrokerGatewayAPIResponse } from '@/types/Gateways';
-import {
-    TtnLocatorDeviceGPSDatapointWithRSSI,
-    TtnLocatorDeviceGPSDatapointWithRSSIApiResponse,
-} from '@/types/GPSDatapoints';
+import { TtnLocatorDeviceGPSDatapointWithRSSI } from '@/types/GPSDatapoints';
 
 // Turf options
 import * as turf from '@turf/turf';
@@ -143,70 +140,77 @@ async function getGatewayData() {
 
     axios
         .get(`/gateways/${selectedGatewayID.value}/gps_datapoints_with_rssi?hdop_filter=${Constants.HDOP_CUTOFF_POINT}`)
-        .then((response: AxiosResponse<TtnLocatorDeviceGPSDatapointWithRSSIApiResponse>) => {
-            const responseData: TtnLocatorDeviceGPSDatapointWithRSSI[] = response.data.data;
+        .then(
+            (
+                response: AxiosResponse<{
+                    message: string;
+                    data: TtnLocatorDeviceGPSDatapointWithRSSI[];
+                }>,
+            ) => {
+                const responseData: TtnLocatorDeviceGPSDatapointWithRSSI[] = response.data.data;
 
-            const gatewayTurfPoint = turf.point([gatewayLocation.lng, gatewayLocation.lat]);
+                const gatewayTurfPoint = turf.point([gatewayLocation.lng, gatewayLocation.lat]);
 
-            console.info(`Found ${responseData.length} GPS datapoints`);
+                console.info(`Found ${responseData.length} GPS datapoints`);
 
-            const rssiDistanceData = responseData.map((eachDeviceGPSDatapoint) => {
-                const rssiValue = eachDeviceGPSDatapoint.rssi;
+                const rssiDistanceData = responseData.map((eachDeviceGPSDatapoint) => {
+                    const rssiValue = eachDeviceGPSDatapoint.rssi;
 
-                const distanceToGateway = turf.distance(
-                    gatewayTurfPoint,
-                    turf.point([eachDeviceGPSDatapoint.longitude, eachDeviceGPSDatapoint.latitude]),
-                    { units: 'meters' },
+                    const distanceToGateway = turf.distance(
+                        gatewayTurfPoint,
+                        turf.point([eachDeviceGPSDatapoint.longitude, eachDeviceGPSDatapoint.latitude]),
+                        { units: 'meters' },
+                    );
+
+                    return { x: distanceToGateway, y: rssiValue };
+                });
+
+                const maxDistance = Math.max(...rssiDistanceData.map((eachDataPoint) => eachDataPoint.x));
+
+                // Regression
+                const regressionData = simpleStatistics.linearRegression(
+                    rssiDistanceData.map((eachDataPoint) => [eachDataPoint.x, eachDataPoint.y]),
                 );
 
-                return { x: distanceToGateway, y: rssiValue };
-            });
+                if (rssiDistanceData.length === 0) {
+                    console.info('No data available');
+                    return;
+                }
 
-            const maxDistance = Math.max(...rssiDistanceData.map((eachDataPoint) => eachDataPoint.x));
+                const regressionPrediction = simpleStatistics.linearRegressionLine(regressionData);
+                console.debug('Regression data', regressionData);
 
-            // Regression
-            const regressionData = simpleStatistics.linearRegression(
-                rssiDistanceData.map((eachDataPoint) => [eachDataPoint.x, eachDataPoint.y]),
-            );
+                // Calculate some regression datapoints between 0 and maxDistance
+                const regressionDatapoints = [];
+                for (let i = 0; i <= maxDistance; i += 100) {
+                    regressionDatapoints.push({ x: i, y: regressionPrediction(i) });
+                }
 
-            if (rssiDistanceData.length === 0) {
-                console.info('No data available');
-                return;
-            }
+                chartData.value = {
+                    datasets: [
+                        {
+                            type: 'scatter',
+                            label: 'GPS Datapoints',
+                            data: rssiDistanceData,
+                        },
+                        {
+                            type: 'line',
+                            label: 'Trend line',
+                            data: regressionDatapoints,
+                            fill: false,
+                            borderColor: 'red',
+                            backgroundColor: 'red',
+                            pointRadius: 0,
+                            borderWidth: 3,
+                            showLine: true,
+                            tension: 0.5,
+                        },
+                    ],
+                };
 
-            const regressionPrediction = simpleStatistics.linearRegressionLine(regressionData);
-            console.debug('Regression data', regressionData);
-
-            // Calculate some regression datapoints between 0 and maxDistance
-            const regressionDatapoints = [];
-            for (let i = 0; i <= maxDistance; i += 100) {
-                regressionDatapoints.push({ x: i, y: regressionPrediction(i) });
-            }
-
-            chartData.value = {
-                datasets: [
-                    {
-                        type: 'scatter',
-                        label: 'GPS Datapoints',
-                        data: rssiDistanceData,
-                    },
-                    {
-                        type: 'line',
-                        label: 'Trend line',
-                        data: regressionDatapoints,
-                        fill: false,
-                        borderColor: 'red',
-                        backgroundColor: 'red',
-                        pointRadius: 0,
-                        borderWidth: 3,
-                        showLine: true,
-                        tension: 0.5,
-                    },
-                ],
-            };
-
-            chartDataReady.value = true;
-        });
+                chartDataReady.value = true;
+            },
+        );
 
     isCurrentlyLoading.value = false;
 }

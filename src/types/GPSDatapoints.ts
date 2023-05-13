@@ -57,12 +57,6 @@ export interface TtnLocatorDeviceGPSDatapointWithRSSI {
     rssi: number;
 }
 
-// gps_datapoints_with_rssi
-export interface TtnLocatorDeviceGPSDatapointWithRSSIApiResponse {
-    message: string;
-    data: TtnLocatorDeviceGPSDatapointWithRSSI[];
-}
-
 export interface RssiSimilarityFilter {
     gatewayId: string;
     minRssi: number;
