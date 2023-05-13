@@ -1,7 +1,8 @@
 <template>
     <l-circle-marker :lat-lng="gatewayData.location" :radius="6" color="red">
         <l-popup>
-            <b>Gateway ID:</b>{{ gatewayData.id }}<br />
+            <h3>Gateway</h3>
+            <h2 class="mb-2"><v-icon icon="mdi-antenna" size="small"></v-icon> {{ gatewayData.id }}</h2>
             <b>Location:</b> {{ gatewayData.location }}
         </l-popup>
         <l-tooltip :options="{ offset: L.point({ x: 15, y: 0 }) }"> <b>Gateway:</b> {{ gatewayData.id }} </l-tooltip>

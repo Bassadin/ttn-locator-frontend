@@ -1,10 +1,15 @@
 <template>
     <l-circle-marker :lat-lng="deviceGpsDatapointData.location" :radius="3">
         <l-popup>
-            <b>Device ID:</b> {{ deviceGpsDatapointData.deviceId }}<br />
+            <h3>Device GPS Datapoint</h3>
+            <h2 class="mb-2">
+                <v-icon icon="mdi-cellphone-marker" size="small"></v-icon> {{ deviceGpsDatapointData.deviceId }}
+            </h2>
+            <b>GPS Datapoint DB ID:</b> {{ deviceGpsDatapointData.id }}<br />
             <b>Location:</b> {{ deviceGpsDatapointData.location }}
         </l-popup>
         <l-tooltip :options="{ offset: L.point({ x: 15, y: 0 }) }">
+            <h2>{{ deviceGpsDatapointData.deviceId }}</h2>
             <b>Location:</b> {{ deviceGpsDatapointData.location }}
         </l-tooltip>
     </l-circle-marker>
