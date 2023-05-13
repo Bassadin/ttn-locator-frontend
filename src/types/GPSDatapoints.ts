@@ -1,4 +1,5 @@
 import { LatLng } from 'leaflet';
+import { TtnMapperDatapoint } from '@/types/TtnMapperDatapoints';
 
 export interface TtnLocatorDeviceGPSDatapoint {
     id: number;
@@ -8,6 +9,10 @@ export interface TtnLocatorDeviceGPSDatapoint {
     longitude: number;
     altitude: number;
     hdop: number;
+}
+
+export interface DeviceGPSDatapointWithTtnMapperDatapoints extends TtnLocatorDeviceGPSDatapoint {
+    ttnMapperDatapoints: TtnMapperDatapoint[];
 }
 
 export interface DeviceGPSDatapoint {
