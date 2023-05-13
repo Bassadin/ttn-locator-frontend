@@ -159,15 +159,9 @@ async function loadSimilarityData() {
     isCurrentlyLoading.value = true;
 
     rssiSimilaritySelectionParameters.value.forEach(async (eachRssiSimilarityParameter: GatewayRssiSelection) => {
-        const gatewayID = eachRssiSimilarityParameter.gatewayData.id;
-        const rssiRange = {
-            min: eachRssiSimilarityParameter.rssi - rssiCheckingRange.value,
-            max: eachRssiSimilarityParameter.rssi + rssiCheckingRange.value,
-        };
-
-        console.debug(`Loading gateway data for ${gatewayID} with RSSI range`, rssiRange);
-
-        const gatewayLocation = await GatewayUtils.getGatewayLocationForGatewayId(gatewayID);
+        const gatewayLocation = await GatewayUtils.getGatewayLocationForGatewayId(
+            eachRssiSimilarityParameter.gatewayData.id,
+        );
         if (gatewayLocation === null) {
             return;
         }
