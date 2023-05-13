@@ -30,10 +30,10 @@
             <v-card>
                 <v-card-title>RSSI similarity parameters</v-card-title>
                 <v-card-text>
-                    <v-form>
-                        <v-subheader>Load values from Device GPS Datapoint ID</v-subheader>
-                        <v-row>
-                            <v-col>
+                    <v-subheader>Load values from Device GPS Datapoint ID</v-subheader>
+                    <v-row>
+                        <v-col>
+                            <v-form @submit.prevent="loadParametersFromDeviceGpsDatapointInDB">
                                 <v-text-field
                                     v-model.number="deviceGPSDatapointID"
                                     label="Device GPS Datapoint ID from DB"
@@ -41,15 +41,14 @@
                                     clearable
                                 >
                                     <template #append>
-                                        <v-btn
-                                            icon="mdi-database-arrow-down"
-                                            @click="loadParametersFromDeviceGpsDatapointInDB"
-                                        ></v-btn>
+                                        <v-btn icon="mdi-database-arrow-down" type="submit"></v-btn>
                                     </template>
                                 </v-text-field>
-                            </v-col>
-                        </v-row>
-                        <v-subheader>RSSI Similarity Parameters</v-subheader>
+                            </v-form>
+                        </v-col>
+                    </v-row>
+                    <v-subheader>RSSI Similarity Parameters</v-subheader>
+                    <v-form>
                         <v-row>
                             <v-col>
                                 <v-text-field
