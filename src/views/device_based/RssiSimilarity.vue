@@ -35,7 +35,7 @@
                         <v-col>
                             <v-form @submit.prevent="loadParametersFromDeviceGpsDatapointInDB">
                                 <v-text-field
-                                    v-model.number="deviceGPSDatapointID"
+                                    v-model.number="deviceGPSDatapointFromDatabaseID"
                                     label="Device GPS Datapoint ID from DB"
                                     type="number"
                                     clearable
@@ -91,6 +91,7 @@
 
 <script setup lang="ts">
 import { ref, Ref } from 'vue';
+import Constants from '@/other/Constants';
 
 // Components
 import BaseMap from '@/components/BaseMap.vue';
@@ -111,6 +112,7 @@ import {
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import GatewayAndRssiSelect from '@/components/selection/GatewayAndRssiSelect.vue';
 import GatewayUtils from '@/utils/GatewayUtils';
+import { TtnMapperDatapoint } from '@/types/TtnMapperDatapoints';
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';
@@ -156,9 +158,9 @@ const rssiSimilaritySelectionParameters: Ref<GatewayRssiSelection[]> = ref([
 
 const deviceGPSDatapoints: Ref<DeviceGPSDatapoint[]> = ref([]);
 
-const rssiCheckingRange: Ref<number> = ref(1);
+const rssiCheckingRange: Ref<number> = ref(Constants.DEFAULT_RSSI_CHECKING_RANGE);
 
-const deviceGPSDatapointID: Ref<number> = ref(0);
+const deviceGPSDatapointFromDatabaseID: Ref<number> = ref(0);
 
 function addNewParameter() {
     rssiSimilaritySelectionParameters.value.push({
@@ -220,22 +222,26 @@ async function loadSimilarityData() {
 }
 
 async function loadParametersFromDeviceGpsDatapointInDB() {
-    console.info(`Loading parameters from device GPS datapoint with id ${deviceGPSDatapointID.value} in DB`);
+    console.info(
+        `Loading parameters from device GPS datapoint with id ${deviceGPSDatapointFromDatabaseID.value} in DB`,
+    );
 
     await axios
-        .get(`/device_gps_datapoints/${deviceGPSDatapointID.value}`)
+        .get(`/device_gps_datapoints/${deviceGPSDatapointFromDatabaseID.value}`)
         .then((response: AxiosResponse<{ message: string; data: DeviceGPSDatapointWithTtnMapperDatapoints }>) => {
             const parsedData: DeviceGPSDatapointWithTtnMapperDatapoints = response.data.data;
 
-            rssiSimilaritySelectionParameters.value = parsedData.ttnMapperDatapoints.map((eachTtnMapperDatapoint) => {
-                return {
-                    gatewayData: {
-                        id: eachTtnMapperDatapoint.gatewayId,
-                        location: new LatLng(0, 0),
-                    },
-                    rssi: eachTtnMapperDatapoint.rssi,
-                };
-            });
+            rssiSimilaritySelectionParameters.value = parsedData.ttnMapperDatapoints.map(
+                (eachTtnMapperDatapoint: TtnMapperDatapoint) => {
+                    return {
+                        gatewayData: {
+                            id: eachTtnMapperDatapoint.gatewayId,
+                            location: new LatLng(0, 0),
+                        },
+                        rssi: eachTtnMapperDatapoint.rssi,
+                    };
+                },
+            );
         });
 }
 </script>
