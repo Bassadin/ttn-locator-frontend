@@ -7,9 +7,8 @@
             <v-col cols="10" md="4">
                 <v-text-field
                     v-model.number="rssi"
-                    hide-details
-                    single-line
                     type="number"
+                    label="RSSI"
                     :min="Constants.MIN_SELECTABLE_RSSI"
                     :max="Constants.MAX_SELECTABLE_RSSI"
                 ></v-text-field>

@@ -53,7 +53,7 @@
                             <v-col>
                                 <v-text-field
                                     v-model.number="rssiCheckingRange"
-                                    label="RSSI checking range"
+                                    label="RSSI checking range (+/-)"
                                     type="number"
                                     min="0"
                                     max="100"
