@@ -3,7 +3,9 @@
         <l-popup>
             <h3>Gateway</h3>
             <h2 class="mb-2"><v-icon icon="mdi-antenna" size="small"></v-icon> {{ gatewayData.id }}</h2>
-            <b>Location:</b> {{ gatewayData.location }}
+            <b>Location:</b><br />
+            <v-icon icon="mdi-latitude" /> {{ gatewayData.location.lat }}<br />
+            <v-icon icon="mdi-longitude" /> {{ gatewayData.location.lng }}<br />
         </l-popup>
         <l-tooltip :options="{ offset: L.point({ x: 15, y: 0 }) }"> <b>Gateway:</b> {{ gatewayData.id }} </l-tooltip>
     </l-circle-marker>

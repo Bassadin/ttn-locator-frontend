@@ -6,7 +6,9 @@
                 <v-icon icon="mdi-cellphone-marker" size="small"></v-icon> {{ deviceGpsDatapointData.deviceId }}
             </h2>
             <b>GPS Datapoint DB ID:</b> {{ deviceGpsDatapointData.id }}<br />
-            <b>Location:</b> {{ deviceGpsDatapointData.location }}
+            <b>Location:</b><br />
+            <v-icon icon="mdi-latitude" /> {{ deviceGpsDatapointData.location.lat }}<br />
+            <v-icon icon="mdi-longitude" /> {{ deviceGpsDatapointData.location.lng }}<br />
         </l-popup>
         <l-tooltip :options="{ offset: L.point({ x: 15, y: 0 }) }">
             <h2>{{ deviceGpsDatapointData.deviceId }}</h2>
