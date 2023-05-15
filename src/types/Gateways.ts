@@ -22,11 +22,6 @@ export interface TTNMapperGatewayAPIResponse {
     }[];
 }
 
-export interface TtnLocatorGatewayApiResponse {
-    message: string;
-    data: TtnLocatorGatewayData[];
-}
-
 export interface TtnLocatorGatewayData {
     gatewayId: string;
     name?: string;

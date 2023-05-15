@@ -5,11 +5,12 @@ import { LatLng } from 'leaflet';
 // Axios
 import axios from '@/plugins/axios';
 import { AxiosResponse } from 'axios';
+import { TtnLocatorGatewayData } from '@/types/Gateways';
 
 export default class GatewayUtils {
     public static doesGatewayIdExist(gatewayId: string): Promise<boolean> {
         const doesGatewayIdExist: Promise<boolean> = axios
-            .get(`https://www.thethingsnetwork.org/gateway-data/gateway/${gatewayId}`)
+            .get(`/gateways/${gatewayId}`)
             .then((response: AxiosResponse) => {
                 if (response.status === 200) {
                     return true;
@@ -26,21 +27,15 @@ export default class GatewayUtils {
 
     public static getGatewayLocationForGatewayId(gatewayId: string): Promise<LatLng | null> {
         return axios
-            .get(`https://www.thethingsnetwork.org/gateway-data/gateway/${gatewayId}`)
-            .then((response: AxiosResponse) => {
-                const responseData = response.data[gatewayId];
+            .get(`/gateways/${gatewayId}`)
+            .then((response: AxiosResponse<{ message: string; data: TtnLocatorGatewayData }>) => {
+                const responseData: TtnLocatorGatewayData = response.data.data;
 
-                if (responseData.location === undefined) {
+                if (responseData.latitude == 0 && responseData.longitude == 0) {
                     return null;
                 }
 
-                if (responseData.location.latitude == 0 && responseData.location.longitude == 0) {
-                    return null;
-                }
-
-                const location = new LatLng(responseData.location.latitude, responseData.location.longitude);
-
-                return location;
+                return new LatLng(responseData.latitude, responseData.longitude);
             })
             .catch(() => {
                 return null;

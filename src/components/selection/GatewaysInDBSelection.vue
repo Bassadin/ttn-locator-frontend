@@ -14,7 +14,7 @@
 import { onMounted, ref, Ref } from 'vue';
 
 // Types
-import { TtnLocatorGatewayApiResponse, TtnLocatorGatewayData } from '@/types/Gateways';
+import { TtnLocatorGatewayData } from '@/types/Gateways';
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';
@@ -33,7 +33,7 @@ onMounted(() => {
 
 // Get gateways in database
 function getGatewaysInDatabase() {
-    axios.get('/gateways').then((response: AxiosResponse<TtnLocatorGatewayApiResponse>) => {
+    axios.get('/gateways').then((response: AxiosResponse<{ message: string; data: TtnLocatorGatewayData[] }>) => {
         const responseData = response.data;
 
         const gateways: TtnLocatorGatewayData[] = responseData.data;
