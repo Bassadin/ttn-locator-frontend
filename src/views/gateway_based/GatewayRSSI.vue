@@ -69,11 +69,7 @@ import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDevic
 // Types
 import { LatLng } from 'leaflet';
 import { GatewayData } from '@/types/Gateways';
-import {
-    DeviceGPSDatapoint,
-    stripRssiFromDeviceGPSDatapointWithRSSI,
-    TtnLocatorDeviceGPSDatapointWithRSSI,
-} from '@/types/GPSDatapoints';
+import { DeviceGPSDatapoint, stripRssiFromDeviceGPSDatapointWithRSSI } from '@/types/GPSDatapoints';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import GatewayUtils from '@/utils/GatewayUtils';
 
@@ -113,22 +109,15 @@ function getGatewayData() {
             alert('Gateway not found');
         });
 
-    const ttnMapperPromise = GatewayUtils.getLastXDaysGpsDatapointsForGatewayId(gatewayID.value).then(
-        (responseData) => {
-            const filteredData: TtnLocatorDeviceGPSDatapointWithRSSI[] = responseData.filter(
-                (eachResponseDataObject: TtnLocatorDeviceGPSDatapointWithRSSI) => {
-                    return (
-                        eachResponseDataObject.rssi >= selectedRSSIRange.value[0] &&
-                        eachResponseDataObject.rssi <= selectedRSSIRange.value[1]
-                    );
-                },
-            );
+    const ttnMapperPromise = GatewayUtils.getLastXDaysGpsDatapointsForGatewayId(
+        gatewayID.value,
+        selectedRSSIRange.value[0],
+        selectedRSSIRange.value[1],
+    ).then((responseData) => {
+        const parsedData: DeviceGPSDatapoint[] = responseData.map(stripRssiFromDeviceGPSDatapointWithRSSI);
 
-            const parsedData: DeviceGPSDatapoint[] = filteredData.map(stripRssiFromDeviceGPSDatapointWithRSSI);
-
-            gpsDatapointsWithRSSIValues.value = parsedData;
-        },
-    );
+        gpsDatapointsWithRSSIValues.value = parsedData;
+    });
 
     Promise.all([gatewayLocationPromise, ttnMapperPromise]).finally(() => {
         isCurrentlyLoading.value = false;
