@@ -54,9 +54,8 @@ onMounted(async () => {
 });
 
 function handleSubscriptionChange(deviceId: string, newSubscriptionBoolean: boolean) {
-    axios.post(`/devices`, {
+    axios.put(`/devices/${deviceId}`, {
         subscription: newSubscriptionBoolean,
-        deviceId: deviceId,
     });
 }
 </script>
