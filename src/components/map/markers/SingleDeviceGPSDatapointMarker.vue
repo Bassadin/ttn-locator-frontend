@@ -1,5 +1,11 @@
 <template>
-    <l-circle-marker :lat-lng="deviceGpsDatapointData.location" :radius="3">
+    <l-circle-marker
+        :lat-lng="deviceGpsDatapointData.location"
+        :radius="2"
+        :fill="true"
+        :fill-opacity="1"
+        color="#2E7D32"
+    >
         <l-popup>
             <h3>Device GPS Datapoint</h3>
             <h2 class="mb-2">

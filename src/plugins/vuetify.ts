@@ -31,15 +31,15 @@ export default createVuetify({
             light: {
                 dark: false,
                 colors: {
-                    primary: colors.green.darken3,
-                    secondary: colors.lime.darken1,
+                    primary: colors.green.darken3, // #2E7D32
+                    secondary: colors.blue.darken2, // #1976D2
                 },
             },
             dark: {
                 dark: true,
                 colors: {
                     primary: colors.green.darken3,
-                    secondary: colors.lime.darken1,
+                    secondary: colors.blue.darken2,
                 },
             },
         },
