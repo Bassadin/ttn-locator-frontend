@@ -79,7 +79,7 @@ import GatewayUtils from '@/utils/GatewayUtils';
 
 const gatewayID = ref(route.params.gatewayId.toString());
 const gatewayData: Ref<GatewayData> = ref({} as GatewayData);
-const selectedRSSIRange = ref([-110, -90]);
+const selectedRSSIRange = ref([-100, -95]);
 
 const gpsDatapointsWithRSSIValues: Ref<DeviceGPSDatapoint[]> = ref([]);
 
