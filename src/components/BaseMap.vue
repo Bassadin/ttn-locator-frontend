@@ -1,6 +1,6 @@
 <template>
     <div class="leaflet-map">
-        <l-map :zoom="15" :center="mapCenter" :options="{ zoomControl: false }">
+        <l-map :zoom="15" :center="mapCenter" :options="{ zoomControl: false, attributionControl: false }">
             <l-tile-layer
                 v-for="tileProvider in tileProviders"
                 :key="tileProvider.name"
@@ -14,7 +14,7 @@
             <slot name="map-layers"></slot>
 
             <l-control-attribution
-                position="topright"
+                position="bottomright"
                 prefix="Data courtesy of <a target='_blank' href='https://ttnmapper.org/'>TTN Mapper</a>"
             ></l-control-attribution>
 
@@ -47,6 +47,13 @@ const tileProviders = ref([
         url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
         attribution:
             'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+    },
+    {
+        name: 'Esri World Imagery (Satellite)',
+        visible: false,
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        attribution:
+            'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     },
 ]);
 </script>
