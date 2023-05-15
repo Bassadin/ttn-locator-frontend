@@ -12,6 +12,26 @@
             <b>Location:</b><br />
             <v-icon icon="mdi-latitude" /> {{ gatewayData.location.lat }}<br />
             <v-icon icon="mdi-longitude" /> {{ gatewayData.location.lng }}<br />
+            <v-btn
+                class="mt-2"
+                color="primary"
+                size="small"
+                :to="`/rssi_range_graph/${gatewayData.id}`"
+                target="_blank"
+                block
+            >
+                Gateway range graph
+            </v-btn>
+            <v-btn
+                class="mt-2"
+                color="primary"
+                size="small"
+                :to="`/gateway_rssi/${gatewayData.id}`"
+                target="_blank"
+                block
+            >
+                Gateway RSSI range
+            </v-btn>
         </l-popup>
         <l-tooltip :options="{ offset: L.point({ x: 20, y: 0 }) }"> <b>Gateway:</b> {{ gatewayData.id }} </l-tooltip>
     </l-marker>
