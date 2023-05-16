@@ -9,11 +9,13 @@
                     :gateway-data="eachRssiSimilarityParameter.gatewayData"
                 />
 
+                <!-- TODO dirty hack: `geoJsonStyleFunction as any` should work without the any too -->
                 <l-geo-json
                     v-for="eachGeoJson in geoJsonCirclesArray"
                     :key="eachGeoJson.id"
                     :geojson="eachGeoJson"
-                    :options="{ style: { color: '#1976D2', weight: 2, fill: false } }"
+                    :options="{ style: { color: 'red', weight: 0, fill: true } }"
+                    :options-style="geoJsonStyleFunction as any"
                 ></l-geo-json>
 
                 <ActualDeviceLocationMarker
@@ -40,6 +42,18 @@
                         v-model:rssi-similarity-selection-parameters="gatewayRssiSelectionParameters"
                         @actual-device-location-updated="actualDeviceLocation = $event"
                     />
+                    <v-row>
+                        <v-col>
+                            <v-text-field
+                                v-model.number="rangeDonutTolerance"
+                                label="Range donut tolerance km (+/-)"
+                                type="number"
+                                min="0.001"
+                                max="0.3"
+                                step="0.001"
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
                 </v-card-text>
                 <v-card-actions>
                     <v-btn block :loading="isCurrentlyLoading" color="primary" @click.prevent="recalculate">
@@ -54,6 +68,7 @@
 <script setup lang="ts">
 import { ref, Ref } from 'vue';
 import * as turf from '@turf/turf';
+import Constants from '@/other/Constants';
 
 // Components
 import BaseMap from '@/components/BaseMap.vue';
@@ -67,13 +82,25 @@ import GatewayRssiParametersSelect from '@/components/selection/GatewayRssiParam
 import { GatewayRssiSelection } from '@/types/Gateways';
 import { DeviceGPSDatapoint } from '@/types/GPSDatapoints';
 import GatewayUtils from '@/utils/GatewayUtils';
-import { GeoJSON } from 'leaflet';
+import { GeoJSON, PathOptions } from 'leaflet';
 
 const showFilteringDialog = ref(false);
 const isCurrentlyLoading = ref(false);
 const gatewayRssiSelectionParameters: Ref<GatewayRssiSelection[]> = ref([]);
 const actualDeviceLocation: Ref<DeviceGPSDatapoint | null> = ref(null);
 const geoJsonCirclesArray: Ref<GeoJSON.Feature[]> = ref([]);
+const rangeDonutTolerance = ref(Constants.DEFAULT_RSSI_TO_RANGE_TOLERANCE_KILOMETERS);
+
+function geoJsonStyleFunction(_feature: GeoJSON.Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>) {
+    const pathOptions: PathOptions = {
+        color: '#2E7D32',
+        weight: 0,
+        fill: true,
+        opacity: 0.25,
+    };
+
+    return pathOptions;
+}
 
 async function recalculate() {
     isCurrentlyLoading.value = true;
@@ -106,8 +133,14 @@ function recalculateGeoJsonCirclesArray() {
     const geoJsonArray: GeoJSON.Feature[] = [];
 
     gatewayRssiSelectionParameters.value.forEach((eachGatewayRssiParameter: GatewayRssiSelection) => {
-        const circleInner = GatewayUtils.getTurfCircleGeoJSONFromGatewayData(eachGatewayRssiParameter, -0.05);
-        const circleOuter = GatewayUtils.getTurfCircleGeoJSONFromGatewayData(eachGatewayRssiParameter, 0.05);
+        const circleInner = GatewayUtils.getTurfCircleGeoJSONFromGatewayData(
+            eachGatewayRssiParameter,
+            -rangeDonutTolerance.value,
+        );
+        const circleOuter = GatewayUtils.getTurfCircleGeoJSONFromGatewayData(
+            eachGatewayRssiParameter,
+            rangeDonutTolerance.value,
+        );
 
         const difference = turf.difference(circleOuter, circleInner);
         if (difference !== null) {
