@@ -35,71 +35,11 @@
             <v-card>
                 <v-card-title>RSSI similarity</v-card-title>
                 <v-card-text>
-                    <v-subheader>Load values from TTN Mapper Datapoint ID</v-subheader>
-                    <v-row>
-                        <v-col>
-                            <v-form @submit.prevent="loadParametersFromTtnMapperDatapointInDB">
-                                <v-text-field
-                                    v-model.number="ttnMapperDatapointFromDatabaseID"
-                                    label="TTN Mapper Datapoint ID from DB"
-                                    type="number"
-                                    clearable
-                                >
-                                    <template #append>
-                                        <v-btn icon="mdi-database-arrow-down" type="submit"></v-btn>
-                                    </template>
-                                </v-text-field>
-                            </v-form>
-                        </v-col>
-                    </v-row>
-                    <v-subheader>Load values from Device GPS Datapoint ID</v-subheader>
-                    <v-row>
-                        <v-col>
-                            <v-form @submit.prevent="loadParametersFromDeviceGpsDatapointInDB">
-                                <v-text-field
-                                    v-model.number="deviceGPSDatapointFromDatabaseID"
-                                    label="Device GPS Datapoint ID from DB"
-                                    type="number"
-                                    clearable
-                                >
-                                    <template #append>
-                                        <v-btn icon="mdi-database-arrow-down" type="submit"></v-btn>
-                                    </template>
-                                </v-text-field>
-                            </v-form>
-                        </v-col>
-                    </v-row>
-                    <v-subheader>RSSI Similarity Parameters</v-subheader>
-                    <v-form>
-                        <v-row>
-                            <v-col>
-                                <v-text-field
-                                    v-model.number="rssiCheckingRange"
-                                    label="RSSI checking range (+/-)"
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    step="1"
-                                ></v-text-field>
-                            </v-col>
-                        </v-row>
-                        <div class="my-4">
-                            <GatewayAndRssiSelect
-                                v-for="eachRssiSimilarityParameter in rssiSimilaritySelectionParameters"
-                                :key="eachRssiSimilarityParameter.gatewayData.id"
-                                v-model:gatewayId="eachRssiSimilarityParameter.gatewayData.id"
-                                v-model:rssi="eachRssiSimilarityParameter.rssi"
-                                @delete-parameter="deleteParameter"
-                            />
-                        </div>
-                        <v-row class="mb-4">
-                            <v-col align-self="end">
-                                <v-btn prepend-icon="mdi-plus" @click.prevent="addNewParameter">
-                                    Add new parameter set
-                                </v-btn>
-                            </v-col>
-                        </v-row>
-                    </v-form>
+                    <RssiSimilarityParametersSelect
+                        v-model:rssi-similarity-selection-parameters="rssiSimilaritySelectionParameters"
+                        v-model:rssi-checking-range="rssiCheckingRange"
+                        @actual-device-location-updated="actualDeviceLocation = $event"
+                    />
                 </v-card-text>
                 <v-card-actions>
                     <v-btn block :loading="isCurrentlyLoading" color="primary" @click.prevent="loadSimilarityData">
@@ -117,11 +57,11 @@ import Constants from '@/other/Constants';
 
 // Components
 import BaseMap from '@/components/BaseMap.vue';
-
-// Components
 import SingleGatewayMarker from '@/components/map/markers/SingleGatewayMarker.vue';
 import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDeviceGPSDatapointMarker.vue';
 import ActualDeviceLocationMarker from '@/components/map/markers/ActualDeviceLocationMarker.vue';
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
+import RssiSimilarityParametersSelect from '@/components/selection/RssiSimilarityParametersSelect.vue';
 
 // Types
 import { LatLng } from 'leaflet';
@@ -130,13 +70,8 @@ import {
     DeviceGPSDatapoint,
     mapTtnLocatorApiResponseToDeviceGPSDatapoint,
     TtnLocatorDeviceGPSDatapoint,
-    DeviceGPSDatapointWithTtnMapperDatapoints,
-    convertTtnLocatorDeviceGPSDatapointToNormal,
 } from '@/types/GPSDatapoints';
-import LoadingOverlay from '@/components/LoadingOverlay.vue';
-import GatewayAndRssiSelect from '@/components/selection/GatewayAndRssiSelect.vue';
 import GatewayUtils from '@/utils/GatewayUtils';
-import { TtnMapperDatapoint } from '@/types/TtnMapperDatapoints';
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';
@@ -184,28 +119,7 @@ const deviceGPSDatapoints: Ref<DeviceGPSDatapoint[]> = ref([]);
 
 const rssiCheckingRange: Ref<number> = ref(Constants.DEFAULT_RSSI_CHECKING_RANGE);
 
-const deviceGPSDatapointFromDatabaseID: Ref<number> = ref(0);
-const ttnMapperDatapointFromDatabaseID: Ref<number> = ref(0);
-
 const actualDeviceLocation: Ref<DeviceGPSDatapoint | null> = ref(null);
-
-function addNewParameter() {
-    rssiSimilaritySelectionParameters.value.push({
-        gatewayData: {
-            id: '',
-            location: new LatLng(0, 0),
-        },
-        rssi: -50,
-    });
-}
-
-function deleteParameter(gatewayId: string) {
-    rssiSimilaritySelectionParameters.value = rssiSimilaritySelectionParameters.value.filter(
-        (eachRssiSimilarityParameter: GatewayRssiSelection) => {
-            return eachRssiSimilarityParameter.gatewayData.id !== gatewayId;
-        },
-    );
-}
 
 function loadGatewayLocations() {
     rssiSimilaritySelectionParameters.value.forEach(async (eachRssiSimilarityParameter: GatewayRssiSelection) => {
@@ -250,48 +164,5 @@ async function loadSimilarityData() {
     isCurrentlyLoading.value = false;
     showFilteringDialog.value = false;
     console.info('Finished loading gateway similarity data');
-}
-
-async function loadParametersFromDeviceGpsDatapointInDB() {
-    actualDeviceLocation.value = null;
-    console.info(
-        `Loading parameters from device GPS datapoint with id ${deviceGPSDatapointFromDatabaseID.value} in DB`,
-    );
-
-    await axios
-        .get(`/device_gps_datapoints/${deviceGPSDatapointFromDatabaseID.value}`)
-        .then((response: AxiosResponse<{ message: string; data: DeviceGPSDatapointWithTtnMapperDatapoints }>) => {
-            const parsedData: DeviceGPSDatapointWithTtnMapperDatapoints = response.data.data;
-
-            actualDeviceLocation.value = convertTtnLocatorDeviceGPSDatapointToNormal(parsedData);
-
-            rssiSimilaritySelectionParameters.value = parsedData.ttnMapperDatapoints.map(
-                (eachTtnMapperDatapoint: TtnMapperDatapoint) => {
-                    return {
-                        gatewayData: {
-                            id: eachTtnMapperDatapoint.gatewayId,
-                            location: new LatLng(0, 0),
-                        },
-                        rssi: eachTtnMapperDatapoint.rssi,
-                    };
-                },
-            );
-        });
-}
-
-async function loadParametersFromTtnMapperDatapointInDB() {
-    console.info(
-        `Loading parameters from TTN Mapper datapoint with id ${ttnMapperDatapointFromDatabaseID.value} in DB`,
-    );
-
-    await axios
-        .get(`/ttnmapper_datapoints/${ttnMapperDatapointFromDatabaseID.value}`)
-        .then(async (response: AxiosResponse<{ message: string; data: TtnMapperDatapoint }>) => {
-            const parsedData: TtnMapperDatapoint = response.data.data;
-
-            deviceGPSDatapointFromDatabaseID.value = parsedData.deviceGPSDatapointId;
-
-            await loadParametersFromDeviceGpsDatapointInDB();
-        });
 }
 </script>
