@@ -28,8 +28,25 @@
                 </v-btn>
             </template>
             <v-card>
-                <v-card-title>RSSI similarity parameters</v-card-title>
+                <v-card-title>RSSI similarity</v-card-title>
                 <v-card-text>
+                    <v-subheader>Load values from TTN Mapper Datapoint ID</v-subheader>
+                    <v-row>
+                        <v-col>
+                            <v-form @submit.prevent="loadParametersFromTtnMapperDatapointInDB">
+                                <v-text-field
+                                    v-model.number="ttnMapperDatapointFromDatabaseID"
+                                    label="TTN Mapper Datapoint ID from DB"
+                                    type="number"
+                                    clearable
+                                >
+                                    <template #append>
+                                        <v-btn icon="mdi-database-arrow-down" type="submit"></v-btn>
+                                    </template>
+                                </v-text-field>
+                            </v-form>
+                        </v-col>
+                    </v-row>
                     <v-subheader>Load values from Device GPS Datapoint ID</v-subheader>
                     <v-row>
                         <v-col>
@@ -161,6 +178,7 @@ const deviceGPSDatapoints: Ref<DeviceGPSDatapoint[]> = ref([]);
 const rssiCheckingRange: Ref<number> = ref(Constants.DEFAULT_RSSI_CHECKING_RANGE);
 
 const deviceGPSDatapointFromDatabaseID: Ref<number> = ref(0);
+const ttnMapperDatapointFromDatabaseID: Ref<number> = ref(0);
 
 function addNewParameter() {
     rssiSimilaritySelectionParameters.value.push({
@@ -242,6 +260,22 @@ async function loadParametersFromDeviceGpsDatapointInDB() {
                     };
                 },
             );
+        });
+}
+
+async function loadParametersFromTtnMapperDatapointInDB() {
+    console.info(
+        `Loading parameters from TTN Mapper datapoint with id ${ttnMapperDatapointFromDatabaseID.value} in DB`,
+    );
+
+    await axios
+        .get(`/ttnmapper_datapoints/${ttnMapperDatapointFromDatabaseID.value}`)
+        .then(async (response: AxiosResponse<{ message: string; data: TtnMapperDatapoint }>) => {
+            const parsedData: TtnMapperDatapoint = response.data.data;
+
+            deviceGPSDatapointFromDatabaseID.value = parsedData.deviceGPSDatapointId;
+
+            await loadParametersFromDeviceGpsDatapointInDB();
         });
 }
 </script>
