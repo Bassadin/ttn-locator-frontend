@@ -67,7 +67,7 @@ export default class GatewayUtils {
         return (-65 * rssi - 5600) / 1000;
     }
 
-    public static getTurfCircleGeoJSONFromGatewayData(gatewayData: GatewayRssiSelection, kmRadiusOffset = 0) {
+    public static getTurfCircleGeoJSONFromGatewayData(gatewayData: GatewayRssiSelection, radiusOffsetMeters = 0) {
         const turfCenterPoint = turf.point([
             gatewayData.gatewayData.location.lng,
             gatewayData.gatewayData.location.lat,
@@ -75,9 +75,9 @@ export default class GatewayUtils {
         // TODO: Dirty fix, but the types are weird here
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const options: any = { steps: 50, units: 'kilometers' };
-        const kilometerRadius = this.getKilometerRadiusForRssi(gatewayData.rssi) + kmRadiusOffset;
+        const kilometerRadius = this.getKilometerRadiusForRssi(gatewayData.rssi) + radiusOffsetMeters / 1000;
         console.info(
-            `Radius for RSSI ${gatewayData.rssi} is ${kilometerRadius} km, location is ${gatewayData.gatewayData.location}`,
+            `Radius for gateway ${gatewayData.gatewayData.id} RSSI ${gatewayData.rssi} is ${kilometerRadius} km, location is ${gatewayData.gatewayData.location}`,
         );
         return turf.circle(turfCenterPoint, kilometerRadius, options);
     }

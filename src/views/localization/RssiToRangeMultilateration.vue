@@ -46,11 +46,11 @@
                         <v-col>
                             <v-text-field
                                 v-model.number="rangeDonutTolerance"
-                                label="Range donut tolerance km (+/-)"
+                                label="Range donut tolerance meters (+/-)"
                                 type="number"
-                                min="0.001"
-                                max="0.3"
-                                step="0.001"
+                                min="1"
+                                max="300"
+                                step="1"
                             ></v-text-field>
                         </v-col>
                     </v-row>
@@ -89,7 +89,7 @@ const isCurrentlyLoading = ref(false);
 const gatewayRssiSelectionParameters: Ref<GatewayRssiSelection[]> = ref([]);
 const actualDeviceLocation: Ref<DeviceGPSDatapoint | null> = ref(null);
 const geoJsonCirclesArray: Ref<GeoJSON.Feature[]> = ref([]);
-const rangeDonutTolerance = ref(Constants.DEFAULT_RSSI_TO_RANGE_TOLERANCE_KILOMETERS);
+const rangeDonutTolerance = ref(Constants.DEFAULT_RSSI_TO_RANGE_TOLERANCE_METERS);
 
 function geoJsonStyleFunction(_feature: GeoJSON.Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>) {
     const pathOptions: PathOptions = {
