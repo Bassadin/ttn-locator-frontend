@@ -35,18 +35,7 @@
             </v-col>
         </v-row>
         <v-subheader>RSSI Similarity Parameters</v-subheader>
-        <v-row>
-            <v-col>
-                <v-text-field
-                    v-model.number="rssiCheckingRange"
-                    label="RSSI checking range (+/-)"
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="1"
-                ></v-text-field>
-            </v-col>
-        </v-row>
+
         <div class="my-4">
             <GatewayAndRssiSelect
                 v-for="eachRssiSimilarityParameter in rssiSimilaritySelectionParameters"
@@ -91,13 +80,8 @@ const axios = injectStrict(AxiosKey);
 // v-model
 const props = defineProps({
     rssiSimilaritySelectionParameters: { type: Array<GatewayRssiSelection>, required: true },
-    rssiCheckingRange: { type: Number, required: true },
 });
-const emit = defineEmits([
-    'update:rssiSimilaritySelectionParameters',
-    'update:rssiCheckingRange',
-    'actualDeviceLocationUpdated',
-]);
+const emit = defineEmits(['update:rssiSimilaritySelectionParameters', 'actualDeviceLocationUpdated']);
 
 const rssiSimilaritySelectionParameters = computed({
     get() {
@@ -105,14 +89,6 @@ const rssiSimilaritySelectionParameters = computed({
     },
     set(value) {
         emit('update:rssiSimilaritySelectionParameters', value);
-    },
-});
-const rssiCheckingRange = computed({
-    get() {
-        return props.rssiCheckingRange;
-    },
-    set(value) {
-        emit('update:rssiCheckingRange', value);
     },
 });
 

@@ -40,6 +40,18 @@
                         v-model:rssi-checking-range="rssiCheckingRange"
                         @actual-device-location-updated="actualDeviceLocation = $event"
                     />
+                    <v-row>
+                        <v-col>
+                            <v-text-field
+                                v-model.number="rssiCheckingRange"
+                                label="RSSI checking range (+/-)"
+                                type="number"
+                                min="0"
+                                max="100"
+                                step="1"
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
                 </v-card-text>
                 <v-card-actions>
                     <v-btn block :loading="isCurrentlyLoading" color="primary" @click.prevent="loadSimilarityData">
