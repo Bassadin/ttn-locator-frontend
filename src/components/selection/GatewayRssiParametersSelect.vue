@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 // Components
 import GatewayAndRssiSelect from '@/components/selection/GatewayAndRssiSelect.vue';
@@ -94,7 +94,12 @@ const rssiSimilaritySelectionParameters = computed({
 
 // Data
 const deviceGPSDatapointFromDatabaseID = ref(0);
-const ttnMapperDatapointFromDatabaseID = ref(0);
+const ttnMapperDatapointFromDatabaseID = ref(670326377);
+
+// TODO: Temporary for quicker demos
+onMounted(() => {
+    loadParametersFromTtnMapperDatapointInDB();
+});
 
 // Functions
 function addNewParameter() {

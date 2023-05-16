@@ -76,7 +76,6 @@ import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import GatewayRssiParametersSelect from '@/components/selection/GatewayRssiParametersSelect.vue';
 
 // Types
-import { LatLng } from 'leaflet';
 import { GatewayRssiSelection } from '@/types/Gateways';
 import {
     DeviceGPSDatapoint,
@@ -94,43 +93,9 @@ const axios = injectStrict(AxiosKey);
 
 const showFilteringDialog = ref(false);
 const isCurrentlyLoading = ref(false);
-
-const rssiSimilaritySelectionParameters: Ref<GatewayRssiSelection[]> = ref([
-    {
-        gatewayData: {
-            id: 'hfu-lr8-001',
-            location: new LatLng(0, 0),
-        },
-        rssi: -105,
-    },
-    {
-        gatewayData: {
-            id: 'eui-a840411fcbc04150',
-            location: new LatLng(0, 0),
-        },
-        rssi: -124,
-        deviceGpsDatapoints: [],
-    },
-    {
-        gatewayData: {
-            id: '68068734-f17f-4ec2-ac0d-5ec7332d5e4e',
-            location: new LatLng(0, 0),
-        },
-        rssi: -111,
-    },
-    {
-        gatewayData: {
-            id: 'eui-a84041203275aeac',
-            location: new LatLng(0, 0),
-        },
-        rssi: -81,
-    },
-]);
-
+const rssiSimilaritySelectionParameters: Ref<GatewayRssiSelection[]> = ref([]);
 const deviceGPSDatapoints: Ref<DeviceGPSDatapoint[]> = ref([]);
-
 const rssiCheckingRange: Ref<number> = ref(Constants.DEFAULT_RSSI_CHECKING_RANGE);
-
 const actualDeviceLocation: Ref<DeviceGPSDatapoint | null> = ref(null);
 
 function loadGatewayLocations() {
