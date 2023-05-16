@@ -1,11 +1,14 @@
 import Constants from '@/other/Constants';
+
+// Types
 import { TtnLocatorDeviceGPSDatapointWithRSSI } from '@/types/GPSDatapoints';
 import { LatLng } from 'leaflet';
+import * as turf from '@turf/turf';
 
 // Axios
 import axios from '@/plugins/axios';
 import { AxiosResponse } from 'axios';
-import { TtnLocatorGatewayData } from '@/types/Gateways';
+import { GatewayRssiSelection, TtnLocatorGatewayData } from '@/types/Gateways';
 
 export default class GatewayUtils {
     public static doesGatewayIdExist(gatewayId: string): Promise<boolean> {
@@ -58,5 +61,24 @@ export default class GatewayUtils {
             .then((response: AxiosResponse) => {
                 return response.data.data;
             });
+    }
+
+    public static getKilometerRadiusForRssi(rssi: number): number {
+        return (20 * rssi + 3500) / 1000;
+    }
+
+    public static getTurfCircleGeoJSONFromGatewayData(gatewayData: GatewayRssiSelection, kmRadiusOffset = 0) {
+        const turfCenterPoint = turf.point([
+            gatewayData.gatewayData.location.lng,
+            gatewayData.gatewayData.location.lat,
+        ]);
+        // TODO: Dirty fix, but the types are weird here
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const options: any = { steps: 50, units: 'kilometers' };
+        const kilometerRadius = this.getKilometerRadiusForRssi(gatewayData.rssi) + kmRadiusOffset;
+        console.info(
+            `Radius for RSSI ${gatewayData.rssi} is ${kilometerRadius} km, location is ${gatewayData.gatewayData.location}`,
+        );
+        return turf.circle(turfCenterPoint, kilometerRadius, options);
     }
 }
