@@ -9,7 +9,16 @@ const routes = [
             title: 'Home',
         },
     },
-    // Device-based
+
+    // Localization
+    {
+        path: '/rssi_to_range_multilateration',
+        name: 'rssi_to_range_multilateration',
+        component: () => import('@/views/localization/RssiToRangeMultilateration.vue'),
+        meta: {
+            title: 'Rssi to Range Multilateration',
+        },
+    },
     {
         path: '/rssi_similarity',
         name: 'rssi_similarity',
@@ -18,8 +27,6 @@ const routes = [
             title: 'RSSI similarity',
         },
     },
-
-    // Gateway-based
     {
         path: '/gateway_rssi/:gatewayId',
         name: 'gateway_rssi',

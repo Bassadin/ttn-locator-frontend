@@ -17,6 +17,11 @@
                 <v-divider></v-divider>
                 <v-list-subheader>Localization options</v-list-subheader>
                 <v-list-item
+                    prepend-icon="mdi-vector-circle-variant"
+                    title="Rssi to Range Multilateration"
+                    :to="{ name: 'rssi_to_range_multilateration' }"
+                />
+                <v-list-item
                     prepend-icon="mdi-vector-triangle"
                     title="RSSI similarity"
                     :to="{ name: 'rssi_similarity' }"
