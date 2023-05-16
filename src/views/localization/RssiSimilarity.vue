@@ -35,7 +35,7 @@
             <v-card>
                 <v-card-title>RSSI similarity</v-card-title>
                 <v-card-text>
-                    <RssiSimilarityParametersSelect
+                    <GatewayRssiParametersSelect
                         v-model:rssi-similarity-selection-parameters="rssiSimilaritySelectionParameters"
                         v-model:rssi-checking-range="rssiCheckingRange"
                         @actual-device-location-updated="actualDeviceLocation = $event"
@@ -73,7 +73,7 @@ import SingleGatewayMarker from '@/components/map/markers/SingleGatewayMarker.vu
 import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDeviceGPSDatapointMarker.vue';
 import ActualDeviceLocationMarker from '@/components/map/markers/ActualDeviceLocationMarker.vue';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
-import RssiSimilarityParametersSelect from '@/components/selection/RssiSimilarityParametersSelect.vue';
+import GatewayRssiParametersSelect from '@/components/selection/GatewayRssiParametersSelect.vue';
 
 // Types
 import { LatLng } from 'leaflet';
