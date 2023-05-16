@@ -26,6 +26,17 @@ export interface DeviceGPSDatapoint {
     id: number;
 }
 
+export function convertTtnLocatorDeviceGPSDatapointToNormal(
+    ttnLocatorDeviceGPSDatapoint: TtnLocatorDeviceGPSDatapoint,
+) {
+    return {
+        deviceId: ttnLocatorDeviceGPSDatapoint.deviceId,
+        location: new LatLng(ttnLocatorDeviceGPSDatapoint.latitude, ttnLocatorDeviceGPSDatapoint.longitude),
+        hdop: ttnLocatorDeviceGPSDatapoint.hdop,
+        id: ttnLocatorDeviceGPSDatapoint.id,
+    };
+}
+
 export function mapTtnLocatorApiResponseToDeviceGPSDatapoint(
     ttnLocatorDeviceGPSDatapoint: TtnLocatorDeviceGPSDatapoint,
 ): DeviceGPSDatapoint {

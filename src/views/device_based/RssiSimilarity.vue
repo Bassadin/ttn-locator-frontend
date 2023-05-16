@@ -3,17 +3,22 @@
         <LoadingOverlay v-model="isCurrentlyLoading" />
         <BaseMap>
             <template #map-layers>
-                <div
+                <SingleGatewayMarker
                     v-for="eachRssiSimilarityParameter in rssiSimilaritySelectionParameters"
                     :key="eachRssiSimilarityParameter.gatewayData.id"
-                >
-                    <SingleGatewayMarker :gateway-data="eachRssiSimilarityParameter.gatewayData" />
-                </div>
+                    :gateway-data="eachRssiSimilarityParameter.gatewayData"
+                />
+
                 <SingleDeviceGPSDatapointMarker
                     v-for="(eachDeviceGPSDatapoint, index) in deviceGPSDatapoints"
                     :key="index"
                     :device-gps-datapoint-data="eachDeviceGPSDatapoint"
-                ></SingleDeviceGPSDatapointMarker>
+                />
+
+                <ActualDeviceLocationMarker
+                    v-if="actualDeviceLocation"
+                    :device-gps-datapoint-data="actualDeviceLocation"
+                />
             </template>
         </BaseMap>
         <v-dialog v-model="showFilteringDialog" min-width="50vw" width="auto">
@@ -116,6 +121,7 @@ import BaseMap from '@/components/BaseMap.vue';
 // Components
 import SingleGatewayMarker from '@/components/map/markers/SingleGatewayMarker.vue';
 import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDeviceGPSDatapointMarker.vue';
+import ActualDeviceLocationMarker from '@/components/map/markers/ActualDeviceLocationMarker.vue';
 
 // Types
 import { LatLng } from 'leaflet';
@@ -125,6 +131,7 @@ import {
     mapTtnLocatorApiResponseToDeviceGPSDatapoint,
     TtnLocatorDeviceGPSDatapoint,
     DeviceGPSDatapointWithTtnMapperDatapoints,
+    convertTtnLocatorDeviceGPSDatapointToNormal,
 } from '@/types/GPSDatapoints';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import GatewayAndRssiSelect from '@/components/selection/GatewayAndRssiSelect.vue';
@@ -180,6 +187,8 @@ const rssiCheckingRange: Ref<number> = ref(Constants.DEFAULT_RSSI_CHECKING_RANGE
 const deviceGPSDatapointFromDatabaseID: Ref<number> = ref(0);
 const ttnMapperDatapointFromDatabaseID: Ref<number> = ref(0);
 
+const actualDeviceLocation: Ref<DeviceGPSDatapoint | null> = ref(null);
+
 function addNewParameter() {
     rssiSimilaritySelectionParameters.value.push({
         gatewayData: {
@@ -198,10 +207,7 @@ function deleteParameter(gatewayId: string) {
     );
 }
 
-async function loadSimilarityData() {
-    console.info(`Loading gateway similarity data for ${rssiSimilaritySelectionParameters.value.length} gateways`);
-    isCurrentlyLoading.value = true;
-
+function loadGatewayLocations() {
     rssiSimilaritySelectionParameters.value.forEach(async (eachRssiSimilarityParameter: GatewayRssiSelection) => {
         const gatewayLocation = await GatewayUtils.getGatewayLocationForGatewayId(
             eachRssiSimilarityParameter.gatewayData.id,
@@ -211,6 +217,13 @@ async function loadSimilarityData() {
         }
         eachRssiSimilarityParameter.gatewayData.location = gatewayLocation;
     });
+}
+
+async function loadSimilarityData() {
+    console.info(`Loading gateway similarity data for ${rssiSimilaritySelectionParameters.value.length} gateways`);
+    isCurrentlyLoading.value = true;
+
+    await loadGatewayLocations();
 
     const similarityFilter = rssiSimilaritySelectionParameters.value.map((eachRssiSimilarityParameter) => {
         return {
@@ -240,6 +253,7 @@ async function loadSimilarityData() {
 }
 
 async function loadParametersFromDeviceGpsDatapointInDB() {
+    actualDeviceLocation.value = null;
     console.info(
         `Loading parameters from device GPS datapoint with id ${deviceGPSDatapointFromDatabaseID.value} in DB`,
     );
@@ -248,6 +262,8 @@ async function loadParametersFromDeviceGpsDatapointInDB() {
         .get(`/device_gps_datapoints/${deviceGPSDatapointFromDatabaseID.value}`)
         .then((response: AxiosResponse<{ message: string; data: DeviceGPSDatapointWithTtnMapperDatapoints }>) => {
             const parsedData: DeviceGPSDatapointWithTtnMapperDatapoints = response.data.data;
+
+            actualDeviceLocation.value = convertTtnLocatorDeviceGPSDatapointToNormal(parsedData);
 
             rssiSimilaritySelectionParameters.value = parsedData.ttnMapperDatapoints.map(
                 (eachTtnMapperDatapoint: TtnMapperDatapoint) => {
