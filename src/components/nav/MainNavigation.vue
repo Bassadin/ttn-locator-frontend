@@ -15,24 +15,16 @@
                 <v-list-item prepend-icon="mdi-home" title="Home" :to="{ name: 'home' }" />
 
                 <v-divider></v-divider>
-                <v-list-subheader>Device-based</v-list-subheader>
+                <v-list-subheader>Localization options</v-list-subheader>
                 <v-list-item
                     prepend-icon="mdi-vector-triangle"
                     title="RSSI similarity"
                     :to="{ name: 'rssi_similarity' }"
                 />
-
-                <v-divider></v-divider>
-                <v-list-subheader>Gateway-based</v-list-subheader>
                 <v-list-item
                     prepend-icon="mdi-router-wireless"
                     title="Gateway Range (RSSI)"
-                    :to="{
-                        name: 'gateway_rssi',
-                        params: {
-                            gatewayId: 'hfu-lr8-001',
-                        },
-                    }"
+                    :to="{ name: 'gateway_rssi', params: { gatewayId: 'hfu-lr8-001' } }"
                 />
                 <!-- TODO: The hard gateway ID here is a hack, fix later -->
                 <v-list-item

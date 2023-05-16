@@ -13,7 +13,7 @@ const routes = [
     {
         path: '/rssi_similarity',
         name: 'rssi_similarity',
-        component: () => import('@/views/device_based/RssiSimilarity.vue'),
+        component: () => import('@/views/localization/RssiSimilarity.vue'),
         meta: {
             title: 'RSSI similarity',
         },
@@ -23,7 +23,7 @@ const routes = [
     {
         path: '/gateway_rssi/:gatewayId',
         name: 'gateway_rssi',
-        component: () => import('@/views/gateway_based/GatewayRSSI.vue'),
+        component: () => import('@/views/localization/GatewayRSSI.vue'),
         meta: {
             title: 'Gateway Range (RSSI)',
         },
@@ -31,7 +31,7 @@ const routes = [
     {
         path: '/rssi_range_graph/:gatewayId',
         name: 'rssi_range_graph',
-        component: () => import('@/views/gateway_based/GatewayRSSIRangeGraph.vue'),
+        component: () => import('@/views/localization/GatewayRSSIRangeGraph.vue'),
         meta: {
             title: 'RSSI Range Graph',
         },
