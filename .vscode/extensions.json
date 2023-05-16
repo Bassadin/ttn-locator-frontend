@@ -1,4 +1,9 @@
 {
-    "recommendations": ["vue.vscode-typescript-vue-plugin", "dbaeumer.vscode-eslint"],
+    "recommendations": [
+        "vue.vscode-typescript-vue-plugin",
+        "dbaeumer.vscode-eslint",
+        "antfu.vite",
+        "misterj.vue-volar-extention-pack"
+    ],
     "unwantedRecommendations": ["vscode.typescript-language-features"]
 }
