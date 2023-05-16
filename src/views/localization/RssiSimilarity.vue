@@ -37,7 +37,6 @@
                 <v-card-text>
                     <GatewayRssiParametersSelect
                         v-model:rssi-similarity-selection-parameters="rssiSimilaritySelectionParameters"
-                        v-model:rssi-checking-range="rssiCheckingRange"
                         @actual-device-location-updated="actualDeviceLocation = $event"
                     />
                     <v-row>
