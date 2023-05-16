@@ -1,6 +1,12 @@
 <template>
     <div class="leaflet-map">
-        <l-map :zoom="15" :center="mapCenter" :options="{ zoomControl: false, attributionControl: false }">
+        <l-map
+            :zoom="15"
+            :center="mapCenter"
+            :options="{ zoomControl: false, attributionControl: false }"
+            ref="leafletMapRef"
+            @ready="mapReadyCallback"
+        >
             <l-tile-layer
                 v-for="tileProvider in tileProviders"
                 :key="tileProvider.name"
@@ -29,8 +35,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import 'leaflet/dist/leaflet.js';
+import 'leaflet-draw/dist/leaflet.draw.js';
+
+// Styles
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-draw/dist/leaflet.draw.css';
+
+// Components
 import { LMap, LTileLayer, LControlAttribution, LControlZoom, LControlLayers } from '@vue-leaflet/vue-leaflet';
+
+// Types
 import { PointTuple } from 'leaflet';
 
 const mapCenter: PointTuple = [48.050857, 8.207022];
@@ -70,6 +85,22 @@ const tileProviders = ref([
             'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     },
 ]);
+
+const leafletMapRef = ref(null);
+
+function mapReadyCallback(mapContext) {
+    console.debug('mapReadyCallback', mapContext);
+    const leafletMap = mapContext;
+
+    const drawnItems = new L.FeatureGroup();
+    leafletMap.addLayer(drawnItems);
+    const drawControl = new L.Control.Draw({
+        edit: {
+            featureGroup: drawnItems,
+        },
+    });
+    leafletMap.addControl(drawControl);
+}
 </script>
 
 <style>
