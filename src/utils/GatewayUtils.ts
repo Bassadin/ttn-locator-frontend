@@ -64,7 +64,7 @@ export default class GatewayUtils {
     }
 
     public static getKilometerRadiusForRssi(rssi: number): number {
-        return (15 * -rssi + 500) / 1000;
+        return (-65 * rssi - 5600) / 1000;
     }
 
     public static getTurfCircleGeoJSONFromGatewayData(gatewayData: GatewayRssiSelection, kmRadiusOffset = 0) {
