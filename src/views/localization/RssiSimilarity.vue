@@ -19,9 +19,12 @@
                     v-if="actualDeviceLocation"
                     :device-gps-datapoint-data="actualDeviceLocation"
                 />
+
+                <l-circle v-if="estimatedPosition" :lat-lng="estimatedPosition" :radius="50"></l-circle>
             </template>
         </BaseMap>
-        <v-dialog v-model="showFilteringDialog" min-width="50vw" width="auto">
+        <!-- Need the eager here since otherwise the refs reset every time the dialog gets opened -->
+        <v-dialog v-model="showFilteringDialog" min-width="50vw" width="auto" eager>
             <template #activator="{ props }">
                 <v-btn
                     v-bind="props"
@@ -73,6 +76,7 @@ import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDevic
 import ActualDeviceLocationMarker from '@/components/map/markers/ActualDeviceLocationMarker.vue';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import GatewayRssiParametersSelect from '@/components/selection/GatewayRssiParametersSelect.vue';
+import { LCircle } from '@vue-leaflet/vue-leaflet';
 
 // Types
 import { GatewayRssiSelection } from '@/types/Gateways';
@@ -82,17 +86,20 @@ import {
     TtnLocatorDeviceGPSDatapoint,
 } from '@/types/GPSDatapoints';
 import GatewayUtils from '@/utils/GatewayUtils';
+import { LatLng } from 'leaflet';
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';
 import { AxiosKey } from '@/symbols';
 import { AxiosResponse } from 'axios';
+import { findCenterOfLatLongs } from '@/utils/Localization';
 
 const axios = injectStrict(AxiosKey);
 
 const showFilteringDialog = ref(false);
 const isCurrentlyLoading = ref(false);
 const rssiSimilaritySelectionParameters: Ref<GatewayRssiSelection[]> = ref([]);
+const estimatedPosition: Ref<LatLng | null> = ref(null);
 const deviceGPSDatapoints: Ref<DeviceGPSDatapoint[]> = ref([]);
 const rssiCheckingRange: Ref<number> = ref(Constants.DEFAULT_RSSI_CHECKING_RANGE);
 const actualDeviceLocation: Ref<DeviceGPSDatapoint | null> = ref(null);
@@ -112,6 +119,7 @@ function loadGatewayLocations() {
 async function loadSimilarityData() {
     console.info(`Loading gateway similarity data for ${rssiSimilaritySelectionParameters.value.length} gateways`);
     isCurrentlyLoading.value = true;
+    estimatedPosition.value = null;
 
     await loadGatewayLocations();
 
@@ -125,17 +133,23 @@ async function loadSimilarityData() {
 
     console.debug('Sending request with similarity filter', similarityFilter);
 
-    await axios
-        .post('/device_gps_datapoints/rssi_similarity', {
+    const deviceGpsDatapointsResponse: AxiosResponse<{ message: string; data: TtnLocatorDeviceGPSDatapoint[] }> =
+        await axios.post('/device_gps_datapoints/rssi_similarity', {
             similarityFilter: similarityFilter,
-        })
-        .then((response: AxiosResponse<{ message: string; data: TtnLocatorDeviceGPSDatapoint[] }>) => {
-            const parsedData: TtnLocatorDeviceGPSDatapoint[] = response.data.data;
-
-            deviceGPSDatapoints.value = parsedData.map(mapTtnLocatorApiResponseToDeviceGPSDatapoint);
-
-            console.debug(`Got ${parsedData.length} GPS datapoints for similarity filter`, similarityFilter);
         });
+
+    const parsedData: TtnLocatorDeviceGPSDatapoint[] = deviceGpsDatapointsResponse.data.data;
+    deviceGPSDatapoints.value = parsedData.map(mapTtnLocatorApiResponseToDeviceGPSDatapoint);
+
+    estimatedPosition.value = findCenterOfLatLongs(
+        parsedData.map((eachParsedData) => {
+            return new LatLng(eachParsedData.latitude, eachParsedData.longitude);
+        }),
+    );
+
+    console.info(`Estimated position as: ${estimatedPosition.value}`);
+
+    console.debug(`Got ${parsedData.length} GPS datapoints for similarity filter`, similarityFilter);
 
     isCurrentlyLoading.value = false;
     showFilteringDialog.value = false;
