@@ -24,7 +24,8 @@
                 />
             </template>
         </BaseMap>
-        <v-dialog v-model="showFilteringDialog" min-width="50vw" width="auto">
+        <!-- For eager, see RssiSimilarity.vue -->
+        <v-dialog v-model="showFilteringDialog" min-width="50vw" width="auto" eager>
             <template #activator="{ props }">
                 <v-btn
                     v-bind="props"
