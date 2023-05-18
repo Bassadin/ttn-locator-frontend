@@ -40,7 +40,7 @@
 <script setup lang="ts">
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { GatewayData } from '@/types/Gateways';
+import GatewayData from '@/types/Gateways/GatewayData';
 
 import { LMarker, LPopup, LTooltip, LIcon } from '@vue-leaflet/vue-leaflet';
 

@@ -24,7 +24,7 @@ import 'leaflet/dist/leaflet.css';
 import { LMarker, LPopup, LTooltip } from '@vue-leaflet/vue-leaflet';
 
 import type { PropType } from 'vue';
-import { DeviceGPSDatapoint } from '@/types/GPSDatapoints';
+import DeviceGPSDatapoint from '@/types/DeviceGpsDatapoints/DeviceGPSDatapoint';
 
 defineProps({
     deviceGpsDatapointData: {

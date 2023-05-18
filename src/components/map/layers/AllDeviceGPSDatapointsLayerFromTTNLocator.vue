@@ -22,11 +22,8 @@ import { AxiosResponse } from 'axios';
 import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDeviceGPSDatapointMarker.vue';
 
 // Types
-import {
-    DeviceGPSDatapoint,
-    TtnLocatorDeviceGPSDatapoint,
-    mapTtnLocatorApiResponseToDeviceGPSDatapoint,
-} from '@/types/GPSDatapoints';
+import DeviceGPSDatapoint from '@/types/DeviceGpsDatapoints/DeviceGPSDatapoint';
+import TtnLocatorDeviceGPSDatapoint from '@/types/DeviceGpsDatapoints/TtnLocatorDeviceGPSDatapoint';
 
 // Axios instance
 const axios = injectStrict(AxiosKey);
@@ -48,8 +45,19 @@ onMounted(() => {
                 }>,
             ) => {
                 console.info(`Fetched ${response.data.data.length} device GPS datapoints from TTN Locator's API.`);
-                deviceGpsDatapointsLocations.value = response.data.data.map(
-                    mapTtnLocatorApiResponseToDeviceGPSDatapoint,
+
+                const responseData = response.data.data;
+
+                deviceGpsDatapointsLocations.value = response.data.data.map((eachDeviceGPSDatapointJSON) =>
+                    new DeviceGPSDatapoint(
+                        eachDeviceGPSDatapointJSON.deviceId,
+                         eachDeviceGPSDatapointJSON,
+                         eachDeviceGPSDatapointJSON.hdop,
+                         eachDeviceGPSDatapointJSON.id
+                    ),
+                    )
+
+                eachDeviceGPSDatapoint.mapToDeviceGPSDatapoint(),
                 );
                 console.info(
                     `Mapped ${response.data.data.length} device GPS datapoints from TTN Locator's API to internal format.`,

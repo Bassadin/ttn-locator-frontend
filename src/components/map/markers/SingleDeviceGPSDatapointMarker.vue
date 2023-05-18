@@ -30,7 +30,7 @@ import 'leaflet/dist/leaflet.css';
 import { LCircleMarker, LPopup, LTooltip } from '@vue-leaflet/vue-leaflet';
 
 import type { PropType } from 'vue';
-import { DeviceGPSDatapoint } from '@/types/GPSDatapoints';
+import DeviceGPSDatapoint from '@/types/DeviceGpsDatapoints/DeviceGPSDatapoint';
 
 defineProps({
     deviceGpsDatapointData: {

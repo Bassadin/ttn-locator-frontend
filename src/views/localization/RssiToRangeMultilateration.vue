@@ -70,6 +70,7 @@
 import { ref, Ref } from 'vue';
 import * as turf from '@turf/turf';
 import Constants from '@/other/Constants';
+import GatewayUtils from '@/utils/GatewayUtils';
 
 // Components
 import BaseMap from '@/components/BaseMap.vue';
@@ -80,10 +81,9 @@ import { LGeoJson } from '@vue-leaflet/vue-leaflet';
 import GatewayRssiParametersSelect from '@/components/selection/GatewayRssiParametersSelect.vue';
 
 // Types
-import { GatewayRssiSelection } from '@/types/Gateways';
-import { DeviceGPSDatapoint } from '@/types/GPSDatapoints';
-import GatewayUtils from '@/utils/GatewayUtils';
+import GatewayRssiSelection from '@/types/Gateways/GatewayRssiSelection';
 import { GeoJSON, PathOptions } from 'leaflet';
+import DeviceGPSDatapoint from '@/types/DeviceGpsDatapoints/DeviceGPSDatapoint';
 
 const showFilteringDialog = ref(false);
 const isCurrentlyLoading = ref(false);

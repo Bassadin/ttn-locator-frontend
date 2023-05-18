@@ -31,7 +31,7 @@
 import { ref, onMounted, Ref } from 'vue';
 
 // Types
-import { TtnLocatorGatewayData } from '@/types/Gateways';
+import TtnLocatorGatewayData from '@/types/Gateways/TtnLocatorGatewayData';
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';

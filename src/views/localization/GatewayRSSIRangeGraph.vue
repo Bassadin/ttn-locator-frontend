@@ -65,8 +65,9 @@ import { AxiosKey } from '@/symbols';
 import { AxiosResponse } from 'axios';
 
 // Types
-import { GatewayData, PacketbrokerGatewayAPIResponse } from '@/types/Gateways';
-import { TtnLocatorDeviceGPSDatapointWithRSSI } from '@/types/GPSDatapoints';
+import GatewayData from '@/types/Gateways/GatewayData';
+import PacketbrokerGatewayAPIResponse from '@/types/Gateways/PacketbrokerGatewayAPIResponse';
+import TtnLocatorDeviceGPSDatapointWithRSSI from '@/types/DeviceGpsDatapoints/TtnLocatorDeviceGPSDatapointWithRSSI';
 
 // Turf options
 import * as turf from '@turf/turf';

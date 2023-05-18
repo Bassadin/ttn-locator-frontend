@@ -17,14 +17,15 @@ import SingleGatewayMarker from '@/components/map/markers/SingleGatewayMarker.vu
 import { injectStrict } from '@/utils/injectTyped';
 import { AxiosKey } from '@/symbols';
 import { AxiosResponse } from 'axios';
-import { TTNMapperGatewayAPIResponse, GatewayData } from '@/types/Gateways';
+import TtnMapperGatewayAPIResponse from '@/types/Gateways/TtnMapperGatewayAPIResponse';
+import GatewayData from '@/types/Gateways/GatewayData';
 
 const axios = injectStrict(AxiosKey);
 
 const gateways: Ref<GatewayData[]> = ref([]);
 
 onMounted(() => {
-    axios.get('/gateways').then((response: AxiosResponse<TTNMapperGatewayAPIResponse>) => {
+    axios.get('/gateways').then((response: AxiosResponse<TtnMapperGatewayAPIResponse>) => {
         const filteredGatewayLocations = response.data.data.filter((eachGatewayData) => {
             // Filter out gateways with invalid coordinates (smaller than 1 is invalid)
             return (

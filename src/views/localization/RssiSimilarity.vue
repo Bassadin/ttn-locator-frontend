@@ -79,14 +79,11 @@ import GatewayRssiParametersSelect from '@/components/selection/GatewayRssiParam
 import { LCircle } from '@vue-leaflet/vue-leaflet';
 
 // Types
-import { GatewayRssiSelection } from '@/types/Gateways';
-import {
-    DeviceGPSDatapoint,
-    mapTtnLocatorApiResponseToDeviceGPSDatapoint,
-    TtnLocatorDeviceGPSDatapoint,
-} from '@/types/GPSDatapoints';
+import GatewayRssiSelection from '@/types/Gateways/GatewayRssiSelection';
 import GatewayUtils from '@/utils/GatewayUtils';
 import { LatLng } from 'leaflet';
+import DeviceGPSDatapoint from '@/types/DeviceGpsDatapoints/DeviceGPSDatapoint';
+import TtnLocatorDeviceGPSDatapoint from '@/types/DeviceGpsDatapoints/TtnLocatorDeviceGPSDatapoint';
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';
@@ -139,7 +136,9 @@ async function loadSimilarityData() {
         });
 
     const parsedData: TtnLocatorDeviceGPSDatapoint[] = deviceGpsDatapointsResponse.data.data;
-    deviceGPSDatapoints.value = parsedData.map(mapTtnLocatorApiResponseToDeviceGPSDatapoint);
+    deviceGPSDatapoints.value = parsedData.map((eachDeviceGPSDatapoint) =>
+        eachDeviceGPSDatapoint.mapToDeviceGPSDatapoint(),
+    );
 
     estimatedPosition.value = findCenterOfLatLongs(
         parsedData.map((eachParsedData) => {

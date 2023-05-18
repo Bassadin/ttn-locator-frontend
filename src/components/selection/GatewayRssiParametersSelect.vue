@@ -60,20 +60,20 @@ import { computed, onMounted, ref } from 'vue';
 import GatewayAndRssiSelect from '@/components/selection/GatewayAndRssiSelect.vue';
 
 // Types
-import { GatewayRssiSelection } from '@/types/Gateways';
+import GatewayRssiSelection from '@/types/Gateways/GatewayRssiSelection';
+import TtnMapperDatapoint from '@/types/TtnMapperDatapoints';
 import { LatLng } from 'leaflet';
 
 // Types
 import {
+    DeviceGPSDatapointWithTtnMapperDatapointsJSON,
     DeviceGPSDatapointWithTtnMapperDatapoints,
-    convertTtnLocatorDeviceGPSDatapointToNormal,
-} from '@/types/GPSDatapoints';
+} from '@/types/DeviceGpsDatapoints/DeviceGPSDatapointWithTtnMapperDatapoints';
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';
 import { AxiosKey } from '@/symbols';
 import { AxiosResponse } from 'axios';
-import { TtnMapperDatapoint } from '@/types/TtnMapperDatapoints';
 
 const axios = injectStrict(AxiosKey);
 
@@ -126,25 +126,33 @@ async function loadParametersFromDeviceGpsDatapointInDB() {
         `Loading parameters from device GPS datapoint with id ${deviceGPSDatapointFromDatabaseID.value} in DB`,
     );
 
-    await axios
-        .get(`/device_gps_datapoints/${deviceGPSDatapointFromDatabaseID.value}`)
-        .then((response: AxiosResponse<{ message: string; data: DeviceGPSDatapointWithTtnMapperDatapoints }>) => {
-            const parsedData: DeviceGPSDatapointWithTtnMapperDatapoints = response.data.data;
+    await axios.get(`/device_gps_datapoints/${deviceGPSDatapointFromDatabaseID.value}`).then((response) => {
+        const responseData = response.data.data;
+        const parsedData: DeviceGPSDatapointWithTtnMapperDatapoints = new DeviceGPSDatapointWithTtnMapperDatapoints(
+            responseData.id,
+            responseData.timestamp,
+            responseData.deviceId,
+            responseData.latitude,
+            responseData.longitude,
+            responseData.altitude,
+            responseData.hdop,
+            responseData.ttnMapperDatapoints,
+        );
 
-            emit('actualDeviceLocationUpdated', convertTtnLocatorDeviceGPSDatapointToNormal(parsedData));
+        emit('actualDeviceLocationUpdated', parsedData.mapToDeviceGPSDatapoint());
 
-            rssiSimilaritySelectionParameters.value = parsedData.ttnMapperDatapoints.map(
-                (eachTtnMapperDatapoint: TtnMapperDatapoint) => {
-                    return {
-                        gatewayData: {
-                            id: eachTtnMapperDatapoint.gatewayId,
-                            location: new LatLng(0, 0),
-                        },
-                        rssi: eachTtnMapperDatapoint.rssi,
-                    };
-                },
-            );
-        });
+        rssiSimilaritySelectionParameters.value = parsedData.ttnMapperDatapoints.map(
+            (eachTtnMapperDatapoint: TtnMapperDatapoint) => {
+                return {
+                    gatewayData: {
+                        id: eachTtnMapperDatapoint.gatewayId,
+                        location: new LatLng(0, 0),
+                    },
+                    rssi: eachTtnMapperDatapoint.rssi,
+                };
+            },
+        );
+    });
 }
 
 async function loadParametersFromTtnMapperDatapointInDB() {

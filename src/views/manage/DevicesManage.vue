@@ -36,7 +36,7 @@
 import { ref, onMounted, Ref } from 'vue';
 
 // Types
-import { TtnLocatorDeviceApiResponse, TtnLocatorDeviceData } from '@/types/Devices';
+import TtnLocatorDeviceData from '@/types/TtnLocatorDeviceData';
 
 // Axios
 import { injectStrict } from '@/utils/injectTyped';
@@ -49,7 +49,7 @@ const axios = injectStrict(AxiosKey);
 const devices: Ref<TtnLocatorDeviceData[]> = ref([]);
 
 onMounted(async () => {
-    const response: AxiosResponse<TtnLocatorDeviceApiResponse> = await axios.get('/devices');
+    const response: AxiosResponse<{ message: string; data: TtnLocatorDeviceData[] }> = await axios.get('/devices');
     devices.value = response.data.data;
 });
 

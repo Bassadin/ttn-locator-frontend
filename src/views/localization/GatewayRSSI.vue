@@ -68,10 +68,10 @@ import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDevic
 
 // Types
 import { LatLng } from 'leaflet';
-import { GatewayData } from '@/types/Gateways';
-import { DeviceGPSDatapoint, stripRssiFromDeviceGPSDatapointWithRSSI } from '@/types/GPSDatapoints';
+import GatewayData from '@/types/Gateways/GatewayData';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import GatewayUtils from '@/utils/GatewayUtils';
+import DeviceGPSDatapoint from '@/types/DeviceGpsDatapoints/DeviceGPSDatapoint';
 
 const gatewayID = ref(route.params.gatewayId.toString());
 const gatewayData: Ref<GatewayData> = ref({} as GatewayData);
@@ -114,7 +114,9 @@ function getGatewayData() {
         selectedRSSIRange.value[0],
         selectedRSSIRange.value[1],
     ).then((responseData) => {
-        const parsedData: DeviceGPSDatapoint[] = responseData.map(stripRssiFromDeviceGPSDatapointWithRSSI);
+        const parsedData: DeviceGPSDatapoint[] = responseData.map((eachDeviceGPSDatapoint) =>
+            eachDeviceGPSDatapoint.toNormalGpsDatapoint(),
+        );
 
         gpsDatapointsWithRSSIValues.value = parsedData;
     });

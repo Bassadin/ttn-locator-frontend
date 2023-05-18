@@ -1,14 +1,15 @@
 import Constants from '@/other/Constants';
 
 // Types
-import { TtnLocatorDeviceGPSDatapointWithRSSI } from '@/types/GPSDatapoints';
 import { LatLng } from 'leaflet';
 import * as turf from '@turf/turf';
+import TtnLocatorDeviceGPSDatapointWithRSSI from '@/types/DeviceGpsDatapoints/TtnLocatorDeviceGPSDatapointWithRSSI';
+import GatewayRssiSelection from '@/types/Gateways/GatewayRssiSelection';
+import TtnLocatorGatewayData from '@/types/Gateways/TtnLocatorGatewayData';
 
 // Axios
 import axios from '@/plugins/axios';
 import { AxiosResponse } from 'axios';
-import { GatewayRssiSelection, TtnLocatorGatewayData } from '@/types/Gateways';
 
 export default class GatewayUtils {
     public static doesGatewayIdExist(gatewayId: string): Promise<boolean> {
