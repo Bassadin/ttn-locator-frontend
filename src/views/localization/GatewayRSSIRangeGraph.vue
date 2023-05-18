@@ -86,18 +86,18 @@ const chartOptions = ref({
     scales: {
         x: {
             type: 'linear',
-            position: 'bottom',
-            title: {
-                display: true,
-                text: 'Distance (m)',
-            },
-        },
-        y: {
-            type: 'linear',
             position: 'left',
             title: {
                 display: true,
                 text: 'RSSI (dBm)',
+            },
+        },
+        y: {
+            type: 'linear',
+            position: 'bottom',
+            title: {
+                display: true,
+                text: 'Distance (m)',
             },
         },
     },
@@ -162,27 +162,28 @@ async function getGatewayData() {
                         { units: 'meters' },
                     );
 
-                    return { x: distanceToGateway, y: rssiValue };
+                    return { x: rssiValue, y: distanceToGateway };
                 });
-
-                const maxDistance = Math.max(...rssiDistanceData.map((eachDataPoint) => eachDataPoint.x));
-
-                // Regression
-                const regressionData = simpleStatistics.linearRegression(
-                    rssiDistanceData.map((eachDataPoint) => [eachDataPoint.x, eachDataPoint.y]),
-                );
 
                 if (rssiDistanceData.length === 0) {
                     console.info('No data available');
                     return;
                 }
 
+                // Regression
+                const rssiValues = rssiDistanceData.map((eachDataPoint) => eachDataPoint.x);
+                const minRssi = Math.min(...rssiValues);
+                const maxRssi = Math.max(...rssiValues);
+                const regressionData = simpleStatistics.linearRegression(
+                    rssiDistanceData.map((eachDataPoint) => [eachDataPoint.x, eachDataPoint.y]),
+                );
+
                 const regressionPrediction = simpleStatistics.linearRegressionLine(regressionData);
                 console.debug('Regression data', regressionData);
 
                 // Calculate some regression datapoints between 0 and maxDistance
                 const regressionDatapoints = [];
-                for (let i = 0; i <= maxDistance; i += 100) {
+                for (let i = minRssi; i <= maxRssi; i += 5) {
                     regressionDatapoints.push({ x: i, y: regressionPrediction(i) });
                 }
 
