@@ -11,7 +11,7 @@
             </template>
         </v-app-bar>
         <v-navigation-drawer v-model="showNavDrawer" :rail="!mobile" :expand-on-hover="!mobile">
-            <v-list density="compact" nav>
+            <v-list-item density="compact" nav>
                 <v-list-item prepend-icon="mdi-home" title="Home" :to="{ name: 'home' }" />
 
                 <v-divider></v-divider>
@@ -46,7 +46,16 @@
                     title="Gateways"
                     :to="{ name: 'manage_gateways' }"
                 />
-            </v-list>
+
+                <v-divider></v-divider>
+                <v-list-subheader>Stats</v-list-subheader>
+                <v-list-item
+                    v-list
+                    prepend-icon="mdi-chart-bar"
+                    title="Device GPS Datapoints"
+                    :to="{ name: 'device_gps_datapoints_stats' }"
+                />
+            </v-list-item>
         </v-navigation-drawer>
     </div>
 </template>

@@ -61,6 +61,17 @@ const routes = [
             title: 'Manage Gateways',
         },
     },
+
+    // Stats pages
+    {
+        path: '/stats/device_gps_datapoints',
+        name: 'device_gps_datapoints_stats',
+        component: () => import('@/views/stats/DeviceGpsDatapointsStats.vue'),
+        meta: {
+            title: 'Device GPS Datapoints Stats',
+        },
+    },
+
     // Catch all 404
     {
         path: '/:pathMatch(.*)*',
