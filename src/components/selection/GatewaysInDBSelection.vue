@@ -24,8 +24,13 @@ import { AxiosResponse } from 'axios';
 // Axios instance
 const axios = injectStrict(AxiosKey);
 
+interface AutocompleteEntry {
+    title: string;
+    value: string;
+}
+
 // Possible gateways in database to select from
-const gatewaysInDatabase: Ref<string[]> = ref([]);
+const gatewaysInDatabase: Ref<AutocompleteEntry[]> = ref([]);
 
 onMounted(() => {
     getGatewaysInDatabase();
@@ -39,15 +44,21 @@ function getGatewaysInDatabase() {
         const gateways: TtnLocatorGatewayData[] = responseData.data;
 
         gatewaysInDatabase.value = gateways.map((eachGateway: TtnLocatorGatewayData) => {
-            return eachGateway.gatewayId;
+            const entryTitle = eachGateway.name
+                ? `${eachGateway.gatewayId} (${eachGateway.name})`
+                : eachGateway.gatewayId;
+            return {
+                title: entryTitle,
+                value: eachGateway.gatewayId,
+            };
         });
     });
 }
 
 // Rules
-const gatewayRules = [(v: string) => isGatewayIdValid(v) || 'Gateway must be in database'];
+const gatewayRules = [(entry: string) => isGatewayIdValid(entry) || 'Gateway must be in database'];
 
 function isGatewayIdValid(gatewayID: string): boolean {
-    return gatewaysInDatabase.value.includes(gatewayID);
+    return gatewaysInDatabase.value.some((eachGateway: AutocompleteEntry) => eachGateway.value === gatewayID);
 }
 </script>
