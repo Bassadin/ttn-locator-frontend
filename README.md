@@ -4,7 +4,7 @@
 
 This is the frontend for the [ttn-locator-backend](https://github.com/Bassadin/ttnmapper-reader) API.
 
-It is part of my [master's thesis](https://github.com/Bassadin/Master-Thesis-INM) at [HFU Furtwangen University](https://www.hs-furtwangen.de/) and is still in development.
+It is part of my [master's thesis](https://github.com/Bassadin/Master-Thesis-INM) at [HFU Furtwangen University](https://www.hs-furtwangen.de/).
 
 ## Used Technologies
 
@@ -19,4 +19,4 @@ To start the frontend:
 -   Copy `.env.sample` to `.env` and fill in your values
     -   Docker setup for ttn locator backend coming soon
 -   `pnpm install`
--   `pnpm run dev` to start the dev server
+-   `pnpm dev` to start the dev server
