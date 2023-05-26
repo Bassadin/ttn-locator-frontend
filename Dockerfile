@@ -1,5 +1,5 @@
 # Base image
-FROM node:lts-alpine as builder
+FROM node:18-alpine as builder
 
 # Create app directory
 WORKDIR /app
@@ -16,7 +16,7 @@ RUN pnpm install -r --offline
 
 RUN pnpm build
 
-FROM nginx:alpine
+FROM nginx:1.25-alpine
 
 # Copy healthcheck script
 COPY --from=builder /app/additional_scripts/healthcheck.mjs ./healthcheck.mjs
