@@ -5,7 +5,7 @@ FROM node:lts-alpine as builder
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@latest-7
 
 # pnpm fetch does require only lockfile
 COPY pnpm-lock.yaml ./
