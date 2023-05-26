@@ -3,7 +3,6 @@ version: '3'
 services:
     ttn-locator-backend:
         image: ghcr.io/bassadin/ttn-locator-backend:latest
-        build: .
         restart: always
         links:
             - db
@@ -41,12 +40,13 @@ services:
     ttn-locator-frontend:
         image: ghcr.io/bassadin/ttn-locator-frontend:latest
         build: .
+        links:
+            - ttn-locator-backend
         restart: unless-stopped
         ports:
             - '8080:80'
         environment:
-            # TODO: This doesnt work yet
-            VITE_TTNMAPPER_LOCATOR_API_URL: http://ttn-locator-backend:3000
+            - VITE_TTNMAPPER_LOCATOR_API_URL=http://ttn-locator-backend:3000
 volumes:
     postgres-data:
     pgadmin-data:
