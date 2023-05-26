@@ -16,10 +16,18 @@ RUN pnpm install -r --offline
 
 RUN pnpm build
 
-FROM nginx:1.25-alpine
+# TODO: NGINX doesn't work well with vue-router. Fix this later.
+# FROM nginx:1.25-alpine
 
-# Copy healthcheck script
-COPY --from=builder /app/additional_scripts/healthcheck.mjs ./healthcheck.mjs
-COPY --from=builder /app/dist /usr/share/nginx/html
+# # Copy healthcheck script
+# COPY --from=builder /app/additional_scripts/healthcheck.mjs ./healthcheck.mjs
+# COPY --from=builder /app/dist /usr/share/nginx/html
 
 HEALTHCHECK CMD node ./healthcheck.mjs
+
+# Expose port 5000
+EXPOSE 5000
+
+# TODO: This should be changed later to a NGINX image
+# Start the app
+CMD ["pnpm", "preview", "--port", "5000", "--host"]

@@ -42,9 +42,8 @@ services:
         build: .
         links:
             - ttn-locator-backend
-        restart: unless-stopped
         ports:
-            - '8080:80'
+            - '8080:5000'
         environment:
             - VITE_TTNMAPPER_LOCATOR_API_URL=http://ttn-locator-backend:3000
 volumes:
