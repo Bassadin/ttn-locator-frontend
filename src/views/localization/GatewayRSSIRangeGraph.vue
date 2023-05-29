@@ -18,7 +18,7 @@
         <v-row>
             <v-col>
                 <v-card>
-                    <v-card-title>Graph</v-card-title>
+                    <v-card-title>Graph ({{ amountOfDatapoints }} datapoints)</v-card-title>
                     <v-card-text>
                         <Scatter v-if="chartDataReady" :data="chartData" :options="chartOptions"></Scatter>
                         <p v-else>No data available</p>
@@ -30,8 +30,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, Ref } from 'vue';
+import { computed, onMounted, ref, Ref } from 'vue';
 import { LatLng } from 'leaflet';
+import GatewayUtils from '@/utils/GatewayUtils';
 
 // Router
 import { useRoute } from 'vue-router';
@@ -79,6 +80,10 @@ const selectedGatewayID = ref(route.params.gatewayId.toString());
 const gatewayData: Ref<GatewayData> = ref({} as GatewayData);
 
 const isCurrentlyLoading = ref(false);
+
+const amountOfDatapoints = computed(() => {
+    return chartData.value.datasets[0].data.length || 0;
+});
 
 // Chart stuff
 const chartOptions = ref({
