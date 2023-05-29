@@ -196,7 +196,7 @@ async function getGatewayData() {
                         },
                         {
                             type: 'line',
-                            label: 'Trend line',
+                            label: `Trend line (${GatewayUtils.linearRegressionPrintString(regressionData)})`,
                             data: regressionDatapoints,
                             fill: false,
                             borderColor: 'red',

@@ -67,6 +67,13 @@ export default class GatewayUtils {
         return (-65 * rssi - 5600) / 1000;
     }
 
+    public static linearRegressionPrintString(linearRegressionData: { b: number; m: number }) {
+        const roundedM = linearRegressionData.m.toFixed(3);
+        const roundedB = linearRegressionData.b.toFixed(3);
+
+        return `y = ${roundedM} * x + ${roundedB}`;
+    }
+
     public static getTurfCircleGeoJSONFromGatewayData(gatewayData: GatewayRssiSelection, radiusOffsetMeters = 0) {
         const turfCenterPoint = turf.point([
             gatewayData.gatewayData.location.lng,
