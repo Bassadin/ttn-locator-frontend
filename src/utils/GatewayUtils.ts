@@ -64,7 +64,7 @@ export default class GatewayUtils {
     }
 
     public static getKilometerRadiusForRssi(rssi: number): number {
-        return (-65 * rssi - 5600) / 1000;
+        return (-12 * rssi - 605) / 1000;
     }
 
     public static linearRegressionPrintString(linearRegressionData: { b: number; m: number }) {
