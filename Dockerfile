@@ -14,7 +14,8 @@ RUN pnpm fetch
 ADD . ./
 RUN pnpm install -r --offline
 
-RUN pnpm build
+# Loads env values from ./.env.dockercompose
+RUN pnpm build --mode dockercompose
 
 # TODO: NGINX doesn't work well with vue-router. Fix this later.
 # FROM nginx:1.25-alpine
@@ -25,9 +26,9 @@ RUN pnpm build
 
 HEALTHCHECK CMD node ./healthcheck.mjs
 
-# Expose port 5000
-EXPOSE 5000
+# Expose port 57200
+EXPOSE 57200
 
 # TODO: This should be changed later to a NGINX image
 # Start the app
-CMD ["pnpm", "preview", "--port", "5000", "--host"]
+CMD ["pnpm", "preview", "--port", "57200", "--host"]

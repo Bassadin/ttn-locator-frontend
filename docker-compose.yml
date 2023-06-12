@@ -2,12 +2,13 @@
 version: '3'
 services:
     ttn-locator-backend:
+        container_name: ttn-locator-backend
         image: ghcr.io/bassadin/ttn-locator-backend:latest
         restart: always
         links:
             - db
         ports:
-            - '3000:3000'
+            - '57100:57100'
         environment:
             - DATABASE_URL=postgresql://postgres:postgres@db:5432/ttn-locator-backend
     db:
@@ -38,15 +39,18 @@ services:
             - ./pgadmin_server_config/servers.json:/pgadmin4/servers.json
             - ./pgadmin_server_config/pgpass:/pgpass:rw
     ttn-locator-frontend:
+        container_name: ttn-locator-frontend
         image: ghcr.io/bassadin/ttn-locator-frontend:latest
         build: .
         links:
             - ttn-locator-backend
         ports:
-            - '8080:5000'
-        environment:
-            # This does not work yet
-            - VITE_TTNMAPPER_LOCATOR_API_URL=http://ttn-locator-backend:3000
+            - '57200:57200'
 volumes:
     postgres-data:
     pgadmin-data:
+
+networks:
+    default:
+        external:
+            name: ttn-locator
