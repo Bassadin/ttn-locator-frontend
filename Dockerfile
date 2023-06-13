@@ -5,7 +5,7 @@ FROM node:18-alpine as builder
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm@8.6.2
+RUN npm install -g pnpm@^8.6
 
 # pnpm fetch does require only lockfile
 COPY pnpm-lock.yaml ./

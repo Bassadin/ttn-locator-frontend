@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_TTNMAPPER_LOCATOR_API_URL;
+const baseURL = import.meta.env.VITE_TTN_LOCATOR_API_URL;
 
 const axiosInstance = axios.create({
     baseURL: baseURL,
