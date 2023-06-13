@@ -14,8 +14,8 @@ RUN pnpm fetch
 ADD . ./
 RUN pnpm install -r --offline
 
-# Loads env values from ./.env.dockercompose
-RUN pnpm build --mode dockercompose
+# Loads env values from ./.env.docker
+RUN pnpm build --mode docker
 
 # TODO: NGINX doesn't work well with vue-router. Fix this later.
 # FROM nginx:1.25-alpine
