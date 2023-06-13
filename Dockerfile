@@ -24,7 +24,7 @@ RUN pnpm build --mode dockercompose
 # COPY --from=builder /app/additional_scripts/healthcheck.mjs ./healthcheck.mjs
 # COPY --from=builder /app/dist /usr/share/nginx/html
 
-HEALTHCHECK CMD node ./healthcheck.mjs
+HEALTHCHECK CMD node ./additional_scripts/healthcheck.mjs
 
 # Expose port 57200
 EXPOSE 57200
