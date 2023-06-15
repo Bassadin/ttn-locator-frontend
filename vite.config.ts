@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import importMetaEnv from '@import-meta-env/unplugin';
 import path from 'path';
 
 // UnoCSS
@@ -16,6 +17,7 @@ export default defineConfig({
         UnoCSS({
             mode: 'vue-scoped',
         }),
+        importMetaEnv.vite({ example: '.env.sample' }),
     ],
     resolve: {
         alias: {

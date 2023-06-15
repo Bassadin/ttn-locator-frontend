@@ -15,7 +15,7 @@ ADD . ./
 RUN pnpm install -r --offline
 
 # Loads env values from ./.env.docker
-RUN pnpm build --mode docker
+RUN pnpm build
 
 # TODO: NGINX doesn't work well with vue-router. Fix this later.
 # FROM nginx:1.25-alpine
