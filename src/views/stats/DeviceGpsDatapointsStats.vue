@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-card>
-            <v-card-title>Stats for device GPD Datapoints</v-card-title>
+            <v-card-title>Stats for device GPS Datapoints</v-card-title>
             <v-card-text>
                 <p>
                     This shows the amount of GPS Datapoints that exist for each count of TTN Mapper datapoints
