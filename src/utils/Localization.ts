@@ -7,6 +7,17 @@ export interface CircleWithRadius {
 }
 
 export function findCenterOfLatLongsWithHalfCoveringRadius(latLongs: LatLng[]): CircleWithRadius {
+    if (latLongs.length === 0) {
+        throw new Error('Cannot find center of empty array');
+    }
+
+    if (latLongs.length === 1) {
+        return {
+            center: latLongs[0],
+            radius: 0,
+        };
+    }
+
     const turfPoints = latLongs.map((latLong) => turf.point([latLong.lng, latLong.lat]));
     const featureCollection = turf.featureCollection(turfPoints);
 
@@ -14,10 +25,8 @@ export function findCenterOfLatLongsWithHalfCoveringRadius(latLongs: LatLng[]): 
     const centerCoordiantes = pointsCentroid.geometry.coordinates;
 
     const distancesToCentroidPoint = turfPoints
-        .map((point) => turf.distance(turf.point(centerCoordiantes), point, { units: 'meters' }))
+        .map((point) => turf.distance(pointsCentroid, point, { units: 'meters' }))
         .sort((a, b) => a - b);
-
-    console.debug('distancesToCentroidPoint', distancesToCentroidPoint);
 
     const halfwayPointIndex = Math.floor(distancesToCentroidPoint.length / 2);
 
