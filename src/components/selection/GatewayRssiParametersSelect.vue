@@ -1,6 +1,6 @@
 <template>
     <v-form>
-        <v-subheader>Load values from TTN Mapper Datapoint ID</v-subheader>
+        <h3 class="mb-4">Load values from TTN Mapper Datapoint ID</h3>
         <v-row>
             <v-col>
                 <v-form @submit.prevent="loadParametersFromTtnMapperDatapointInDB">
@@ -17,7 +17,7 @@
                 </v-form>
             </v-col>
         </v-row>
-        <v-subheader>Load values from Device GPS Datapoint ID</v-subheader>
+        <h3 class="mb-4">Load values from Device GPS Datapoint ID</h3>
         <v-row>
             <v-col>
                 <v-form @submit.prevent="loadParametersFromDeviceGpsDatapointInDB">
@@ -34,7 +34,7 @@
                 </v-form>
             </v-col>
         </v-row>
-        <v-subheader>RSSI Similarity Parameters</v-subheader>
+        <h3>RSSI Similarity Parameters</h3>
 
         <div class="my-4">
             <GatewayAndRssiSelect
