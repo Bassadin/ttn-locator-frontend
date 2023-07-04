@@ -12,23 +12,30 @@ export function findCenterOfLatLongsWithHalfCoveringRadius(latLongs: LatLng[]): 
     }
 
     if (latLongs.length === 1) {
+        console.debug('Only one point, returning point as center with radius 0');
         return {
             center: latLongs[0],
             radius: 0,
         };
     }
 
+    console.debug(`Finding center of ${latLongs.length} points`);
+
     const turfPoints = latLongs.map((latLong) => turf.point([latLong.lng, latLong.lat]));
     const featureCollection = turf.featureCollection(turfPoints);
 
-    const pointsCentroid = turf.centerOfMass(featureCollection);
-    const centerCoordiantes = pointsCentroid.geometry.coordinates;
+    const pointsCenter = turf.centroid(featureCollection);
+    const centerCoordiantes = pointsCenter.geometry.coordinates;
 
     const distancesToCentroidPoint = turfPoints
-        .map((point) => turf.distance(pointsCentroid, point, { units: 'meters' }))
-        .sort((a, b) => a - b);
+        .map((point) => turf.distance(pointsCenter, point, { units: 'meters' }))
+        .sort((a, b) => a - b); // sort ascending
 
     const halfwayPointIndex = Math.floor(distancesToCentroidPoint.length / 2);
+
+    console.debug(
+        `Found center at ${centerCoordiantes[1]}, ${centerCoordiantes[0]} with radius ${distancesToCentroidPoint[halfwayPointIndex]}`,
+    );
 
     return {
         center: new LatLng(centerCoordiantes[1], centerCoordiantes[0]),
