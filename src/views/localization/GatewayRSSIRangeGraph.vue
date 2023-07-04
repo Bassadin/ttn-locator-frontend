@@ -61,6 +61,7 @@ ChartJS.register(Title, Tooltip, Legend, LinearScale, PointElement, LineElement,
 import * as simpleStatistics from 'simple-statistics';
 
 // Axios
+import axios from 'axios';
 import { injectStrict } from '@/utils/injectTyped';
 import { AxiosKey } from '@/symbols';
 import { AxiosResponse } from 'axios';
@@ -74,7 +75,8 @@ import * as turf from '@turf/turf';
 import Constants from '@/other/Constants';
 
 // Axios instance
-const axios = injectStrict(AxiosKey);
+const axiosInstanceTTNL = injectStrict(AxiosKey);
+const axiosInstancePacketbroker = axios.create();
 
 const selectedGatewayID = ref(route.params.gatewayId.toString());
 const gatewayData: Ref<GatewayData> = ref({} as GatewayData);
@@ -127,7 +129,7 @@ async function getGatewayData() {
     isCurrentlyLoading.value = true;
     chartDataReady.value = false;
 
-    const packetbrokerApiResponse: AxiosResponse<PacketbrokerGatewayAPIResponse> = (await axios
+    const packetbrokerApiResponse: AxiosResponse<PacketbrokerGatewayAPIResponse> = (await axiosInstancePacketbroker
         .get(`https://mapper.packetbroker.net/api/v2/gateways/netID=000013,tenantID=ttn,id=${selectedGatewayID.value}`)
         .catch(() => {
             isCurrentlyLoading.value = false;
@@ -143,7 +145,7 @@ async function getGatewayData() {
         location: gatewayLocation,
     };
 
-    axios
+    axiosInstanceTTNL
         .get(`/gateways/${selectedGatewayID.value}/gps_datapoints_with_rssi?hdop_filter=${Constants.HDOP_CUTOFF_POINT}`)
         .then(
             (
