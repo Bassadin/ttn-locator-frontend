@@ -20,7 +20,16 @@
                     :device-gps-datapoint-data="actualDeviceLocation"
                 />
 
-                <l-circle v-if="estimatedPosition" :lat-lng="estimatedPosition" :radius="50"></l-circle>
+                <l-circle
+                    v-if="estimatedPosition"
+                    :lat-lng="estimatedPosition"
+                    :radius="estimatedPositionRadius"
+                    color="orange"
+                >
+                    <l-tooltip :options="{ offset: L.point({ x: estimatedPositionRadius / 3 + 10, y: 0 }) }">
+                        <b>Error radius:</b> {{ estimatedPositionRadius }} m
+                    </l-tooltip>
+                </l-circle>
             </template>
         </BaseMap>
         <!-- Need the eager here since otherwise the refs reset every time the dialog gets opened -->
@@ -76,7 +85,8 @@ import SingleDeviceGPSDatapointMarker from '@/components/map/markers/SingleDevic
 import ActualDeviceLocationMarker from '@/components/map/markers/ActualDeviceLocationMarker.vue';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import GatewayRssiParametersSelect from '@/components/selection/GatewayRssiParametersSelect.vue';
-import { LCircle } from '@vue-leaflet/vue-leaflet';
+import * as L from 'leaflet';
+import { LCircle, LTooltip } from '@vue-leaflet/vue-leaflet';
 
 // Types
 import { GatewayRssiSelection } from '@/types/Gateways';
@@ -92,7 +102,7 @@ import { LatLng } from 'leaflet';
 import { injectStrict } from '@/utils/injectTyped';
 import { AxiosKey } from '@/symbols';
 import { AxiosResponse } from 'axios';
-import { findCenterOfLatLongs } from '@/utils/Localization';
+import { findCenterOfLatLongsWithHalfCoveringRadius } from '@/utils/Localization';
 
 const axios = injectStrict(AxiosKey);
 
@@ -100,6 +110,7 @@ const showFilteringDialog = ref(false);
 const isCurrentlyLoading = ref(false);
 const rssiSimilaritySelectionParameters: Ref<GatewayRssiSelection[]> = ref([]);
 const estimatedPosition: Ref<LatLng | null> = ref(null);
+const estimatedPositionRadius: Ref<number> = ref(50);
 const deviceGPSDatapoints: Ref<DeviceGPSDatapoint[]> = ref([]);
 const rssiCheckingRange: Ref<number> = ref(Constants.DEFAULT_RSSI_CHECKING_RANGE);
 const actualDeviceLocation: Ref<DeviceGPSDatapoint | null> = ref(null);
@@ -141,11 +152,14 @@ async function loadSimilarityData() {
     const parsedData: TtnLocatorDeviceGPSDatapoint[] = deviceGpsDatapointsResponse.data.data;
     deviceGPSDatapoints.value = parsedData.map(mapTtnLocatorApiResponseToDeviceGPSDatapoint);
 
-    estimatedPosition.value = findCenterOfLatLongs(
+    const cirleData = findCenterOfLatLongsWithHalfCoveringRadius(
         parsedData.map((eachParsedData) => {
             return new LatLng(eachParsedData.latitude, eachParsedData.longitude);
         }),
     );
+
+    estimatedPosition.value = cirleData.center;
+    estimatedPositionRadius.value = cirleData.radius;
 
     console.info(`Estimated position as: ${estimatedPosition.value}`);
 

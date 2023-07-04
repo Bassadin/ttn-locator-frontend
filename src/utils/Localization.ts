@@ -1,13 +1,28 @@
 import { LatLng } from 'leaflet';
 import * as turf from '@turf/turf';
 
-export function findCenterOfLatLongs(latLongs: LatLng[]): LatLng {
-    const turfPoints = latLongs.map((latLong) => {
-        return turf.point([latLong.lng, latLong.lat]);
-    });
+export interface CircleWithRadius {
+    center: LatLng;
+    radius: number;
+}
 
-    const center = turf.centroid(turf.featureCollection(turfPoints));
-    const coordiantes = center.geometry.coordinates;
+export function findCenterOfLatLongsWithHalfCoveringRadius(latLongs: LatLng[]): CircleWithRadius {
+    const turfPoints = latLongs.map((latLong) => turf.point([latLong.lng, latLong.lat]));
+    const featureCollection = turf.featureCollection(turfPoints);
 
-    return new LatLng(coordiantes[1], coordiantes[0]);
+    const pointsCentroid = turf.centerOfMass(featureCollection);
+    const centerCoordiantes = pointsCentroid.geometry.coordinates;
+
+    const distancesToCentroidPoint = turfPoints
+        .map((point) => turf.distance(turf.point(centerCoordiantes), point, { units: 'meters' }))
+        .sort((a, b) => a - b);
+
+    console.debug('distancesToCentroidPoint', distancesToCentroidPoint);
+
+    const halfwayPointIndex = Math.floor(distancesToCentroidPoint.length / 2);
+
+    return {
+        center: new LatLng(centerCoordiantes[1], centerCoordiantes[0]),
+        radius: distancesToCentroidPoint[halfwayPointIndex],
+    };
 }
