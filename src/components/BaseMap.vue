@@ -77,4 +77,13 @@ const tileProviders = ref([
     width: 100%;
     height: 100%;
 }
+
+/* Kudos to @AljoshaVieth */
+.leaflet-tile-loaded {
+    transition: filter 0.5s ease-in-out;
+}
+
+.v-theme--dark .leaflet-tile-loaded {
+    filter: invert(100%) grayscale(100%);
+}
 </style>

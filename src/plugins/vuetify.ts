@@ -15,6 +15,8 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi';
 // @ts-ignore
 import colors from 'vuetify/lib/util/colors';
 
+const isInitialDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
 export default createVuetify({
     components,
     directives,
@@ -26,7 +28,7 @@ export default createVuetify({
         },
     },
     theme: {
-        defaultTheme: 'light',
+        defaultTheme: isInitialDarkTheme ? 'dark' : 'light',
         themes: {
             light: {
                 dark: false,
