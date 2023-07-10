@@ -22,8 +22,8 @@
         "simple-statistics": "^7.8.3",
         "vue": "^3.3.4",
         "vue-chartjs": "^5.2.0",
-        "vue-router": "^4.2.2",
-        "vuetify": "^3.3.6"
+        "vue-router": "^4.2.4",
+        "vuetify": "^3.3.7"
     },
     "devDependencies": {
         "@import-meta-env/cli": "^0.6.3",
@@ -49,11 +49,16 @@
         "prettier-eslint": "^15.0.1",
         "sass": "^1.63.6",
         "typescript": "^5.1.6",
-        "unocss": "^0.53.4",
-        "vite": "^4.3.9",
+        "unocss": "^0.53.5",
+        "vite": "^4.4.2",
         "vite-plugin-vuetify": "^1.0.2",
         "vite-tsconfig-paths": "^4.2.0",
         "vue-eslint-parser": "^9.3.1",
-        "vue-tsc": "^1.8.3"
+        "vue-tsc": "^1.8.4"
+    },
+    "pnpm": {
+        "overrides": {
+            "semver@<7.5.2": ">=7.5.2"
+        }
     }
 }
