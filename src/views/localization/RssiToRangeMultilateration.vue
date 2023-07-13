@@ -55,6 +55,14 @@
                             ></v-text-field>
                         </v-col>
                     </v-row>
+                    <v-row>
+                        <v-col>
+                            <v-checkbox
+                                v-model="shouldUseFixedRssiToRangeScale"
+                                label="Use fixed RSSI to Range scale"
+                            ></v-checkbox>
+                        </v-col>
+                    </v-row>
                 </v-card-text>
                 <v-card-actions>
                     <v-btn block :loading="isCurrentlyLoading" color="primary" @click.prevent="recalculate">
@@ -80,10 +88,16 @@ import { LGeoJson } from '@vue-leaflet/vue-leaflet';
 import GatewayRssiParametersSelect from '@/components/selection/GatewayRssiParametersSelect.vue';
 
 // Types
-import { GatewayRssiSelection } from '@/types/Gateways';
+import { GatewayRssiSelection, TtnLocatorGatewayData } from '@/types/Gateways';
 import { DeviceGPSDatapoint } from '@/types/GPSDatapoints';
 import GatewayUtils from '@/utils/GatewayUtils';
-import { GeoJSON, PathOptions } from 'leaflet';
+import { GeoJSON, LatLng, PathOptions } from 'leaflet';
+
+// Axios
+import { injectStrict } from '@/utils/injectTyped';
+import { AxiosKey } from '@/symbols';
+
+const axios = injectStrict(AxiosKey);
 
 const showFilteringDialog = ref(false);
 const isCurrentlyLoading = ref(false);
@@ -91,6 +105,7 @@ const gatewayRssiSelectionParameters: Ref<GatewayRssiSelection[]> = ref([]);
 const actualDeviceLocation: Ref<DeviceGPSDatapoint | null> = ref(null);
 const geoJsonCirclesArray: Ref<GeoJSON.Feature[]> = ref([]);
 const rangeDonutTolerance = ref(Constants.DEFAULT_RSSI_TO_RANGE_TOLERANCE_METERS);
+const shouldUseFixedRssiToRangeScale = ref(false);
 
 function geoJsonStyleFunction(_feature: GeoJSON.Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>) {
     const pathOptions: PathOptions = {
@@ -117,17 +132,32 @@ async function loadGatewayLocationData() {
     // https://stackoverflow.com/a/37576787/3526350
     await Promise.all(
         gatewayRssiSelectionParameters.value.map(async (eachRssiSimilarityParameter: GatewayRssiSelection) => {
-            const gatewayLocation = await GatewayUtils.getGatewayLocationForGatewayId(
-                eachRssiSimilarityParameter.gatewayData.id,
-            );
-            if (gatewayLocation === null) {
+            const axiosResponse = await axios.get(`/gateways/${eachRssiSimilarityParameter.gatewayData.id}`);
+            const responseData: TtnLocatorGatewayData = axiosResponse.data.data;
+
+            if (responseData.latitude == 0 && responseData.longitude == 0) {
                 return;
             }
-            eachRssiSimilarityParameter.gatewayData.location = gatewayLocation;
+
+            eachRssiSimilarityParameter.gatewayData.location = new LatLng(
+                responseData.latitude,
+                responseData.longitude,
+            );
+
+            if (
+                !shouldUseFixedRssiToRangeScale.value &&
+                responseData.linearRegressionSlope &&
+                responseData.linearRegressionIntercept
+            ) {
+                eachRssiSimilarityParameter.linearRegressionValues = {
+                    slope: responseData.linearRegressionSlope,
+                    intercept: responseData.linearRegressionIntercept,
+                };
+            }
         }),
     );
 
-    console.info('Finished loading gateway data');
+    console.info('Finished loading gateway data', gatewayRssiSelectionParameters.value);
 }
 
 function recalculateGeoJsonCirclesArray() {
@@ -137,10 +167,12 @@ function recalculateGeoJsonCirclesArray() {
         const circleInner = GatewayUtils.getTurfCircleGeoJSONFromGatewayData(
             eachGatewayRssiParameter,
             -rangeDonutTolerance.value,
+            eachGatewayRssiParameter.linearRegressionValues,
         );
         const circleOuter = GatewayUtils.getTurfCircleGeoJSONFromGatewayData(
             eachGatewayRssiParameter,
             rangeDonutTolerance.value,
+            eachGatewayRssiParameter.linearRegressionValues,
         );
 
         const difference = turf.difference(circleOuter, circleInner);

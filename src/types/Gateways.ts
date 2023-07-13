@@ -1,3 +1,4 @@
+import { LinearRegressionValues } from '@/utils/GatewayUtils';
 import { LatLng } from 'leaflet';
 
 export interface GatewayData {
@@ -8,6 +9,7 @@ export interface GatewayData {
 export interface GatewayRssiSelection {
     gatewayData: GatewayData;
     rssi: number;
+    linearRegressionValues?: LinearRegressionValues;
 }
 
 export interface TTNMapperGatewayAPIResponse {
@@ -32,6 +34,8 @@ export interface TtnLocatorGatewayData {
     _count: {
         ttnmapperDatapoints: number;
     };
+    linearRegressionSlope?: number;
+    linearRegressionIntercept?: number;
 }
 
 // Packetbroker GW API (https://mapper.packetbroker.net/api/v2/gateways/netID=000013,tenantID=ttn,id=hfu-lr8-001)

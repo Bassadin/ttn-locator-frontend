@@ -10,6 +10,11 @@ import axios from '@/plugins/axios';
 import { AxiosResponse } from 'axios';
 import { GatewayRssiSelection, TtnLocatorGatewayData } from '@/types/Gateways';
 
+export interface LinearRegressionValues {
+    slope: number;
+    intercept: number;
+}
+
 export default class GatewayUtils {
     public static doesGatewayIdExist(gatewayId: string): Promise<boolean> {
         const doesGatewayIdExist: Promise<boolean> = axios
@@ -63,8 +68,12 @@ export default class GatewayUtils {
             });
     }
 
-    public static getKilometerRadiusForRssi(rssi: number): number {
-        return (-12 * rssi - 605) / 1000;
+    public static getKilometerRadiusForRssi(rssi: number, customLinearRegression?: LinearRegressionValues): number {
+        return (
+            (customLinearRegression
+                ? customLinearRegression.slope * rssi + customLinearRegression.intercept
+                : -12 * rssi - 605) / 1000
+        );
     }
 
     public static linearRegressionPrintString(linearRegressionData: { b: number; m: number }) {
@@ -74,7 +83,11 @@ export default class GatewayUtils {
         return `y = ${roundedM} * x + ${roundedB}`;
     }
 
-    public static getTurfCircleGeoJSONFromGatewayData(gatewayData: GatewayRssiSelection, radiusOffsetMeters = 0) {
+    public static getTurfCircleGeoJSONFromGatewayData(
+        gatewayData: GatewayRssiSelection,
+        radiusOffsetMeters = 0,
+        customLinearRegression?: LinearRegressionValues,
+    ) {
         const turfCenterPoint = turf.point([
             gatewayData.gatewayData.location.lng,
             gatewayData.gatewayData.location.lat,
@@ -82,7 +95,10 @@ export default class GatewayUtils {
         // TODO: Dirty fix, but the types are weird here
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const options: any = { steps: 50, units: 'kilometers' };
-        const kilometerRadius = this.getKilometerRadiusForRssi(gatewayData.rssi) + radiusOffsetMeters / 1000;
+
+        const kilometerRadius =
+            this.getKilometerRadiusForRssi(gatewayData.rssi, customLinearRegression) + radiusOffsetMeters / 1000;
+
         console.info(
             `Radius for gateway ${gatewayData.gatewayData.id} RSSI ${gatewayData.rssi} is ${kilometerRadius} km, location is ${gatewayData.gatewayData.location}`,
         );
