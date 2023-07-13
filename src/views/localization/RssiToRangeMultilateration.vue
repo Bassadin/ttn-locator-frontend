@@ -153,6 +153,8 @@ async function loadGatewayLocationData() {
                     slope: responseData.linearRegressionSlope,
                     intercept: responseData.linearRegressionIntercept,
                 };
+            } else {
+                eachRssiSimilarityParameter.linearRegressionValues = undefined;
             }
         }),
     );
