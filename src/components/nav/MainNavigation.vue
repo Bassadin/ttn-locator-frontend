@@ -10,7 +10,7 @@
                 <color-switcher-button />
             </template>
         </v-app-bar>
-        <v-navigation-drawer v-model="showNavDrawer" :rail="!mobile" :expand-on-hover="!mobile">
+        <v-navigation-drawer v-model="showNavDrawer" :expand-on-hover="!mobile">
             <v-list-item density="compact" nav>
                 <v-list-item prepend-icon="mdi-home" title="Home" :to="{ name: 'home' }" />
 
