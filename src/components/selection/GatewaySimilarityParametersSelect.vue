@@ -34,10 +34,17 @@
                 </v-form>
             </v-col>
         </v-row>
+
+        <v-row>
+            <v-col>
+                <v-checkbox v-model="useSnrValues" label="Use SNR values"></v-checkbox>
+            </v-col>
+        </v-row>
+
         <h3>Fingerprinting Parameters</h3>
 
         <div class="my-4">
-            <GatewayAndRssiSelect
+            <GatewayAndParametersSelect
                 v-for="eachRssiSimilarityParameter in rssiSimilaritySelectionParameters"
                 :key="eachRssiSimilarityParameter.gatewayData.id"
                 v-model:gatewayId="eachRssiSimilarityParameter.gatewayData.id"
@@ -57,7 +64,7 @@
 import { computed, onMounted, ref } from 'vue';
 
 // Components
-import GatewayAndRssiSelect from '@/components/selection/GatewayAndRssiSelect.vue';
+import GatewayAndParametersSelect from '@/components/selection/GatewayAndParametersSelect.vue';
 
 // Types
 import { GatewaySimilarityParameterSelection } from '@/types/Gateways';
@@ -95,6 +102,8 @@ const rssiSimilaritySelectionParameters = computed({
 // Data
 const deviceGPSDatapointFromDatabaseID = ref(0);
 const ttnMapperDatapointFromDatabaseID = ref(670326377);
+
+const useSnrValues = ref(false);
 
 // TODO: Temporary for quicker demos
 onMounted(() => {
