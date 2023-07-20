@@ -35,20 +35,14 @@
             </v-col>
         </v-row>
 
-        <v-row>
-            <v-col>
-                <v-checkbox v-model="useSnrValues" label="Use SNR values"></v-checkbox>
-            </v-col>
-        </v-row>
-
         <h3>Fingerprinting Parameters</h3>
 
         <div class="my-4">
             <GatewayAndParametersSelect
-                v-for="eachRssiSimilarityParameter in rssiSimilaritySelectionParameters"
+                v-for="(eachRssiSimilarityParameter, index) in rssiSimilaritySelectionParameters"
                 :key="eachRssiSimilarityParameter.gatewayData.id"
-                v-model:gatewayId="eachRssiSimilarityParameter.gatewayData.id"
-                v-model:rssi="eachRssiSimilarityParameter.rssi"
+                v-model:gatewaySimilarityParameters="rssiSimilaritySelectionParameters[index]"
+                :display-snr-selection="props.displaySnrSelection"
                 @delete-parameter="deleteParameter"
             />
         </div>
@@ -87,6 +81,7 @@ const axios = injectStrict(AxiosKey);
 // v-model
 const props = defineProps({
     rssiSimilaritySelectionParameters: { type: Array<GatewaySimilarityParameterSelection>, required: true },
+    displaySnrSelection: { type: Boolean, default: false },
 });
 const emit = defineEmits(['update:rssiSimilaritySelectionParameters', 'actualDeviceLocationUpdated']);
 
@@ -102,8 +97,6 @@ const rssiSimilaritySelectionParameters = computed({
 // Data
 const deviceGPSDatapointFromDatabaseID = ref(0);
 const ttnMapperDatapointFromDatabaseID = ref(670326377);
-
-const useSnrValues = ref(false);
 
 // TODO: Temporary for quicker demos
 onMounted(() => {
@@ -150,6 +143,7 @@ async function loadParametersFromDeviceGpsDatapointInDB() {
                             location: new LatLng(0, 0),
                         },
                         rssi: eachTtnMapperDatapoint.rssi,
+                        snr: props.displaySnrSelection ? eachTtnMapperDatapoint.snr : undefined,
                     };
                 },
             );

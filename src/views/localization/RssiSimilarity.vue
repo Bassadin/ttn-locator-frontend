@@ -49,8 +49,16 @@
                 <v-card-text>
                     <GatewaySimilarityParametersSelect
                         v-model:rssi-similarity-selection-parameters="rssiSimilaritySelectionParameters"
+                        :display-snr-selection="useSnrValues"
                         @actual-device-location-updated="actualDeviceLocation = $event"
                     />
+
+                    <v-row>
+                        <v-col>
+                            <v-checkbox v-model="useSnrValues" label="Use SNR values"></v-checkbox>
+                        </v-col>
+                    </v-row>
+
                     <v-row>
                         <v-col>
                             <v-text-field
@@ -60,6 +68,19 @@
                                 min="0"
                                 max="100"
                                 step="1"
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+
+                    <v-row v-if="useSnrValues">
+                        <v-col>
+                            <v-text-field
+                                v-model.number="snrCheckingRange"
+                                label="SNR checking range (+/-)"
+                                type="number"
+                                min="0"
+                                max="100"
+                                step="0.25"
                             ></v-text-field>
                         </v-col>
                     </v-row>
@@ -115,6 +136,9 @@ const deviceGPSDatapoints: Ref<DeviceGPSDatapoint[]> = ref([]);
 const rssiCheckingRange: Ref<number> = ref(Constants.DEFAULT_RSSI_CHECKING_RANGE);
 const actualDeviceLocation: Ref<DeviceGPSDatapoint | null> = ref(null);
 
+const useSnrValues = ref(true);
+const snrCheckingRange = ref(Constants.DEFAULT_SNR_CHECKING_RANGE);
+
 function loadGatewayLocations() {
     rssiSimilaritySelectionParameters.value.forEach(
         async (eachRssiSimilarityParameter: GatewaySimilarityParameterSelection) => {
@@ -141,6 +165,8 @@ async function loadSimilarityData() {
             gatewayId: eachRssiSimilarityParameter.gatewayData.id,
             minRssi: eachRssiSimilarityParameter.rssi - rssiCheckingRange.value,
             maxRssi: eachRssiSimilarityParameter.rssi + rssiCheckingRange.value,
+            minSnr: useSnrValues.value ? eachRssiSimilarityParameter.snr! - snrCheckingRange.value : undefined,
+            maxSnr: useSnrValues.value ? eachRssiSimilarityParameter.snr! + snrCheckingRange.value : undefined,
         };
     });
 
