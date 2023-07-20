@@ -60,7 +60,7 @@ import { computed, onMounted, ref } from 'vue';
 import GatewayAndRssiSelect from '@/components/selection/GatewayAndRssiSelect.vue';
 
 // Types
-import { GatewayRssiSelection } from '@/types/Gateways';
+import { GatewaySimilarityParameterSelection } from '@/types/Gateways';
 import { LatLng } from 'leaflet';
 
 // Types
@@ -79,7 +79,7 @@ const axios = injectStrict(AxiosKey);
 
 // v-model
 const props = defineProps({
-    rssiSimilaritySelectionParameters: { type: Array<GatewayRssiSelection>, required: true },
+    rssiSimilaritySelectionParameters: { type: Array<GatewaySimilarityParameterSelection>, required: true },
 });
 const emit = defineEmits(['update:rssiSimilaritySelectionParameters', 'actualDeviceLocationUpdated']);
 
@@ -114,7 +114,7 @@ function addNewParameter() {
 
 function deleteParameter(gatewayId: string) {
     rssiSimilaritySelectionParameters.value = rssiSimilaritySelectionParameters.value.filter(
-        (eachRssiSimilarityParameter: GatewayRssiSelection) => {
+        (eachRssiSimilarityParameter: GatewaySimilarityParameterSelection) => {
             return eachRssiSimilarityParameter.gatewayData.id !== gatewayId;
         },
     );

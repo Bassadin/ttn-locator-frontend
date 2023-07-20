@@ -89,7 +89,7 @@ import * as L from 'leaflet';
 import { LCircle, LTooltip } from '@vue-leaflet/vue-leaflet';
 
 // Types
-import { GatewayRssiSelection } from '@/types/Gateways';
+import { GatewaySimilarityParameterSelection } from '@/types/Gateways';
 import {
     DeviceGPSDatapoint,
     mapTtnLocatorApiResponseToDeviceGPSDatapoint,
@@ -108,7 +108,7 @@ const axios = injectStrict(AxiosKey);
 
 const showFilteringDialog = ref(false);
 const isCurrentlyLoading = ref(false);
-const rssiSimilaritySelectionParameters: Ref<GatewayRssiSelection[]> = ref([]);
+const rssiSimilaritySelectionParameters: Ref<GatewaySimilarityParameterSelection[]> = ref([]);
 const estimatedPosition: Ref<LatLng | null> = ref(null);
 const estimatedPositionRadius: Ref<number> = ref(50);
 const deviceGPSDatapoints: Ref<DeviceGPSDatapoint[]> = ref([]);
@@ -116,15 +116,17 @@ const rssiCheckingRange: Ref<number> = ref(Constants.DEFAULT_RSSI_CHECKING_RANGE
 const actualDeviceLocation: Ref<DeviceGPSDatapoint | null> = ref(null);
 
 function loadGatewayLocations() {
-    rssiSimilaritySelectionParameters.value.forEach(async (eachRssiSimilarityParameter: GatewayRssiSelection) => {
-        const gatewayLocation = await GatewayUtils.getGatewayLocationForGatewayId(
-            eachRssiSimilarityParameter.gatewayData.id,
-        );
-        if (gatewayLocation === null) {
-            return;
-        }
-        eachRssiSimilarityParameter.gatewayData.location = gatewayLocation;
-    });
+    rssiSimilaritySelectionParameters.value.forEach(
+        async (eachRssiSimilarityParameter: GatewaySimilarityParameterSelection) => {
+            const gatewayLocation = await GatewayUtils.getGatewayLocationForGatewayId(
+                eachRssiSimilarityParameter.gatewayData.id,
+            );
+            if (gatewayLocation === null) {
+                return;
+            }
+            eachRssiSimilarityParameter.gatewayData.location = gatewayLocation;
+        },
+    );
 }
 
 async function loadSimilarityData() {

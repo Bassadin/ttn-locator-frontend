@@ -6,7 +6,7 @@ export interface GatewayData {
     location: LatLng;
 }
 
-export interface GatewayRssiSelection {
+export interface GatewaySimilarityParameterSelection {
     gatewayData: GatewayData;
     rssi: number;
     linearRegressionValues?: LinearRegressionValues;

@@ -88,7 +88,7 @@ import { LGeoJson } from '@vue-leaflet/vue-leaflet';
 import GatewayRssiParametersSelect from '@/components/selection/GatewayRssiParametersSelect.vue';
 
 // Types
-import { GatewayRssiSelection, TtnLocatorGatewayData } from '@/types/Gateways';
+import { GatewaySimilarityParameterSelection, TtnLocatorGatewayData } from '@/types/Gateways';
 import { DeviceGPSDatapoint } from '@/types/GPSDatapoints';
 import GatewayUtils from '@/utils/GatewayUtils';
 import { GeoJSON, LatLng, PathOptions } from 'leaflet';
@@ -101,7 +101,7 @@ const axios = injectStrict(AxiosKey);
 
 const showFilteringDialog = ref(false);
 const isCurrentlyLoading = ref(false);
-const gatewayRssiSelectionParameters: Ref<GatewayRssiSelection[]> = ref([]);
+const gatewayRssiSelectionParameters: Ref<GatewaySimilarityParameterSelection[]> = ref([]);
 const actualDeviceLocation: Ref<DeviceGPSDatapoint | null> = ref(null);
 const geoJsonCirclesArray: Ref<GeoJSON.Feature[]> = ref([]);
 const rangeDonutTolerance = ref(Constants.DEFAULT_RSSI_TO_RANGE_TOLERANCE_METERS);
@@ -131,32 +131,34 @@ async function recalculate() {
 async function loadGatewayLocationData() {
     // https://stackoverflow.com/a/37576787/3526350
     await Promise.all(
-        gatewayRssiSelectionParameters.value.map(async (eachRssiSimilarityParameter: GatewayRssiSelection) => {
-            const axiosResponse = await axios.get(`/gateways/${eachRssiSimilarityParameter.gatewayData.id}`);
-            const responseData: TtnLocatorGatewayData = axiosResponse.data.data;
+        gatewayRssiSelectionParameters.value.map(
+            async (eachRssiSimilarityParameter: GatewaySimilarityParameterSelection) => {
+                const axiosResponse = await axios.get(`/gateways/${eachRssiSimilarityParameter.gatewayData.id}`);
+                const responseData: TtnLocatorGatewayData = axiosResponse.data.data;
 
-            if (responseData.latitude == 0 && responseData.longitude == 0) {
-                return;
-            }
+                if (responseData.latitude == 0 && responseData.longitude == 0) {
+                    return;
+                }
 
-            eachRssiSimilarityParameter.gatewayData.location = new LatLng(
-                responseData.latitude,
-                responseData.longitude,
-            );
+                eachRssiSimilarityParameter.gatewayData.location = new LatLng(
+                    responseData.latitude,
+                    responseData.longitude,
+                );
 
-            if (
-                !shouldUseFixedRssiToRangeScale.value &&
-                responseData.linearRegressionSlope &&
-                responseData.linearRegressionIntercept
-            ) {
-                eachRssiSimilarityParameter.linearRegressionValues = {
-                    slope: responseData.linearRegressionSlope,
-                    intercept: responseData.linearRegressionIntercept,
-                };
-            } else {
-                eachRssiSimilarityParameter.linearRegressionValues = undefined;
-            }
-        }),
+                if (
+                    !shouldUseFixedRssiToRangeScale.value &&
+                    responseData.linearRegressionSlope &&
+                    responseData.linearRegressionIntercept
+                ) {
+                    eachRssiSimilarityParameter.linearRegressionValues = {
+                        slope: responseData.linearRegressionSlope,
+                        intercept: responseData.linearRegressionIntercept,
+                    };
+                } else {
+                    eachRssiSimilarityParameter.linearRegressionValues = undefined;
+                }
+            },
+        ),
     );
 
     console.info('Finished loading gateway data', gatewayRssiSelectionParameters.value);
@@ -165,7 +167,7 @@ async function loadGatewayLocationData() {
 function recalculateGeoJsonCirclesArray() {
     const geoJsonArray: GeoJSON.Feature[] = [];
 
-    gatewayRssiSelectionParameters.value.forEach((eachGatewayRssiParameter: GatewayRssiSelection) => {
+    gatewayRssiSelectionParameters.value.forEach((eachGatewayRssiParameter: GatewaySimilarityParameterSelection) => {
         const circleInner = GatewayUtils.getTurfCircleGeoJSONFromGatewayData(
             eachGatewayRssiParameter,
             -rangeDonutTolerance.value,

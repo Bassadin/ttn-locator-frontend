@@ -8,7 +8,7 @@ import * as turf from '@turf/turf';
 // Axios
 import axios from '@/plugins/axios';
 import { AxiosResponse } from 'axios';
-import { GatewayRssiSelection, TtnLocatorGatewayData } from '@/types/Gateways';
+import { GatewaySimilarityParameterSelection, TtnLocatorGatewayData } from '@/types/Gateways';
 
 export interface LinearRegressionValues {
     slope: number;
@@ -84,7 +84,7 @@ export default class GatewayUtils {
     }
 
     public static getTurfCircleGeoJSONFromGatewayData(
-        gatewayData: GatewayRssiSelection,
+        gatewayData: GatewaySimilarityParameterSelection,
         radiusOffsetMeters = 0,
         customLinearRegression?: LinearRegressionValues,
     ) {
