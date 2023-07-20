@@ -18,24 +18,32 @@
                 <v-list-subheader>Localization options</v-list-subheader>
                 <v-list-item
                     prepend-icon="mdi-vector-circle-variant"
-                    title="Rssi to Range Multilateration"
+                    title="RSSI to Range Multilateration"
                     :to="{ name: 'rssi_to_range_multilateration' }"
                 />
                 <v-list-item
-                    prepend-icon="mdi-vector-triangle"
-                    title="RSSI similarity"
-                    :to="{ name: 'rssi_similarity' }"
-                />
-                <v-list-item
-                    prepend-icon="mdi-router-wireless"
-                    title="Gateway Range (RSSI)"
-                    :to="{ name: 'gateway_rssi', params: { gatewayId: 'hfu-lr8-001' } }"
+                    prepend-icon="mdi-gesture-tap-hold"
+                    title="Fingerprinting"
+                    :to="{ name: 'fingerprinting' }"
                 />
                 <!-- TODO: The hard gateway ID here is a hack, fix later -->
                 <v-list-item
                     prepend-icon="mdi-chart-scatter-plot"
-                    title="RSSI Range Graph"
+                    title="RSSI to Range Graph"
                     :to="{ name: 'rssi_range_graph', params: { gatewayId: 'hfu-lr8-001' } }"
+                />
+                <v-list-item
+                    prepend-icon="mdi-chart-scatter-plot"
+                    title="SNR to Range Graph"
+                    :to="{ name: 'snr_range_graph', params: { gatewayId: 'hfu-lr8-001' } }"
+                />
+
+                <v-divider></v-divider>
+                <v-list-subheader>Gateway data</v-list-subheader>
+                <v-list-item
+                    prepend-icon="mdi-router-wireless"
+                    title="Gateway Range (RSSI)"
+                    :to="{ name: 'gateway_rssi', params: { gatewayId: 'hfu-lr8-001' } }"
                 />
 
                 <v-divider></v-divider>

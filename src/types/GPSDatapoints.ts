@@ -11,8 +11,9 @@ export interface TtnLocatorDeviceGPSDatapoint {
     hdop: number;
 }
 
-export interface TtnLocatorDeviceGPSDatapointWithRSSI extends TtnLocatorDeviceGPSDatapoint {
+export interface TtnLocatorDeviceGPSDatapointWithSignalData extends TtnLocatorDeviceGPSDatapoint {
     rssi: number;
+    snr: number;
 }
 
 export interface DeviceGPSDatapointWithTtnMapperDatapoints extends TtnLocatorDeviceGPSDatapoint {
@@ -49,7 +50,7 @@ export function mapTtnLocatorApiResponseToDeviceGPSDatapoint(
 }
 
 export function stripRssiFromDeviceGPSDatapointWithRSSI(
-    deviceGPSDatapointWithRssi: TtnLocatorDeviceGPSDatapointWithRSSI,
+    deviceGPSDatapointWithRssi: TtnLocatorDeviceGPSDatapointWithSignalData,
 ): DeviceGPSDatapoint {
     return {
         deviceId: deviceGPSDatapointWithRssi.deviceId,

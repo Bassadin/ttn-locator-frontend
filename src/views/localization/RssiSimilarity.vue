@@ -45,7 +45,7 @@
                 </v-btn>
             </template>
             <v-card>
-                <v-card-title>RSSI similarity</v-card-title>
+                <v-card-title>Fingerprinting</v-card-title>
                 <v-card-text>
                     <GatewayRssiParametersSelect
                         v-model:rssi-similarity-selection-parameters="rssiSimilaritySelectionParameters"

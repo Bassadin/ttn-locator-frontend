@@ -16,15 +16,15 @@ const routes = [
         name: 'rssi_to_range_multilateration',
         component: () => import('@/views/localization/RssiToRangeMultilateration.vue'),
         meta: {
-            title: 'Rssi to Range Multilateration',
+            title: 'RSSI to Range Multilateration',
         },
     },
     {
-        path: '/rssi_similarity',
-        name: 'rssi_similarity',
+        path: '/fingerprinting',
+        name: 'fingerprinting',
         component: () => import('@/views/localization/RssiSimilarity.vue'),
         meta: {
-            title: 'RSSI similarity',
+            title: 'Fingerprinting',
         },
     },
     {
@@ -41,6 +41,14 @@ const routes = [
         component: () => import('@/views/localization/GatewayRSSIRangeGraph.vue'),
         meta: {
             title: 'RSSI Range Graph',
+        },
+    },
+    {
+        path: '/snr_range_graph/:gatewayId',
+        name: 'snr_range_graph',
+        component: () => import('@/views/localization/GatewaySNRRangeGraph.vue'),
+        meta: {
+            title: 'SNR Range Graph',
         },
     },
 

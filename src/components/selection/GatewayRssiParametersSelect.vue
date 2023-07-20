@@ -34,7 +34,7 @@
                 </v-form>
             </v-col>
         </v-row>
-        <h3>RSSI Similarity Parameters</h3>
+        <h3>Fingerprinting Parameters</h3>
 
         <div class="my-4">
             <GatewayAndRssiSelect

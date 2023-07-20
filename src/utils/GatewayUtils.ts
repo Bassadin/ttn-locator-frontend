@@ -1,7 +1,7 @@
 import Constants from '@/other/Constants';
 
 // Types
-import { TtnLocatorDeviceGPSDatapointWithRSSI } from '@/types/GPSDatapoints';
+import { TtnLocatorDeviceGPSDatapointWithSignalData } from '@/types/GPSDatapoints';
 import { LatLng } from 'leaflet';
 import * as turf from '@turf/turf';
 
@@ -54,7 +54,7 @@ export default class GatewayUtils {
         gatewayId: string,
         minRssi = -500,
         maxRssi = 0,
-    ): Promise<TtnLocatorDeviceGPSDatapointWithRSSI[]> {
+    ): Promise<TtnLocatorDeviceGPSDatapointWithSignalData[]> {
         return axios
             .get(`/gateways/${gatewayId}/gps_datapoints_with_rssi`, {
                 params: {

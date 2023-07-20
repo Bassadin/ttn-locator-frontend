@@ -96,7 +96,7 @@ const chartOptions = ref({
             position: 'left',
             title: {
                 display: true,
-                text: 'RSSI (dBm)',
+                text: 'SNR',
             },
         },
         y: {
@@ -160,8 +160,8 @@ async function getGatewayData() {
 
                 console.info(`Found ${responseData.length} GPS datapoints`);
 
-                const rssiDistanceData = responseData.map((eachDeviceGPSDatapoint) => {
-                    const rssiValue = eachDeviceGPSDatapoint.rssi;
+                const snrDistanceData = responseData.map((eachDeviceGPSDatapoint) => {
+                    const snrValue = eachDeviceGPSDatapoint.snr;
 
                     const distanceToGateway = turf.distance(
                         gatewayTurfPoint,
@@ -169,20 +169,20 @@ async function getGatewayData() {
                         { units: 'meters' },
                     );
 
-                    return { x: rssiValue, y: distanceToGateway };
+                    return { x: snrValue, y: distanceToGateway };
                 });
 
-                if (rssiDistanceData.length === 0) {
+                if (snrDistanceData.length === 0) {
                     console.info('No data available');
                     return;
                 }
 
                 // Regression
-                const rssiValues = rssiDistanceData.map((eachDataPoint) => eachDataPoint.x);
-                const minRssi = Math.min(...rssiValues);
-                const maxRssi = Math.max(...rssiValues);
+                const snrValues = snrDistanceData.map((eachDataPoint) => eachDataPoint.x);
+                const minSNR = Math.min(...snrValues);
+                const maxSNR = Math.max(...snrValues);
                 const regressionData = simpleStatistics.linearRegression(
-                    rssiDistanceData.map((eachDataPoint) => [eachDataPoint.x, eachDataPoint.y]),
+                    snrDistanceData.map((eachDataPoint) => [eachDataPoint.x, eachDataPoint.y]),
                 );
 
                 const regressionPrediction = simpleStatistics.linearRegressionLine(regressionData);
@@ -190,7 +190,7 @@ async function getGatewayData() {
 
                 // Calculate some regression datapoints between 0 and maxDistance
                 const regressionDatapoints = [];
-                for (let i = minRssi; i <= maxRssi; i += 5) {
+                for (let i = minSNR; i <= maxSNR; i += 5) {
                     regressionDatapoints.push({ x: i, y: regressionPrediction(i) });
                 }
 
@@ -199,7 +199,7 @@ async function getGatewayData() {
                         {
                             type: 'scatter',
                             label: 'GPS Datapoints',
-                            data: rssiDistanceData,
+                            data: snrDistanceData,
                         },
                         {
                             type: 'line',
