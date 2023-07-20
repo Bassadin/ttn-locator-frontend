@@ -39,7 +39,7 @@
             <v-card>
                 <v-card-title>RSSI to range multilateration</v-card-title>
                 <v-card-text>
-                    <GatewayRssiParametersSelect
+                    <GatewaySimilarityParametersSelect
                         v-model:rssi-similarity-selection-parameters="gatewayRssiSelectionParameters"
                         @actual-device-location-updated="actualDeviceLocation = $event"
                     />
@@ -85,7 +85,7 @@ import SingleGatewayMarker from '@/components/map/markers/SingleGatewayMarker.vu
 import ActualDeviceLocationMarker from '@/components/map/markers/ActualDeviceLocationMarker.vue';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import { LGeoJson } from '@vue-leaflet/vue-leaflet';
-import GatewayRssiParametersSelect from '@/components/selection/GatewayRssiParametersSelect.vue';
+import GatewaySimilarityParametersSelect from '@/components/selection/GatewaySimilarityParametersSelect.vue';
 
 // Types
 import { GatewaySimilarityParameterSelection, TtnLocatorGatewayData } from '@/types/Gateways';
