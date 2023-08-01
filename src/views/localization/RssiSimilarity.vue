@@ -27,7 +27,8 @@
                     color="orange"
                 >
                     <l-tooltip :options="{ offset: L.point({ x: estimatedPositionRadius / 3 + 10, y: 0 }) }">
-                        <b>Error radius:</b> {{ estimatedPositionRadius }} m
+                        <div><b>Error radius:</b> {{ estimatedPositionRadius }} m</div>
+                        <div><b>Device GPS Datapoints matching Filter:</b> {{ deviceGPSDatapoints.length }}</div>
                     </l-tooltip>
                 </l-circle>
             </template>
