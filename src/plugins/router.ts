@@ -79,6 +79,14 @@ const routes = [
             title: 'Device GPS Datapoints Stats',
         },
     },
+    {
+        path: '/stats/spreading_factors_usage',
+        name: 'spreading_factors_usage_stats',
+        component: () => import('@/views/stats/SpreadingFactorsUsageStats.vue'),
+        meta: {
+            title: 'Spreading Factors Usage Stats',
+        },
+    },
 
     // Catch all 404
     {

@@ -63,6 +63,12 @@
                     title="Device GPS Datapoints"
                     :to="{ name: 'device_gps_datapoints_stats' }"
                 />
+                <v-list-item
+                    v-list
+                    prepend-icon="mdi-arrow-left-right"
+                    title="Spreading Factors Usage Stats"
+                    :to="{ name: 'spreading_factors_usage_stats' }"
+                />
             </v-list-item>
         </v-navigation-drawer>
     </div>
