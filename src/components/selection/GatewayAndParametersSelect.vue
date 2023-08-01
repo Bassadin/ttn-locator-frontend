@@ -4,7 +4,7 @@
             <v-col cols="12" md="6">
                 <GatewaysInDBSelection v-model="gatewaySimilarityParameters.gatewayData.id" />
             </v-col>
-            <v-col cols="10" :md="props.displaySnrSelection ? 2 : 4">
+            <v-col cols="6" :md="props.displaySnrSelection ? 2 : 4">
                 <v-text-field
                     v-model.number="gatewaySimilarityParameters.rssi"
                     type="number"
@@ -13,7 +13,7 @@
                     :max="Constants.MAX_SELECTABLE_RSSI"
                 ></v-text-field>
             </v-col>
-            <v-col v-if="props.displaySnrSelection" cols="10" md="2">
+            <v-col v-if="props.displaySnrSelection" cols="6" md="2">
                 <v-text-field
                     v-model.number="gatewaySimilarityParameters.snr"
                     type="number"

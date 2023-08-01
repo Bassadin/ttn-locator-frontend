@@ -49,13 +49,21 @@
                 <v-card-text>
                     <GatewaySimilarityParametersSelect
                         v-model:rssi-similarity-selection-parameters="rssiSimilaritySelectionParameters"
+                        v-model:sf-value="sfValue"
                         :display-snr-selection="useSnrValues"
+                        :display-sf-selection="useSfValues"
                         @actual-device-location-updated="actualDeviceLocation = $event"
                     />
 
                     <v-row>
                         <v-col>
-                            <v-checkbox v-model="useSnrValues" label="Use SNR values"></v-checkbox>
+                            <v-checkbox
+                                v-model="useSnrValues"
+                                label="Use Signal to Noise Ratio (SNR) values"
+                            ></v-checkbox>
+                        </v-col>
+                        <v-col>
+                            <v-checkbox v-model="useSfValues" label="Use Spreading Factor (SF) values"></v-checkbox>
                         </v-col>
                     </v-row>
 
@@ -139,6 +147,9 @@ const actualDeviceLocation: Ref<DeviceGPSDatapoint | null> = ref(null);
 const useSnrValues = ref(true);
 const snrCheckingRange = ref(Constants.DEFAULT_SNR_CHECKING_RANGE);
 
+const useSfValues = ref(true);
+const sfValue = ref(Constants.DEFAULT_SF_VALUE);
+
 function loadGatewayLocations() {
     rssiSimilaritySelectionParameters.value.forEach(
         async (eachRssiSimilarityParameter: GatewaySimilarityParameterSelection) => {
@@ -175,6 +186,7 @@ async function loadSimilarityData() {
     const deviceGpsDatapointsResponse: AxiosResponse<{ message: string; data: TtnLocatorDeviceGPSDatapoint[] }> =
         await axios.post('/device_gps_datapoints/rssi_similarity', {
             similarityFilter: similarityFilter,
+            spreadingFactor: useSfValues.value ? sfValue.value : undefined,
         });
 
     const parsedData: TtnLocatorDeviceGPSDatapoint[] = deviceGpsDatapointsResponse.data.data;

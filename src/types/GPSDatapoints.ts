@@ -9,6 +9,7 @@ export interface TtnLocatorDeviceGPSDatapoint {
     longitude: number;
     altitude: number;
     hdop: number;
+    spreadingFactor: number;
 }
 
 export interface TtnLocatorDeviceGPSDatapointWithSignalData extends TtnLocatorDeviceGPSDatapoint {

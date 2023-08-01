@@ -10,6 +10,7 @@ export interface GatewaySimilarityParameterSelection {
     gatewayData: GatewayData;
     rssi: number;
     snr?: number;
+    sf?: number;
     linearRegressionValues?: LinearRegressionValues;
 }
 

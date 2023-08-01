@@ -2,7 +2,7 @@
     <v-form>
         <h3 class="mb-4">Load values from TTN Mapper Datapoint ID</h3>
         <v-row>
-            <v-col>
+            <v-col cols="12" md="8">
                 <v-form @submit.prevent="loadParametersFromTtnMapperDatapointInDB">
                     <v-text-field
                         v-model.number="ttnMapperDatapointFromDatabaseID"
@@ -19,7 +19,7 @@
         </v-row>
         <h3 class="mb-4">Load values from Device GPS Datapoint ID</h3>
         <v-row>
-            <v-col>
+            <v-col cols="12" md="8">
                 <v-form @submit.prevent="loadParametersFromDeviceGpsDatapointInDB">
                     <v-text-field
                         v-model.number="deviceGPSDatapointFromDatabaseID"
@@ -37,12 +37,23 @@
 
         <h3>Fingerprinting Parameters</h3>
 
+        <v-col v-if="props.displaySfSelection" cols="12" md="8">
+            <v-text-field
+                v-model.number="sfValue"
+                type="number"
+                label="SNR"
+                :min="Constants.MIN_SELECTABLE_SF"
+                :max="Constants.MAX_SELECTABLE_SF"
+            />
+        </v-col>
+
         <div class="my-4">
             <GatewayAndParametersSelect
                 v-for="(eachRssiSimilarityParameter, index) in rssiSimilaritySelectionParameters"
                 :key="eachRssiSimilarityParameter.gatewayData.id"
                 v-model:gatewaySimilarityParameters="rssiSimilaritySelectionParameters[index]"
                 :display-snr-selection="props.displaySnrSelection"
+                :display-sf-selection="props.displaySfSelection"
                 @delete-parameter="deleteParameter"
             />
         </div>
@@ -55,6 +66,7 @@
 </template>
 
 <script setup lang="ts">
+import Constants from '@/other/Constants';
 import { computed, onMounted, ref } from 'vue';
 
 // Components
@@ -81,9 +93,11 @@ const axios = injectStrict(AxiosKey);
 // v-model
 const props = defineProps({
     rssiSimilaritySelectionParameters: { type: Array<GatewaySimilarityParameterSelection>, required: true },
+    sfValue: { type: Number, default: 7 },
     displaySnrSelection: { type: Boolean, default: false },
+    displaySfSelection: { type: Boolean, default: false },
 });
-const emit = defineEmits(['update:rssiSimilaritySelectionParameters', 'actualDeviceLocationUpdated']);
+const emit = defineEmits(['update:rssiSimilaritySelectionParameters', 'actualDeviceLocationUpdated', 'update:sfValue']);
 
 const rssiSimilaritySelectionParameters = computed({
     get() {
@@ -91,6 +105,15 @@ const rssiSimilaritySelectionParameters = computed({
     },
     set(value) {
         emit('update:rssiSimilaritySelectionParameters', value);
+    },
+});
+
+const sfValue = computed({
+    get() {
+        return props.sfValue;
+    },
+    set(value) {
+        emit('update:sfValue', value);
     },
 });
 
@@ -135,6 +158,7 @@ async function loadParametersFromDeviceGpsDatapointInDB() {
 
             emit('actualDeviceLocationUpdated', convertTtnLocatorDeviceGPSDatapointToNormal(parsedData));
 
+            sfValue.value = parsedData.spreadingFactor;
             rssiSimilaritySelectionParameters.value = parsedData.ttnMapperDatapoints.map(
                 (eachTtnMapperDatapoint: TtnMapperDatapoint) => {
                     return {
