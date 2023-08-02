@@ -2,7 +2,7 @@
     <v-app>
         <v-layout full-height>
             <main-navigation />
-            <v-main class="h-full">
+            <v-main class="h-full overflow-x-auto">
                 <router-view />
             </v-main>
         </v-layout>

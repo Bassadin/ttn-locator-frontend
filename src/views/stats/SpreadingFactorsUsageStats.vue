@@ -18,7 +18,7 @@
                         </tr>
                     </tbody>
                 </v-table>
-                <Bar v-if="chartDataReady" class="mt-6" :data="chartData" :options="chartOptions"></Bar>
+                <Bar v-if="chartDataReady" class="mt-6 max-h-40vh" :data="chartData" :options="chartOptions"></Bar>
             </v-card-text>
         </v-card>
     </v-container>
