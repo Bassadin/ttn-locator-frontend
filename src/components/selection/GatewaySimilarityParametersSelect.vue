@@ -37,11 +37,11 @@
 
         <h3>Fingerprinting Parameters</h3>
 
-        <v-col v-if="props.displaySfSelection" cols="12" md="8">
+        <v-col v-if="props.displaySfSelection" cols="12" md="3">
             <v-text-field
                 v-model.number="sfValue"
                 type="number"
-                label="SNR"
+                label="Spreading Factor (SF)"
                 :min="Constants.MIN_SELECTABLE_SF"
                 :max="Constants.MAX_SELECTABLE_SF"
             />
