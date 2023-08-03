@@ -22,6 +22,8 @@
                     <v-card-text>
                         <Scatter v-if="chartDataReady" :data="chartData" :options="chartOptions"></Scatter>
                         <p v-else>No data available</p>
+                        <v-divider />
+                        <p class="mt-4 text-xl">Correlation coefficient: {{ correlationCoefficient.toFixed(4) }}</p>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -82,6 +84,7 @@ const selectedGatewayID = ref(route.params.gatewayId.toString());
 const gatewayData: Ref<GatewayData> = ref({} as GatewayData);
 
 const isCurrentlyLoading = ref(false);
+const correlationCoefficient = ref(0);
 
 const amountOfDatapoints = computed(() => {
     return chartData.value.datasets[0].data.length || 0;
@@ -183,6 +186,11 @@ async function getGatewayData() {
                 const maxRssi = Math.max(...rssiValues);
                 const regressionData = simpleStatistics.linearRegression(
                     rssiDistanceData.map((eachDataPoint) => [eachDataPoint.x, eachDataPoint.y]),
+                );
+
+                correlationCoefficient.value = simpleStatistics.sampleCorrelation(
+                    rssiDistanceData.map((eachDataPoint) => eachDataPoint.x),
+                    rssiDistanceData.map((eachDataPoint) => eachDataPoint.y),
                 );
 
                 const regressionPrediction = simpleStatistics.linearRegressionLine(regressionData);
