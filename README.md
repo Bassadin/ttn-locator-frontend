@@ -10,7 +10,9 @@ It is part of my [master's thesis](https://github.com/Bassadin/Master-Thesis-INM
 
 -   Vue.js
 -   Vite
+-   Vuetify
 -   Typescript
+-   GitHub Copilot
 
 ## Development
 
